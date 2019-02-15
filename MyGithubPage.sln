@@ -3,14 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGithubPage", "MyGithubPage\MyGithubPage.csproj", "{365E2916-E9D4-45CF-8BE4-6E0140A3A89B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyGithubPage", "MyGithubPage\MyGithubPage.csproj", "{365E2916-E9D4-45CF-8BE4-6E0140A3A89B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{94DEE2BA-1119-4AE2-8B0E-DCF83AC0E68E}"
 	ProjectSection(SolutionItems) = preProject
 		index.html = index.html
+		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pages", "Pages\Pages.csproj", "{A7F603F0-6913-47DC-81D3-1D6F7DB0E1CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pages", "Pages\Pages.csproj", "{A7F603F0-6913-47DC-81D3-1D6F7DB0E1CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
