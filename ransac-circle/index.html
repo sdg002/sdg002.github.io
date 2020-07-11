@@ -9,6 +9,10 @@
         {
             font-family:Arial
         }
+        img.examples
+        {
+            width:200px;height:200px;border-width:1px;border-style:solid;
+        }
     </style>
 </head>
 <body>
@@ -39,7 +43,7 @@
     <p>
         The output after using RANSAC to take into account the outliers. Notice that the algorithm has nicely detected the noisy points on the far right
     </p>
-    <img src="circle-images/Simple_After_GradientDescent.png" />
+    <img src="circle-images/Simple_After_Ransac.png" />
 
     <hr />
 
@@ -99,6 +103,12 @@
         <li>Repeat above steps for *max iterations* number of times</li>
     </ol>
 
+    <h1>RANSAC examples</h1>
 
+    <h2>Example 1</h2>
+    <h3>Before</h3>
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.png" class="examples"/>
+    <h3>After</h3><br />
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.result.png" class="examples"/>
 </body>
 </html>
