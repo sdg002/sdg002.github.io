@@ -19,7 +19,7 @@
 
     <h1>Introduction</h1>
     <p>
-        The RANSAC (Random sample and consensus) algorithm is the "gold standard" in eliminating noise. A while ago, I wrote an [article](https://medium.com/@saurabh.dasgupta1/outlier-detection-using-the-ransac-algorithm-de52670adb4a)  on how the RANSAC algorithm is implemented for finding the model of a straight line in a noisy field of points.
+        The RANSAC (Random sample and consensus) algorithm is the <strong>gold standard</strong> in eliminating noise. A while ago, I wrote an <a href="https://medium.com/@saurabh.dasgupta1/outlier-detection-using-the-ransac-algorithm-de52670adb4a">article</a>   on how the RANSAC algorithm is implemented for finding the model of a straight line in a noisy field of points.
         The RANSAC algorithm in its original form was developed around finding straight line models when presented with noisy visual data. In this article, I will explore how to implement the RANSAC algorithm a circle model in a noisy set of points. I hope that by the end of this article you will appreciate how beautiful RANSAC is. Sometimes, I get carried away and visualize that human brain is perhaps doing some sort of RANSAC deep inside. Enough!
     </p>
     <img src="circle-images/HumanMind_StraightLine_Ransac.PNG" />
@@ -53,35 +53,35 @@
     <img src="circle-images/sketch.io.RANSAC-definitions.png" />
     
     <p>
-        <strong>Model circle</strong>
+        <strong>Model circle:</strong>
         The candidate circle which we think fits the points</p>
 
     
     <p>
-        <strong>Threshold distance</strong>
-        Used for creating a doughnut like concentric circles withthe model circle in the middle</p>
+        <strong>Threshold distance:</strong>
+        Used for creating a doughnut like concentric circles with the model circle in the middle</p>
 
     
     <p>
-        <strong>Outlier point</strong>
+        <strong>Outlier point:</strong>
         Any point outside the doughnut region</p>
 
     
     <p>
-        <strong>Inlier point</strong>
+        <strong>Inlier point:</strong>
         Any point within the doughnut region</p>
 
     
     <p>
-        <strong>Threshold inlier count</strong>
+        <strong>Threshold inlier count:</strong>
         Minimum number of inliers points for a candidate circle to be selected</p>
 
 
     <h2>Initialize essential parameters</h2>
     <ol>
-        <li>Select a threshold distance <strong>threshold distance </strong> </li>
-        <li>Select a threshold count of inliners <strong>threshold inlier count</strong></li>
-        <li>Select maximum number of samplings <strong>max iterations</strong></li>
+        <li>Select a threshold distance - <strong>threshold distance </strong> </li>
+        <li>Select a threshold count of inliners - <strong>threshold inlier count</strong></li>
+        <li>Select maximum number of samplings - <strong>max iterations</strong></li>
     </ol>
 
     <h2>Build a shortlist of candidate circles</h2>
@@ -108,5 +108,25 @@
     <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.png" class="examples"/>
     <h3>After</h3><br />
     <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.result.png" class="examples"/>
+
+    <h2>Example 2</h2>
+    <h3>Before</h3>
+    <img src="circle-images/NoisyCircle_x_36_y_-12_r_57_d_0.40_sp_0.90_w_50_h_50.15.png" class="examples"/>
+    <h3>After</h3><br />
+    <img src="circle-images/NoisyCircle_x_36_y_-12_r_57_d_0.40_sp_0.90_w_50_h_50.15.results.png" class="examples"/>
+
+
+    <h2>Example 3 TO BE DONE</h2>
+    <h3>Before</h3>
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.png001" class="examples"/>
+    <h3>After</h3><br />
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.result.png001" class="examples"/>
+
+    <h2>Example 4 TO BE DONE</h2>
+    <h3>Before</h3>
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.png001" class="examples"/>
+    <h3>After</h3><br />
+    <img src="circle-images/NoisyCircle_x_-5_y_5_r_19_d_0.40_sp_0.80_w_25_h_25.197.result.png001" class="examples"/>
+
 </body>
 </html>
