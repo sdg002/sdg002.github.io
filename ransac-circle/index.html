@@ -23,15 +23,20 @@
         The RANSAC algorithm in its original form was developed around finding straight line models when presented with noisy visual data. In this article, I will explore how to implement the RANSAC algorithm a circle model in a noisy set of points. I hope that by the end of this article you will appreciate how beautiful RANSAC is. Sometimes, I get carried away and visualize that human brain is perhaps doing some sort of RANSAC deep inside. Enough!
     </p>
     <h2>Consider the data points below</h2>
-    We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
+    <p>
+        We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
+    </p>
+    
     <img src="ransac-st-line/data_points.png" /><br />
 
     <h2>Desired line as perceived by the human eye</h2>
+    <p>The human mind can easily eliminate the outliers.</p>
     <img src="ransac-st-line/desired_line.png" /><br />
-    The human mind can easily eliminate the outliers.
+    
 
     <h2>Actual line computed by the least squares algorithm</h2>
-    The Least Squares method will consider al the points with equal importance. The resulting line is visibly skewed.
+    <p>The Least Squares method will consider all the points with equal importance. The resulting line is visibly skewed.</p>
+    
     <img src="ransac-st-line/leastsquares_line.png" /><br />
     
     <p>
@@ -40,7 +45,7 @@
 
     <hr />
 
-    <h1>What problem does RANSAC solve?</h1>
+    <h1>RANSAC for circles - what problem does it solve?</h1>
     <p>
         Consider the points shown below. It is not difficult to spot there is a nice circle that can be traced out of the points only if we exclude the 2 noisy points on the far right of the visual.
     </p>
@@ -49,12 +54,13 @@
 
 
     <h2>Fitting a circle - using Gradient descent algorithm</h2>
-    <p>The output after finding the best fitting circle is presented below.</p>
+    <p>The output after finding the best fitting circle is presented below. Notice that the position of the circle has shifted towards the outliers</p>
     <img src="circle-images/Simple_After_GradientDescent.png" />
 
     <h2>Fitting a circle -  using RANSAC</h2>
     <p>
-        The output after using RANSAC to take into account the outliers. Notice that the algorithm has nicely detected the noisy points on the far right
+        The output after using RANSAC to take into account the outliers. Notice that the algorithm has nicely detected the noisy points on the far right. 
+        The RANSAC algorithm has ignored the outliers completely.
     </p>
     <img src="circle-images/Simple_After_Ransac.png" />
 
