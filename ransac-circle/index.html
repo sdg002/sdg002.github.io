@@ -22,18 +22,31 @@
         The RANSAC (Random sample and consensus) algorithm is the <strong>gold standard</strong> in eliminating noise. A while ago, I wrote an <a href="https://medium.com/@saurabh.dasgupta1/outlier-detection-using-the-ransac-algorithm-de52670adb4a">article</a>   on how the RANSAC algorithm is implemented for finding the model of a straight line in a noisy field of points.
         The RANSAC algorithm in its original form was developed around finding straight line models when presented with noisy visual data. In this article, I will explore how to implement the RANSAC algorithm a circle model in a noisy set of points. I hope that by the end of this article you will appreciate how beautiful RANSAC is. Sometimes, I get carried away and visualize that human brain is perhaps doing some sort of RANSAC deep inside. Enough!
     </p>
-    <img src="circle-images/HumanMind_StraightLine_Ransac.PNG" />
+    <h2>Consider the data points below</h2>
+    We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
+    <img src="ransac-st-line/data_points.png" /><br />
+
+    <h2>Desired line as perceived by the human eye</h2>
+    <img src="ransac-st-line/desired_line.png" /><br />
+    The human mind can easily eliminate the outliers.
+
+    <h2>Actual line computed by the least squares algorithm</h2>
+    The Least Squares method will consider al the points with equal importance. The resulting line is visibly skewed.
+    <img src="ransac-st-line/leastsquares_line.png" /><br />
+    
     <p>
         The example shown above exhibits how noise can impact the outcome of the least squares fitting algorithm. The human mind can easily spot the outlier, but the least squares algorithm cannot. This is where RANSAC steps in. RANSAC is a simple voting based algorithm that iteratively samples the population of points and find the subset of those lines which appear to conform.
     </p>
 
     <hr />
 
-    <h1>Problem definition</h1>
+    <h1>What problem does RANSAC solve?</h1>
     <p>
         Consider the points shown below. It is not difficult to spot there is a nice circle that can be traced out of the points only if we exclude the 2 noisy points on the far right of the visual.
     </p>
     <img src="circle-images/Simple.png" />
+
+
 
     <h2>Fitting a circle - using Gradient descent algorithm</h2>
     <p>The output after finding the best fitting circle is presented below.</p>
@@ -80,7 +93,7 @@
         <strong>Threshold inlier count:</strong>
         Minimum number of inliers points for a candidate circle to be selected
     </p>
-   
+
     <p>
         <strong>Mean absolute error:</strong>
         1/N X &Sigma;abs(distance of inlier point from candidate center - radius of candidate center)<br />
@@ -152,5 +165,10 @@
     <h3>After</h3><br />
     <img src="circle-images/NoisyCircle_x_36_y_15_r_21_d_0.40_sp_0.80_w_25_h_25.198.result.png" class="examples" />
 
+    <h1>Github</h1>
+    <h2>Link to source code</h2>
+    <p>to be done</p>
+
+    <h3>About the source code</h3>
 </body>
 </html>
