@@ -80,6 +80,12 @@
         <strong>Threshold inlier count:</strong>
         Minimum number of inliers points for a candidate circle to be selected
     </p>
+   
+    <p>
+        <strong>Mean absolute error:</strong>
+        1/N X &Sigma;abs(distance of inlier point from candidate center - radius of candidate center)<br />
+        N=count of all inlier points
+    </p>
 
 
     <h2>Initialize essential parameters</h2>
@@ -98,12 +104,19 @@
 
     <ol>
         <li>Select any 3 points</li>
-        <li>find the circle passing through these 3 points</li>
-        <li>Use *threshold* and find all points which lie in the doughnut. These are the inliers.</li>
-        <li>If the count is less than *min inlier count* then skip this model.</li>
-        <li>Otherwise shortlist this model</li>
-        <li>Use all the inlier points and find the best fitting circle. Compute mean squared error</li>
-        <li>Repeat above steps for *max iterations* number of times</li>
+        <li>find the circle passing through these 3 points. This is our <strong>candidate circle</strong>.</li>
+        <li>Use <strong>threshold distance</strong> and find all points which lie in the doughnut region. These are the <strong>inlier points</strong>.</li>
+        <li>If the count is less than <strong>threshold inlier count</strong> then skip this <strong>candidate circle</strong> and go back to the first step.</li>
+        <li>If the count exceeds <strong>threshold inlier count</strong> then move on to next step</li>
+        <li>Use all <strong>inliner points</strong> and determine <strong>new candidate circle</strong></li>
+        <li>Find all new <strong>inliner points</strong> and new&nbsp; <strong>outlier points</strong> for <strong>new candidate circle</strong></li>
+        <li>If the count of <strong>inlier points</strong> is less than <strong>threshold inlier count</strong> then skip this <strong>new candidate circle</strong> and go back to the first step.</li>
+        <li>If the count exceeds <strong>threshold inlier count</strong> then move on to next step</li>
+        <li>Calculate the <strong>mean absolute error</strong> for the <strong>new candidate circle</strong> using the new inlier points</li>
+        <li>Add this <strong>candidate circle</strong> to the shortlist along with count of <strong>inlier points</strong> and the <strong>mean absolute error</strong></li>
+        <li>Go back to the first step and repeat for <strong>max iterations</strong> number of times</li>
+        <li>When max iterations is completed, examine the <strong>shortlist</strong> of <strong>candidate circles</strong> and pick the circle with maximum inlier count. If more than candidate circles with same inliner count then pick the candidate circle with lesser mean absolute error</li>
+
     </ol>
 
     <h1>RANSAC examples</h1>
