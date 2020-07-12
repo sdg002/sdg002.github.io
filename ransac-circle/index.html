@@ -26,19 +26,19 @@
     <p>
         We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
     </p>
-    
+
     <img src="ransac-st-line/all_data_points.png" /><br />
 
     <h2>Desired line as perceived by the human eye</h2>
     <p>The human mind can easily eliminate the outliers.</p>
     <img src="ransac-st-line/desired_line_mind.png" /><br />
-    
+
 
     <h2>Actual line computed by the least squares algorithm</h2>
     <p>The Least Squares method will consider all the points with equal importance. The resulting line is visibly skewed.</p>
-    
+
     <img src="ransac-st-line/actual_line_leastsquares.png" /><br />
-    
+
     <p>
         The example shown above exhibits how noise can impact the outcome of the least squares fitting algorithm. The human mind can easily spot the outlier, but the least squares algorithm cannot. This is where RANSAC steps in. RANSAC is a simple voting based algorithm that iteratively samples the population of points and find the subset of those lines which appear to conform.
     </p>
@@ -59,7 +59,7 @@
 
     <h2>Fitting a circle -  using RANSAC</h2>
     <p>
-        The output after using RANSAC to take into account the outliers. Notice that the algorithm has nicely detected the noisy points on the far right. 
+        The output after using RANSAC to take into account the outliers. Notice that the algorithm has nicely detected the noisy points on the far right.
         The RANSAC algorithm has ignored the outliers completely.
     </p>
     <img src="circle-images/Simple_After_Ransac.png" />
@@ -118,7 +118,7 @@
     <p>
         Consider the following arrangement of points. We will use this example for understanding the RANSAC algorithm
     </p>
-    <img src="ransac-algo/original-datapoints.png"/>
+    <img src="ransac-algo/original-datapoints.png" />
 
     <ol>
         <li>Select any 3 points</li>
@@ -176,8 +176,17 @@
 
     <h1>Github</h1>
     <h2>Link to source code</h2>
-    <p>to be done</p>
+    <a href="https://github.com/sdg002/rANSAC">Github</a>
+
 
     <h3>About the source code</h3>
+    <p>The folder hierarchy is as follows:</p>
+    <ol>
+        <li><strong>Algorithm</strong>: Python classes which implement the actual RANSAC algorithms for line and circle</li>
+        <li><strong>Common</strong>: Python classes which implement common model classes like Circle,Line abd Util</li>
+        <li><strong>RANSAC</strong>: Scripts to launch the RANSAC algorithm using images in the 'input' sub-folder </li>
+        <li><strong>UnitTests</strong>: Unit tests for the algorithm classes</li>
+    </ol>
+
 </body>
 </html>
