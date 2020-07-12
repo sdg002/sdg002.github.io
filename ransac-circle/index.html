@@ -29,13 +29,14 @@
 
     <img src="ransac-st-line/all_data_points.png" /><br />
 
-    <h2>Desired line as perceived by the human eye</h2>
+    <h2>The line which fits the data  - as perceived by the human eye</h2>
     <p>The human mind can easily eliminate the outliers.</p>
     <img src="ransac-st-line/desired_line_mind.png" /><br />
 
 
-    <h2>Actual line computed by the least squares algorithm</h2>
-    <p>The Least Squares method will consider all the points with equal importance. The resulting line is visibly skewed.</p>
+    <h2>The line which fits the data - computed by the least squares algorithm</h2>
+    <p>The Least Squares method will consider all the points with equal importance. We can clearly see that the resulting line is visibly skewed 
+        towards the outliers.</p>
 
     <img src="ransac-st-line/actual_line_leastsquares.png" /><br />
 
@@ -179,14 +180,20 @@
     <a href="https://github.com/sdg002/rANSAC">Github</a>
 
 
-    <h3>About the source code</h3>
+    <h2>About the source code</h2>
     <p>The folder hierarchy is as follows:</p>
     <ol>
         <li><strong>Algorithm</strong>: Python classes which implement the actual RANSAC algorithms for line and circle</li>
         <li><strong>Common</strong>: Python classes which implement common model classes like Circle,Line abd Util</li>
-        <li><strong>RANSAC</strong>: Scripts to launch the RANSAC algorithm using images in the 'input' sub-folder </li>
+        <li><strong>RANSAC</strong>: Scripts to launch the RANSAC algorithm using images in the '<strong>input</strong>' sub-folder </li>
         <li><strong>UnitTests</strong>: Unit tests for the algorithm classes</li>
     </ol>
 
+    <h2>Quick start</h2>
+    You can chose either of the following:
+    <ol>
+        <li><strong>RANSAC\ExecRANSACCircle.py</strong> - Edit the .\input image filename in this script and execute. The output will be created in .\out folder</li>
+        <li><strong>UnitTests\ransac\test_RansaCircleHelper.py</strong> - You can debug the tests and do a walkthrough of the code </li>
+    </ol>
 </body>
 </html>
