@@ -27,17 +27,17 @@
         We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
     </p>
     
-    <img src="ransac-st-line/data_points.png" /><br />
+    <img src="ransac-st-line/all_data_points.png" /><br />
 
     <h2>Desired line as perceived by the human eye</h2>
     <p>The human mind can easily eliminate the outliers.</p>
-    <img src="ransac-st-line/desired_line.png" /><br />
+    <img src="ransac-st-line/desired_line_mind.png" /><br />
     
 
     <h2>Actual line computed by the least squares algorithm</h2>
     <p>The Least Squares method will consider all the points with equal importance. The resulting line is visibly skewed.</p>
     
-    <img src="ransac-st-line/leastsquares_line.png" /><br />
+    <img src="ransac-st-line/actual_line_leastsquares.png" /><br />
     
     <p>
         The example shown above exhibits how noise can impact the outcome of the least squares fitting algorithm. The human mind can easily spot the outlier, but the least squares algorithm cannot. This is where RANSAC steps in. RANSAC is a simple voting based algorithm that iteratively samples the population of points and find the subset of those lines which appear to conform.
