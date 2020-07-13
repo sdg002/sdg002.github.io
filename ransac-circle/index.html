@@ -175,10 +175,18 @@
     <h3>After</h3><br />
     <img src="circle-images/NoisyCircle_x_36_y_15_r_21_d_0.40_sp_0.80_w_25_h_25.198.result.png" class="examples" />
 
+
+    <h1>Why Gradient Descent?</h1>
+    <p>
+    RANSAC for straight lines relies on least squares algorithm to find the line which fits a set of points. 
+    When I started implementing RANSAC for circles, I was unsure of what would be the best mathematical approach to fit a circle to a set of points. 
+    Unlike the least squares method for lines, the equivalent approach for circles is non-linear and hard to solve without an interative approach I used the Gradient Descent Approach and this worked well. However, GD is an iterative approach and fairly expense. 
+   In the later stages I learnt of Randy Bullock's approach which reduces the non-learn optimization problem to a liner problem    
+    </p>
+    
     <h1>Github</h1>
     <h2>Link to source code</h2>
     <a href="https://github.com/sdg002/rANSAC">Github</a>
-
 
     <h2>About the source code</h2>
     <p>The folder hierarchy is as follows:</p>
@@ -195,5 +203,7 @@
         <li><strong>RANSAC\ExecRANSACCircle.py</strong> - Edit the .\input image filename in this script and execute. The output will be created in .\out folder</li>
         <li><strong>UnitTests\ransac\test_RansaCircleHelper.py</strong> - You can debug the tests and do a walkthrough of the code </li>
     </ol>
+    
+    
 </body>
 </html>
