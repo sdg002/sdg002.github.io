@@ -25,6 +25,198 @@
             <li>Benchmarking the latency and throughput of Redis using simple C# client code</li>
         </ol>
     </p>
+    <hr />
+
+    <h1>What is a distributed cache?</h1>
+    <p>
+        Talk about the needs for a  cache
+        Scalability
+        Database bottle necks
+        Repeated read and round trips
+    </p>
+    <br />
+    <p>
+        [a picture would be good, show some web servers, a DB, a memory cache]
+    </p>
+    <hr />
+
+    <h1>What is not a distributed cache?</h1>
+    <p>
+        to be done
+
+        Talk about earliest versions of caching (ASP.NET)
+
+    </p>
+    <hr />
+
+    <h1>Example application scenarios where a distributed cache helps</h1>
+    <p>
+        to be done
+    </p>
+    <hr />
+
+    <h1>Scenarios where caching is not always helpful</h1>
+    <p>
+        to be done , repetitive access of the same data items.
+    </p>
+    <hr />
+
+    <h1>A bief history of caching in the Microsoft world</h1>
+    <p>
+        <ol>
+            <li>ASP.NET Cache</li>
+            <li>Session state server</li>
+            <li>Microsoft Appfabric</li>
+            <li>Third party products like NCache, Memcached and Redis</li>
+        </ol>
+    </p>
+    <hr />
+
+    <h1>ASP.NET Framework Cache</h1>
+    <p>
+        to be done (talk about serialization, page caching, session state caching)
+    </p>
+    <hr />
+
+    <h1>Memcached</h1>
+    <p>
+        to be done
+    </p>
+    <hr />
+
+
+    <h1>Microsoft AppFabric</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>Redis</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>Using Redis for local development</h1>
+    <p>
+        to be done
+    </p>
+    <hr />
+
+    <h1>Installing Redis locally on Windows</h1>
+    <p>
+        - Where to install Windows binaries?
+        Redis server sets up a TCP/IP server.
+        The Redis server can be run as follows
+        - Open a CMD prompt
+        - Navigate to the folder where the redis-server.exe was extracted
+        - You should see a file redis.conf in this folder
+        - The port number is specified in this (Usually 6379)
+        - Launch redis server with the following command
+    </p>
+    <pre>
+    c:\redis-server
+    The log messages on the console will help affirming the actual port number
+
+    </pre>
+    <hr />
+
+
+    <h1>Redis command line client</h1>
+    <h2>How to launch?</h2>
+    <pre>
+    ```
+    redis-cli.exe -h localhost -p 6379
+    ```
+    </pre>
+
+    <h2>List all keys</h2>
+    <pre>
+    redis localhost:6379> keys *
+
+    39) "foo:rand:000000000016"
+    40) "foo:rand:000000000017"
+    41) "foo:rand:000000000018"
+    42) "foo:rand:000000000019"
+    43) "mykey-f9d21bca-48f6-4cf8-b68d-1652b9533633"
+    44) "mykey-43d5b08a-5b60-4c72-8820-dcb6f6372b4b"
+
+    </pre>
+
+    <h2>Delete a specific key</h2>
+    <pre>
+    redis localhost:6379> del mykey-0001
+    </pre>
+
+    <h2>Delete all keys</h2>
+
+    <pre>
+    redis localhost:6379> flushall
+    </pre>
+
+    <hr />
+
+
+    <h1>C# client application  - Programming with StackExchange general purpose client</h1>
+
+    <pre>
+    ```
+    Install-Package StackExchange.Redis
+    ```
+    </pre>
+
+    <h2>C# client application  - Programming with IDistributedCache</h2>
+    <p>to be done</p>
+
+    <h2>Dependency injection</h2>
+    <p>to be done</p>
+
+    <h2>Is it compulsory to intall Redis server locally?</h2>
+    <p>to be done</p>
+
+
+    <h2>Is it compulsory to intall Redis server locally?</h2>
+    <p>to be done</p>
+
+    <hr />
+    <h1>Getting started with Redis on Azure</h1>
+
+    <h2>Creating a Redis cache using the Portal</h2>
+    <p>to be done</p>
+    <h2>Creating a Redis cache using PowerShell</h2>
+    <p>to be done</p>
+
+    <h2>ARM templates</h2>
+    <p>
+        https://github.com/Azure/azure-quickstart-templates/tree/master/101-redis-cache
+    </p>
+
+    <h2>How to get the connection string?</h2>
+
+    <pre>
+        $cn=blah-getrediscnstring
+    </pre>
+
+    <pre>
+        [TestMethod]
+        public void Basic_Set_And_Get()
+        {
+            IDatabase db = _redis.GetDatabase();
+
+            for (int i = 0; i < MAXITEMCOUNT; i++)
+            {
+                string key = $"mykey-{Guid.NewGuid()}";
+                string value = $"abcdefg-{Guid.NewGuid()}";
+                db.StringSet(key, value);
+                string valueFromCache = db.StringGet(key);
+                Trace.WriteLine($"Value of key:{key}, value:{valueFromCache}");
+                Assert.AreEqual(valueFromCache, value);
+            }
+        }
+    </pre>
+    <hr />
+
+    <h1>Advanced features of Redis not discussed here</h1>
+    <p>
+        to be done. A short bulleted list
+    </p>
+
 
 </body>
 </html>
