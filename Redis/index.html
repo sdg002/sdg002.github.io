@@ -31,10 +31,23 @@
 
     <h1>What is a distributed cache?</h1>
     <p>
-        Talk about the needs for a  cache
-        Scalability
-        Database bottle necks
-        Repeated read and round trips
+        What is a cache? Think of it as a repository of frequently used data which can be accessed very speedily, thereby improving application performance.
+        If we go back to the early days of .NET Framework 1.0, ASP.NET provided a means of caching objects in the memory of the worker process.
+        The cached data was confined to the local server. If your objects supported binary serialization then using the in-proc Cache was fairly easy.
+        It was all fine until you faced the need for scaling out your web servers to more than one instance. How do you keep the in-proc cache on 2 or more web servers in sync.
+
+        <br />
+        <img src="images/Cache-inproc.png" />
+        <br />
+
+        In the scenario of a load balanced farm with more than one web servers, if Web server 1 made an update to a record and invalidated its cache, there is no way for Web server 2 to get that knowledge
+
+        This is where distributed cache products like Memcached and Redis change the game by taking the cache out of the local web server and placing it on an external server(s).
+        Notice the plural. Yes - the distributed cache could itself scale out horizontally.
+
+        <br />
+        <img src="images/Cache-distributed.png" />
+        <br />
     </p>
     <br />
     <p>
