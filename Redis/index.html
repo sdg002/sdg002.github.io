@@ -39,6 +39,7 @@
         <br />
         <img src="images/Cache-inproc.png" />
         <br />
+        <br />
 
         In the scenario of a load balanced farm with more than one web servers, if Web server 1 made an update to a record and invalidated its cache, there is no way for Web server 2 to get that knowledge
 
@@ -48,40 +49,49 @@
         <br />
         <img src="images/Cache-distributed.png" />
         <br />
-    </p>
-    <br />
-    <p>
-        [a picture would be good, show some web servers, a DB, a memory cache]
+        <br />
+        [you need to create the above images]
     </p>
     <hr />
 
     <h1>What is not a distributed cache?</h1>
     <p>
-        to be done
+        NOT REQUIRED
 
         Talk about earliest versions of caching (ASP.NET)
 
     </p>
     <hr />
 
-    <h1>Example application scenarios where a distributed cache helps</h1>
+    <h1>Scenarios where a distributed cache helps</h1>
+    <h2>Landing page of a news web site</h2>
+    <p>bbc.co.uk
+        Show picture
+    </p>
+    <h2>Shopping cart of an eCommerce portal</h2>
     <p>
-        to be done
+        Amazon - Show the shopping cart of Amazon
+    </p>
+    <h2>Any application which has lots of static data or infrequently changing data</h2>
+    <p>
+        Any line of business application where there is infrequently changing static data held in the database. 
+        Example - Relational tables which store lookup data like countries, item codes, and static customer information. 
+        For most practical purposes there is a lot of mileage to gain if round trips to the database can be minimized.
     </p>
     <hr />
 
     <h1>Scenarios where caching is not always helpful</h1>
     <p>
-        to be done , repetitive access of the same data items.
+        think!think!
     </p>
     <hr />
 
     <h1>A bief history of caching in the Microsoft world</h1>
     <p>
         <ol>
-            <li>ASP.NET Cache</li>
-            <li>Session state server</li>
-            <li>Microsoft Appfabric</li>
+            <li><strong>ASP.NET Cache</strong>: When Microsoft introduced ASP.NET , a light weight in-memory cache came along with the framework. </li>
+            <li><strong>Session state server</strong>: An integral part of .NET Framework. This was an executable that let multiple web servers store their session data in the process memory of this executable. You could re-configure your web.config and have all session state stored in a central server, independent of any single web server in a load balanced farm.</li>
+            <li><strong>Microsoft Appfabric</strong>: Microsoft's attempt to go for a full blown distributed cache. Microsoft has ended support for this product </li>
             <li>Third party products like NCache, Memcached and Redis</li>
         </ol>
     </p>
