@@ -149,16 +149,6 @@
     <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)</h2>
     If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
     The interface <strong>IDistributedCache</strong> is implemented in the assembly <strong>Microsoft.Extensions.Caching.Abstractions.dll</strong>. I have presented some of the methods below:
-    <pre>
-        public interface IDistributedCache
-        {
-            public byte[] Get (string key);
-            public void Refresh (string key);
-            public void Remove (string key);
-            public void Set (string key, byte[] value, Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions options);
-        }
-
-    </pre>
     <script src="https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf.js"></script>
     <!-- 
         https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf
@@ -237,17 +227,20 @@
 
     <h1>C# client application  - Programming with StackExchange general purpose client</h1>
 
-    <p></p>
+    <p>We will continue to confine our discussions to using Redis as a key-value pair cache. Redis has a .NET package which wraps up the 
+        underlying TCP/IP communications and gives us a nice <strong>IDistributedCache</strong> to work with. </p>
     <pre>
+    <h2>Which NUGET package?</h2>
     ```
     Install-Package StackExchange.Redis
     ```
     </pre>
 
-    <h2>C# client application  - Programming with IDistributedCache</h2>
-    <p>to be done</p>
+    <h2>Create an instance of IDistributedCache without Dependency Injection</h2>
+    <p>This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> given the host and port number. This is a very simple example and I would recommend following the DI route</p>
+    <script src="https://gist.github.com/sdg002/c2675b82b6c8563987798f1f368b3378.js"></script>
 
-    <h2>Dependency injection</h2>
+    <h2>Inject an instance of IDistributedCache</h2>
     <p>to be done</p>
 
     <h2>Is it compulsory to intall Redis server locally?</h2>
