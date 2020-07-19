@@ -37,7 +37,7 @@
         It was all fine until you faced the need for scaling out your web servers to more than one instance. How do you keep the in-proc cache on 2 or more web servers in sync.
 
         <br />
-        <img src="images/Cache-inproc.png" />
+        <img src="images/Cache-inproc.PNG" />
         <br />
         <br />
 
@@ -47,7 +47,7 @@
         Notice the plural. Yes - the distributed cache could itself scale out horizontally.
 
         <br />
-        <img src="images/Cache-distributed.png" />
+        <img src="images/Cache-distributed.PNG" />
         <br />
         <br />
         [you need to create the above images]
@@ -140,13 +140,12 @@
         Redis a client-server product which listens on a specific port for incoming requests
     </p>
     <h2>Option - When would I need to install Redis locally?</h2>
-    <p>
-        The following scenarios come to my mind:
-        <ol>
-            <li>You are using the advanced features of Redis such as pub-sub and need to develop/debug locally to test the behaviour</li>
-            <li>You are using simple key-value caching, you intend on doing a smoke test of your ASP.NET Core Web app or ASP.NET Azure trigger function and want to debug locally with an actual Redis implementation</li>
-        </ol>
-    </p>
+    <p>The following scenarios come to my mind:</p>
+    <ol>
+        <li>You are using the advanced features of Redis such as pub-sub and need to develop/debug locally to test the behaviour</li>
+        <li>You are using simple key-value caching, you intend on doing a smoke test of your ASP.NET Core Web app or ASP.NET Azure trigger function and want to debug locally with an actual Redis implementation</li>
+    </ol>
+
     <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)</h2>
     If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
     The interface <strong>IDistributedCache</strong> is implemented in the assembly <strong>Microsoft.Extensions.Caching.Abstractions.dll</strong>. I have presented some of the methods below:
@@ -160,6 +159,10 @@
         }
 
     </pre>
+    <script src="https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf.js"></script>
+    <!-- 
+        https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf
+        -->
     <hr />
 
     <h1>Installing Redis server and client locally on Windows</h1>
@@ -185,7 +188,8 @@
     <h1>Redis command line client</h1>
     <p>When you download the Windows 10 port of Redis , the package also includes a client executable <strong>redis-cli.exe</strong>.
         The CLI can help you test the server and carry out basic data manipulations as shown in the examples below.
-        <img src="images/redis-client-windows.png"/>
+        <br />
+        <img src="images/redis-client-windows.PNG"/>
     </p>
     <h2>How to launch and connect to the server?</h2>
     <pre>
@@ -211,9 +215,8 @@
     </pre>
 
     <h2>Delete all keys</h2>
-
     <pre>
-    redis localhost:6379> flushall
+        redis localhost:6379> flushall
     </pre>
 
     <hr />
@@ -226,14 +229,15 @@
 
     <h2>Get a cached item give the key</h2>
     <pre>
-    localhost:6379> get key001
-    "value001"
+        localhost:6379> get key001
+        "value001"
     </pre>
     <hr />
 
 
     <h1>C# client application  - Programming with StackExchange general purpose client</h1>
 
+    <p></p>
     <pre>
     ```
     Install-Package StackExchange.Redis
