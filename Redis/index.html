@@ -15,9 +15,9 @@
 <body>
     <h1>About</h1>
     <p>
-        Redis is a very powerful distributed caching engine and offers very low latency key-value pair caching. If used in the right business context, 
+        Redis is a very powerful distributed caching engine and offers very low latency key-value pair caching. If used in the right business context,
         Redis can significantly boost application performance.
-        In this article we will do a walk through of how to use Redis Cache from a .NET Core Serverless HTTP function. 
+        In this article we will do a walk through of how to use Redis Cache from a .NET Core Serverless HTTP function.
         I intend to demonstrate the simplicity and elegance of Redis caching through the following topics:
         <ol>
             <li>Installing Redis locally and on Azure</li>
@@ -65,17 +65,21 @@
 
     <h1>Scenarios where a distributed cache helps</h1>
     <h2>Landing page of a news web site</h2>
-    <p>bbc.co.uk
-        Show picture
+    <p>
+        If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded. 
+        I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database. 
+        However, the site is an example of what a good page load response time should be and 
+        can be fairly easily implemented by caching.<br />
+        <img src="images/bbc.png"/>
     </p>
     <h2>Shopping cart of an eCommerce portal</h2>
     <p>
-        Amazon - Show the shopping cart of Amazon
+        TO BE DONE  - Amazon - Show the shopping cart of Amazon
     </p>
     <h2>Any application which has lots of static data or infrequently changing data</h2>
     <p>
-        Any line of business application where there is infrequently changing static data held in the database. 
-        Example - Relational tables which store lookup data like countries, item codes, and static customer information. 
+        Any line of business application where there is infrequently changing static data held in the database.
+        Example - Relational tables which store lookup data like countries, item codes, and static customer information.
         For most practical purposes there is a lot of mileage to gain if round trips to the database can be minimized.
     </p>
     <hr />
@@ -116,17 +120,46 @@
     <hr />
 
     <h1>Redis</h1>
-    <p>Redis is an open source distributed in-memory key-value pair database and message broker. The acronym stands for Remote Dictionary Server.
-    Redis goes a step ahead of in-memory key-value databases by backing up transient data to a file which helps in rapid recovery in case of failures.
-    It is more sophisticated than traditional in-memory key-value pair databases because it offers support for complex data types,custom server side scripting, partitioning and pub-sub capabilities.
-    Example: A simple distributed cache product like Memcached supports key-value pairs ony. 
+    <p>
+        Redis is an open source distributed in-memory key-value pair database and message broker. The acronym stands for Remote Dictionary Server.
+        Put simplistically, Redis is a daemon running on a Linux box and listening on incoming connections on a well published port such as 6379.
+        Redis goes a step ahead of in-memory key-value databases by backing up transient data to a file which helps in rapid recovery in case of failures.
+        It is more sophisticated than traditional in-memory key-value pair databases because it offers support for complex data types,custom server side scripting, partitioning and pub-sub capabilities.
+        Example: A simple distributed cache product like Memcached supports key-value pairs ony.
     </p>
     <hr />
 
-    <h1>Using Redis for local development</h1>
+    <h1>How do I debug and deveop my application which interacts with Redis?</h1>
     <p>
-        
+        While coding around Redis you have the the following options:
+        <ol>
+            <li>Install Redis locally</li>
+            <li>Abstract away Redis by using an in-memory abstraction (IDistributedCache)</li>
+        </ol>
+        of interacting with directly with the Redis client or through an abstraction layer.
+        Redis a client-server product which listens on a specific port for incoming requests
     </p>
+    <h2>Option - When would I need to install Redis locally?</h2>
+    <p>
+        The following scenarios come to my mind:
+        <ol>
+            <li>You are using the advanced features of Redis such as pub-sub and need to develop/debug locally to test the behaviour</li>
+            <li>You are using simple key-value caching, you intend on doing a smoke test of your ASP.NET Core Web app or ASP.NET Azure trigger function and want to debug locally with an actual Redis implementation</li>
+        </ol>
+    </p>
+    <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)</h2>
+    If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
+    The interface <strong>IDistributedCache</strong> is implemented in the assembly Microsoft.Extensions.Caching.Abstractions.dll. I have presented some of the methods below:
+    <pre>
+        public interface IDistributedCache
+        {
+            public byte[] Get (string key);
+            public void Refresh (string key);
+            public void Remove (string key);
+            public void Set (string key, byte[] value, Microsoft.Extensions.Caching.Distributed.DistributedCacheEntryOptions options);
+        }
+
+    </pre>
     <hr />
 
     <h1>Installing Redis locally on Windows</h1>
