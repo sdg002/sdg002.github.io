@@ -167,13 +167,12 @@
             <li>Option - Redis has been coded and tested on Linux. Fortunately, an old port of Redis exists for Windows 10 and can downloaded from <a href="https://redislabs.com/ebook/appendix-a/a-3-installing-on-windows/a-3-2-installing-redis-on-window/">here</a> and <a href="https://github.com/dmajkic/redis/downloads">here</a>.</li>
             <li>Option - To run the most recent version of Redis, you could run <a href="https://redislabs.com/blog/redis-on-windows-10/">Redis via Windows Subsystem for Linux</a>. </li>
         </ol>
-    <p>If you are following the first option, which is good enough for simple key-value caching, then further steps are below:</p>
+    <p>If you are following the first option, which is good enough for simple key-value caching, then further steps are below:
+        <img src="images/redis-server-windows.png" />
+    </p>
     <ol>
         <li>Download and extract the contents to a local folder. E.g. <strong>C:\RedisServer</strong></li>
         <li>Navigate to <strong>c:\RedisServer\</strong> and type '<strong>redis-server.exe</strong>' and then hit ENTER. If everything went well then you can expect this on the CMD prompt</li>
-        <li>
-            <img src="images/redis-server-windows.png" />
-        </li>
         <li>
             You should see the PORT number (6379) where Redis is listening for active connections
         </li>
@@ -186,6 +185,7 @@
     <h1>Redis command line client</h1>
     <p>When you download the Windows 10 port of Redis , the package also includes a client executable <strong>redis-cli.exe</strong>.
         The CLI can help you test the server and carry out basic data manipulations as shown in the examples below.
+        <img src="images/redis-client-windows.png"/>
     </p>
     <h2>How to launch and connect to the server?</h2>
     <pre>
