@@ -235,8 +235,7 @@
     </p>
     <h2>Which NUGET package?</h2>
     <p>
-        <a href="https://www.nuget.org/packages/StackExchange.Redis/">StackExchange.Redis</a> is a managed wrapper which abstracts the low level client server interactions with the Redis server.
-        This package is completely DI aware.
+        <a href="https://www.nuget.org/packages/StackExchange.Redis/">StackExchange.Redis</a> is a managed wrapper which abstracts the low level client server interactions with the Redis server. This package is completely dependency injection aware.
     </p>
 
     <h2>How to create an instance of IDistributedCache without Dependency Injection</h2>
@@ -251,17 +250,22 @@
 
 
     <h2>How to create an instance the IServer interface for performing management operations?  </h2>
-    <p>to be done - show snippet of allowAdmin=true</p>
+    <p>The IServer interface is useful for managing an instance of Redis cache. </p>
+    <script src="https://gist.github.com/sdg002/470c470d18940fc87d05223bc7c9ebb4.js"></script>
 
-    <h2>How to flush the cache using the IServer inteface?  </h2>
-    <p>to be done</p>
 
-    <h2>How to get all keys that have been added to the cache using the IServer inteface?  </h2>
-    <p>to be done</p>
 
+
+    <h2>IServer or IDistributedCache - which one do we need ? </h2>
+    <p>The interface <strong>IDistributedCache</strong> will address the requirements if you key-value pair caching is all you need. 
+    However, if you want to manage the Redis cache server itself (e.g. flush the cache, enumerate keys, etc.) then the interface <strong>IServer</strong> is more powerful</p>
 
     <h2>How to work with IDistributedCache without having to intall Redis server locally?</h2>
-    <p>to be done</p>
+    <p>
+        The class <strong>MemoryDistributedCache</strong> provides an inproc implementation of <strong>IDistributedCache</strong> and very 
+        useful during local development and debugging. 
+    </p>
+    <script src="https://gist.github.com/sdg002/c2ec9abb7863e4e6e6fa2e39b7344716.js"></script>
 
     <h2>How to conditionally inject an IDistributedCache implementation of MemoryDistributedCache during local development?</h2>
     <p>Talk about the challenge - and then explain the need - to be done</p>
