@@ -66,11 +66,11 @@
     <h1>Scenarios where a distributed cache helps</h1>
     <h2>Landing page of a news web site</h2>
     <p>
-        If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded. 
-        I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database. 
-        However, the site is an example of what a good page load response time should be and 
+        If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded.
+        I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database.
+        However, the site is an example of what a good page load response time should be and
         can be fairly easily implemented by caching.<br />
-        <img src="images/bbc.png"/>
+        <img src="images/bbc.png" />
     </p>
     <h2>Shopping cart of an eCommerce portal</h2>
     <p>
@@ -150,17 +150,18 @@
     If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
     The interface <strong>IDistributedCache</strong> is implemented in the assembly <strong>Microsoft.Extensions.Caching.Abstractions.dll</strong>. I have presented some of the methods below:
     <script src="https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf.js"></script>
-    <!-- 
+    <!--
         https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf
         -->
     <hr />
 
     <h1>Installing Redis server and client locally on Windows</h1>
-        <ol>
-            <li>Option - Redis has been coded and tested on Linux. Fortunately, an old port of Redis exists for Windows 10 and can downloaded from <a href="https://redislabs.com/ebook/appendix-a/a-3-installing-on-windows/a-3-2-installing-redis-on-window/">here</a> and <a href="https://github.com/dmajkic/redis/downloads">here</a>.</li>
-            <li>Option - To run the most recent version of Redis, you could run <a href="https://redislabs.com/blog/redis-on-windows-10/">Redis via Windows Subsystem for Linux</a>. </li>
-        </ol>
-    <p>If you are following the first option, which is good enough for simple key-value caching, then further steps are below:
+    <ol>
+        <li>Option - Redis has been coded and tested on Linux. Fortunately, an old port of Redis exists for Windows 10 and can downloaded from <a href="https://redislabs.com/ebook/appendix-a/a-3-installing-on-windows/a-3-2-installing-redis-on-window/">here</a> and <a href="https://github.com/dmajkic/redis/downloads">here</a>.</li>
+        <li>Option - To run the most recent version of Redis, you could run <a href="https://redislabs.com/blog/redis-on-windows-10/">Redis via Windows Subsystem for Linux</a>. </li>
+    </ol>
+    <p>
+        If you are following the first option, which is good enough for simple key-value caching, then further steps are below:
         <img src="images/redis-server-windows.png" />
     </p>
     <ol>
@@ -176,10 +177,11 @@
     <hr />
 
     <h1>Redis command line client</h1>
-    <p>When you download the Windows 10 port of Redis , the package also includes a client executable <strong>redis-cli.exe</strong>.
+    <p>
+        When you download the Windows 10 port of Redis , the package also includes a client executable <strong>redis-cli.exe</strong>.
         The CLI can help you test the server and carry out basic data manipulations as shown in the examples below.
         <br />
-        <img src="images/redis-client-windows.PNG"/>
+        <img src="images/redis-client-windows.PNG" />
     </p>
     <h2>How to launch and connect to the server?</h2>
     <pre>
@@ -227,28 +229,42 @@
 
     <h1>C# client application  - Programming with StackExchange general purpose client</h1>
 
-    <p>We will continue to confine our discussions to using Redis as a key-value pair cache. Redis has a .NET package which wraps up the 
-        underlying TCP/IP communications and gives us a nice <strong>IDistributedCache</strong> to work with. </p>
-    <pre>
+    <p>
+        We will continue to confine our discussions to using Redis as a key-value pair cache. Redis has a .NET package which wraps up the
+        underlying TCP/IP communications and gives us a nice <strong>IDistributedCache</strong> to work with.
+    </p>
     <h2>Which NUGET package?</h2>
-    ```
-    Install-Package StackExchange.Redis
-    ```
-    </pre>
+    <p>
+        <a href="https://www.nuget.org/packages/StackExchange.Redis/">StackExchange.Redis</a> is a managed wrapper which abstracts the low level client server interactions with the Redis server.
+        This package is completely DI aware.
+    </p>
 
-    <h2>Create an instance of IDistributedCache without Dependency Injection</h2>
-    <p>This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> given the host and port number. This is a very simple example and I would recommend following the DI route</p>
+    <h2>How to create an instance of IDistributedCache without Dependency Injection</h2>
+    <p>This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> via explicit construction, given the host and port number. This is a very simple example and I would recommend following the DI route</p>
     <script src="https://gist.github.com/sdg002/c2675b82b6c8563987798f1f368b3378.js"></script>
 
-    <h2>Inject an instance of IDistributedCache</h2>
+    <h2>How to create an instance of IDistributedCache via dependency injection?</h2>
+    <p>
+        This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> via the ServiceCollection DI container, given the host and port number.
+    </p>
+    <script src="https://gist.github.com/sdg002/1e52f3f32b1acbf61044462b36e9be83.js"></script>
+
+
+    <h2>How to create an instance the IServer interface for performing management operations?  </h2>
+    <p>to be done - show snippet of allowAdmin=true</p>
+
+    <h2>How to flush the cache using the IServer inteface?  </h2>
     <p>to be done</p>
 
-    <h2>Is it compulsory to intall Redis server locally?</h2>
+    <h2>How to get all keys that have been added to the cache using the IServer inteface?  </h2>
     <p>to be done</p>
 
 
-    <h2>Is it compulsory to intall Redis server locally?</h2>
+    <h2>How to work with IDistributedCache without having to intall Redis server locally?</h2>
     <p>to be done</p>
+
+    <h2>How to conditionally inject an IDistributedCache implementation of MemoryDistributedCache during local development?</h2>
+    <p>Talk about the challenge - and then explain the need - to be done</p>
 
     <hr />
     <h1>Getting started with Redis on Azure</h1>
