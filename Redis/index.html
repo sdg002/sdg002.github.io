@@ -279,7 +279,14 @@
     <h1>Getting started with Redis on Azure</h1>
 
     <h2>Creating a Redis cache using the Portal</h2>
-    <p>to be done, YOU WERE HERE</p>
+    <p>Creating an instance of Redis cache using the Azure portal is fairly easy. Step by step guidance from Microsoft can be found <a href="https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview">here</a>.
+    You should remember to select the correct region and the pricing tier.
+    The region is important because you want the cache to be in close proximity to your application/web servers for lowest latency.
+    You should select the pricing tier as per your requirements. As of July 2020, I am not aware of any consumption plan for Redis cache, i.e. you pay a flat monthly fee.
+    I have presented a snapshot of Redis pricing from the <a href="https://azure.microsoft.com/en-gb/pricing/details/cache/">Azure pricing calculator</a> page.
+    <img src="images/Pricing.PNG"/>
+    I would not mind chosing the C0 instance for a medium sized Development environment. However, for production, I would go for C2 or higher.
+    </p>
     <h2>Creating a Redis cache using PowerShell</h2>
     <p>to be done</p>
 
