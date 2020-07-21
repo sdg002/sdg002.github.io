@@ -47,19 +47,6 @@
         Notice the plural. Yes - the distributed cache could itself scale out horizontally.
 
         <br />
-        <img src="images/Cache-distributed.PNG" />
-        <br />
-        <br />
-        [you need to create the above images]
-    </p>
-    <hr />
-
-    <h1>What is not a distributed cache?</h1>
-    <p>
-        NOT REQUIRED
-
-        Talk about earliest versions of caching (ASP.NET)
-
     </p>
     <hr />
 
@@ -74,19 +61,15 @@
     </p>
     <h2>Shopping cart of an eCommerce portal</h2>
     <p>
-        TO BE DONE  - Amazon - Show the shopping cart of Amazon
+       Using a cache for storing transient data such as user session and shopping cart can save expensive database round trips.
+        <br />
+        <img src="images/AmazonShoppingCart.PNG"/>
     </p>
     <h2>Any application which has lots of static data or infrequently changing data</h2>
     <p>
         Any line of business application where there is infrequently changing static data held in the database.
         Example - Relational tables which store lookup data like countries, item codes, and static customer information.
         For most practical purposes there is a lot of mileage to gain if round trips to the database can be minimized.
-    </p>
-    <hr />
-
-    <h1>Scenarios where caching is not always helpful</h1>
-    <p>
-        think!think!
     </p>
     <hr />
 
