@@ -288,36 +288,21 @@
     I would not mind chosing the C0 instance for a medium sized Development environment. However, for production, I would go for C2 or higher.
     </p>
     <h2>Creating a Redis cache using PowerShell</h2>
-    <p>to be done</p>
-
-    <h2>ARM templates</h2>
     <p>
-        https://github.com/Azure/azure-quickstart-templates/tree/master/101-redis-cache
+        The cmdlet <strong>New-AzResourceGroupDeployment</strong> is your friend. The ARM template for Redis cache can be found in the central ARM
+        template's repository <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/101-redis-cache">here</a>.
+        <script src="https://gist.github.com/sdg002/508cd566a0b4d1bc2b270d7accf07e65.js"></script>
+        The deployment can be easily automated via CI/CD on Azure Devops following the steps shown in the script above.
     </p>
 
+
     <h2>How to get the connection string?</h2>
+    <p>You have deployed an instance of Redis cache via CI/CD. Good. But, how does your client application become aware about the existence of this cache instance.
+     Your next step would be to update the connection string in the Configuration settings of your Azure function/Webapp
+    <script src="https://gist.github.com/sdg002/b825b141868e0dc33ec739e0b9a574f8.js"></script>
+    </p>
 
-    <pre>
-        $cn=blah-getrediscnstring
-    </pre>
 
-    <pre>
-        [TestMethod]
-        public void Basic_Set_And_Get()
-        {
-            IDatabase db = _redis.GetDatabase();
-
-            for (int i = 0; i < MAXITEMCOUNT; i++)
-            {
-                string key = $"mykey-{Guid.NewGuid()}";
-                string value = $"abcdefg-{Guid.NewGuid()}";
-                db.StringSet(key, value);
-                string valueFromCache = db.StringGet(key);
-                Trace.WriteLine($"Value of key:{key}, value:{valueFromCache}");
-                Assert.AreEqual(valueFromCache, value);
-            }
-        }
-    </pre>
     <hr />
 
     <h1>Advanced features of Redis not discussed here</h1>
