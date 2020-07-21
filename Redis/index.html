@@ -268,13 +268,18 @@
     <script src="https://gist.github.com/sdg002/c2ec9abb7863e4e6e6fa2e39b7344716.js"></script>
 
     <h2>How to conditionally inject an IDistributedCache implementation of MemoryDistributedCache during local development?</h2>
-    <p>Talk about the challenge - and then explain the need - to be done</p>
+    <p>
+        You are using the key-value caching functionality of Redis. You are coding an Azure function (could be an ASP.NET Core Web app)
+        and you want to develop and debug the code. Do you need to install Redis locally? Not neccessary. Through a couple of lines of clever DI, you can "fool" your
+        classes to use the <strong>MemoryDistributedCache</strong> implementation of the interface <strong>IDistributedCache</strong>.
+    </p>
+    <script src="https://gist.github.com/sdg002/5f9ca2de95ee5007fbf9d28b8aef4a85.js"></script>
 
     <hr />
     <h1>Getting started with Redis on Azure</h1>
 
     <h2>Creating a Redis cache using the Portal</h2>
-    <p>to be done</p>
+    <p>to be done, YOU WERE HERE</p>
     <h2>Creating a Redis cache using PowerShell</h2>
     <p>to be done</p>
 
