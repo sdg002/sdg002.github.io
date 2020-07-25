@@ -1,0 +1,98 @@
+//Use this command if you want to benchmark only get,set command
+//redis-benchmark.exe -h saudemo001-dev.redis.cache.windows.net -p 6379  -a 54xoVCtUKNAz9yXbUiEhUpU4Gd6qycBs159sM4KtfJE= -n 500 -d 1000 -t set,get
+
+
+====== GET ======
+  5000 requests completed in 0.71 seconds
+  50 parallel clients
+  1000 bytes payload
+  keep alive: 1
+
+1.18% <= 1 milliseconds
+10.24% <= 2 milliseconds
+29.64% <= 3 milliseconds
+35.26% <= 4 milliseconds
+35.86% <= 5 milliseconds
+36.96% <= 6 milliseconds
+40.44% <= 7 milliseconds
+55.20% <= 8 milliseconds
+81.38% <= 9 milliseconds
+94.72% <= 10 milliseconds
+96.72% <= 11 milliseconds
+97.24% <= 17 milliseconds
+97.30% <= 18 milliseconds
+97.90% <= 19 milliseconds
+98.38% <= 20 milliseconds
+98.94% <= 21 milliseconds
+99.02% <= 42 milliseconds
+99.06% <= 48 milliseconds
+99.16% <= 49 milliseconds
+99.66% <= 50 milliseconds
+99.68% <= 57 milliseconds
+99.96% <= 58 milliseconds
+100.00% <= 58 milliseconds
+7012.62 requests per second
+
+====== GET ======
+  5000 requests completed in 0.76 seconds
+  50 parallel clients
+  1000 bytes payload
+  keep alive: 1
+
+0.68% <= 1 milliseconds
+10.26% <= 2 milliseconds
+30.00% <= 3 milliseconds
+33.58% <= 5 milliseconds
+33.62% <= 6 milliseconds
+37.16% <= 7 milliseconds
+48.62% <= 8 milliseconds
+78.00% <= 9 milliseconds
+94.56% <= 10 milliseconds
+97.72% <= 11 milliseconds
+97.96% <= 12 milliseconds
+98.32% <= 13 milliseconds
+98.34% <= 19 milliseconds
+98.74% <= 20 milliseconds
+98.96% <= 41 milliseconds
+99.02% <= 60 milliseconds
+99.28% <= 61 milliseconds
+99.86% <= 62 milliseconds
+100.00% <= 62 milliseconds
+6544.50 requests per second
+
+====== GET ======
+  5000 requests completed in 0.67 seconds
+  50 parallel clients
+  1000 bytes payload
+  keep alive: 1
+
+1.02% <= 1 milliseconds
+10.30% <= 2 milliseconds
+30.26% <= 3 milliseconds
+39.76% <= 5 milliseconds
+41.76% <= 6 milliseconds
+54.52% <= 7 milliseconds
+67.76% <= 8 milliseconds
+84.50% <= 9 milliseconds
+94.46% <= 10 milliseconds
+96.94% <= 11 milliseconds
+96.96% <= 12 milliseconds
+97.44% <= 16 milliseconds
+97.94% <= 17 milliseconds
+98.02% <= 18 milliseconds
+98.42% <= 19 milliseconds
+98.54% <= 21 milliseconds
+98.66% <= 28 milliseconds
+98.70% <= 29 milliseconds
+99.02% <= 33 milliseconds
+99.22% <= 37 milliseconds
+99.50% <= 38 milliseconds
+100.00% <= 38 milliseconds
+7473.84 requests per second
+
+
+2KB
+---
+
+
+

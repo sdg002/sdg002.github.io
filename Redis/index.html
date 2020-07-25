@@ -288,11 +288,65 @@
 
     <hr />
 
-    <h1>Advanced features of Redis not discussed here</h1>
+    <h1>Redis performance benchmark</h1>
+    <h2>Why do we need to benchmark the performance of Redis cache?</h2>
+    <p>The primary motivation for using a distributed cache is to make the application perform better. 
+        In most scenarios the central data storage becomes the bottleneck. Benchmarking the distributed cache 
+        gives us an idea of how much latency and throughput to expect from the cache for various document sizes.
+        
+
+    </p>
+    
+    <h2>Using the out of box Redis cache redis-benchmark.exe tool</h2>
     <p>
-        to be done. A short bulleted list
+        <img src="images/redis-benchmark.PNG"/>
+        <br />
+        In the following example I am stressing the cache on my local computer with a document of size 1000 bytes for a total of 5000 requests with the default 
+        number of concurrent threads (50). 
+        To reduce the overheads of network latencies, this test was carried out from a virtual machine which is located in the same Azure location as the Redis cache.
+        In the example below we can see that 94.56% of the requests took less than or equal to 10 milliseconds at an overall throughput of 6544.50 requests per second.
+        
+    </p>
+    <pre>
+        redis-benchmark.exe -h ****.redis.cache.windows.net -p 6379  -a ******* -n 500 -d 1000 -t set,get
+
+====== GET ======
+  5000 requests completed in 0.76 seconds
+  50 parallel clients
+  1000 bytes payload
+  keep alive: 1
+
+0.68% <= 1 milliseconds
+10.26% <= 2 milliseconds
+30.00% <= 3 milliseconds
+33.58% <= 5 milliseconds
+33.62% <= 6 milliseconds
+37.16% <= 7 milliseconds
+48.62% <= 8 milliseconds
+78.00% <= 9 milliseconds
+94.56% <= 10 milliseconds
+97.72% <= 11 milliseconds
+97.96% <= 12 milliseconds
+98.32% <= 13 milliseconds
+98.34% <= 19 milliseconds
+98.74% <= 20 milliseconds
+98.96% <= 41 milliseconds
+99.02% <= 60 milliseconds
+99.28% <= 61 milliseconds
+99.86% <= 62 milliseconds
+100.00% <= 62 milliseconds
+6544.50 requests per second
+    </pre>
+
+    <h2>Results</h2>
+    <p>
+        <img src="images/benchmark-results.PNG"/>
+        <br />
+        <img src="images/benchmark-plot.PNG"/>
     </p>
 
 
+    <h1>About the accompanying source code</h1>
+    <p>Write something OR point to Readme.md</p>
 </body>
 </html>
