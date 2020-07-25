@@ -56,8 +56,10 @@
         If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded.
         I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database.
         However, the site is an example of what a good page load response time should be and
-        can be fairly easily implemented by caching.<br />
+        can be fairly easily implemented by caching. If you see the results from the Chrome Devtools output, the home page loaded in about 1.5 seconds<br />
         <img src="images/bbc.png" />
+        <br />
+        <img src="images/bbc-performance.png" />
     </p>
     <h2>Shopping cart of an eCommerce portal</h2>
     <p>
@@ -129,7 +131,7 @@
         <li>You are using simple key-value caching, you intend on doing a smoke test of your ASP.NET Core Web app or ASP.NET Azure trigger function and want to debug locally with an actual Redis implementation</li>
     </ol>
 
-    <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)</h2>
+    <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)?</h2>
     If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
     The interface <strong>IDistributedCache</strong> is implemented in the assembly <strong>Microsoft.Extensions.Caching.Abstractions.dll</strong>. I have presented some of the methods below:
     <script src="https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf.js"></script>
@@ -140,7 +142,7 @@
 
     <h1>Installing Redis server and client locally on Windows</h1>
     <ol>
-        <li>Option - Redis has been coded and tested on Linux. Fortunately, an old port of Redis exists for Windows 10 and can downloaded from <a href="https://redislabs.com/ebook/appendix-a/a-3-installing-on-windows/a-3-2-installing-redis-on-window/">here</a> and <a href="https://github.com/dmajkic/redis/downloads">here</a>.</li>
+        <li>Option - Redis has been coded and tested on Linux. Fortunately, Microsoft is maintaining the Windows port of Redis and can be downloaded from <a href="https://github.com/microsoftarchive/redis">here</a> .</li>
         <li>Option - To run the most recent version of Redis, you could run <a href="https://redislabs.com/blog/redis-on-windows-10/">Redis via Windows Subsystem for Linux</a>. </li>
     </ol>
     <p>
@@ -167,8 +169,13 @@
         <img src="images/redis-client-windows.PNG" />
     </p>
     <h2>How to launch and connect to the server?</h2>
+    <p>When installed locally:</p>
     <pre>
         redis-cli.exe -h localhost -p 6379
+    </pre>
+    <p>From a virtual machine on Azure. Remember to enable non-SSL port because the Redis client may not be compatible with SSL</p>
+    <pre>
+        redis-cli.exe -h &lt;host name from Azure&gt; -p 6379 -a &lt;password from Azure&gt;
     </pre>
 
     <h2>List all keys</h2>
