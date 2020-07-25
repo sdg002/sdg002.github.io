@@ -15,9 +15,9 @@
 <body>
     <h1>About</h1>
     <p>
-        Redis is a very powerful distributed caching engine and offers very low latency key-value pair caching. If used in the right business context,
+        <a href="https://redis.io/">Redis</a> is a very powerful distributed caching engine and offers very low latency key-value pair caching. If used in the right business context,
         Redis can significantly boost application performance.
-        In this article we will do a walk through of how to use Redis Cache from a .NET Core Serverless HTTP function.
+        In this article we will do a walk through of how to use Redis Cache from the perspective of a .NET Core Serverless HTTP function.
         I intend to demonstrate the simplicity and elegance of Redis caching through the following topics:
         <ol>
             <li>Installing Redis locally and on Azure</li>
@@ -79,7 +79,7 @@
     <p>
         <ol>
             <li><strong>ASP.NET Cache</strong>: When Microsoft introduced ASP.NET , a light weight in-memory cache came along with the framework. </li>
-            <li><strong>Session state server</strong>: An integral part of .NET Framework. This was an executable that let multiple web servers store their session data in the process memory of this executable. You could re-configure your web.config and have all session state stored in a central server, independent of any single web server in a load balanced farm.</li>
+            <li><strong>Session state server</strong>: An integral part of .NET Framework. This was a stand-alone daemon that let multiple web servers store their session data in the process memory of this executable. You could re-configure your web.config and have all session state stored in a central server, independent of any single web server in a load balanced farm.</li>
             <li><strong>Microsoft Appfabric</strong>: Microsoft's attempt to go for a full blown distributed cache. Microsoft has ended support for this product </li>
             <li>Third party products like NCache, Memcached and Redis</li>
         </ol>
