@@ -56,7 +56,7 @@
         If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded.
         I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database.
         However, the site is an example of what a good page load response time should be and
-        can be fairly easily implemented by caching. If you see the results from the Chrome Devtools output, the home page loaded in about 1.5 seconds<br />
+        can be fairly easily implemented by caching. If you see the results from the <strong>Chrome Devtools</strong> output, the entire home page loaded in about <strong>1.5 seconds</strong>!<br />
         <img src="images/bbc.png" />
         <br />
         <img src="images/bbc-performance.png" />
@@ -159,7 +159,7 @@
         <br />
         <img src="images/redis-client-windows.PNG" />
     </p>
-    <h2>How to launch and connect to the server?</h2>
+    <h2>How to launch the client and connect to the Redis server?</h2>
     <p>When installed locally:</p>
     <pre>
         redis-cli.exe -h localhost -p 6379
@@ -169,7 +169,7 @@
         redis-cli.exe -h &lt;host name from Azure&gt; -p 6379 -a &lt;password from Azure&gt;
     </pre>
 
-    <h2>List all keys</h2>
+    <h2>Example command - List all keys</h2>
     <pre>
         redis localhost:6379> keys *
 
@@ -182,25 +182,25 @@
 
     </pre>
 
-    <h2>Delete a specific key</h2>
+    <h2>Example command - Delete a specific key</h2>
     <pre>
         redis localhost:6379> del mykey-0001
     </pre>
 
-    <h2>Delete all keys</h2>
+    <h2>Example command - Delete all keys</h2>
     <pre>
         redis localhost:6379> flushall
     </pre>
 
     <hr />
 
-    <h2>Set a key-value cached item</h2>
+    <h2>Example command - Set a key-value cached item</h2>
     <pre>        
         localhost:6379> set key001 value001
         Ok
     </pre>
 
-    <h2>Get a cached item give the key</h2>
+    <h2>Example command - Get a cached item give the key</h2>
     <pre>
         localhost:6379> get key001
         "value001"
@@ -268,7 +268,7 @@
     <img src="images/Pricing.PNG"/>
     I would not mind chosing the C0 instance for a medium sized Development environment. However, for production, I would go for C2 or higher.
     </p>
-    <h2>Creating a Redis cache using PowerShell</h2>
+    <h2>How to create a new Azure Redis cache using PowerShell and ARM templates?</h2>
     <p>
         The cmdlet <strong>New-AzResourceGroupDeployment</strong> is your friend. The ARM template for Redis cache can be found in the central ARM
         template's repository <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/101-redis-cache">here</a>.
@@ -286,7 +286,7 @@
 
     <hr />
 
-    <h1>Redis performance benchmark</h1>
+    <h1>How do we benchmark the performance of Redis cache?</h1>
     <h2>Why do we need to benchmark the performance of Redis cache?</h2>
     <p>The primary motivation for using a distributed cache is to make the application perform better. 
         In most scenarios the central data storage becomes the bottleneck. Benchmarking the distributed cache 
@@ -344,7 +344,8 @@
     </p>
 
 
-    <h1>About the accompanying source code</h1>
-    <p>Write something OR point to Readme.md</p>
+    <h1>Is there any accompanying source code?</h1>
+    <p>The accompanying sample code can be found in this <a href="https://github.com/sdg002/Redis1001/">Github repo</a>.
+        This implements a basic Azure HTTP trigger and the Azure ARM templates and PowerShell script for deployment</p>
 </body>
 </html>
