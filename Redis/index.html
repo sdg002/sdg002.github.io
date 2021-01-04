@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>.NET Core - How to use Redis Cache to boost application performance?</title>
+    <style>
+        body {
+            font-family: Arial
+        }
+    </style>
+</head>
+
+
+<body>
+    <h1>About</h1>
+    <p>
+        <a href="https://redis.io/">Redis</a> is a very powerful distributed caching engine and offers very low latency key-value pair caching. If used in the right business context,
+        Redis can significantly boost application performance.
+        In this article we will do a walk through of how to use Redis Cache from the perspective of a .NET Core Serverless HTTP function.
+        I intend to demonstrate the simplicity and elegance of Redis caching through the following topics:
+        <ol>
+            <li>Installing Redis locally and on Azure</li>
+            <li>Using the command line tools of Redis</li>
+            <li>Scripting the installation of Azure Redis via PowerShell and ARM templates</li>
+            <li>Writing some sample C# code to demonstrate the key-value pair caching aspect of Redis using a sample Azure HTTP trigger function</li>
+            <li>Benchmarking the latency and throughput of Redis using simple C# client code</li>
+        </ol>
+    </p>
+    <hr />
+
+    <h1>What is a distributed cache?</h1>
+    <p>
+        What is a cache? Think of it as a repository of frequently used data which can be accessed very speedily, thereby improving application performance.
+        If we go back to the early days of .NET Framework 1.0, ASP.NET provided a means of caching objects in the memory of the worker process.
+        The cached data was confined to the local server. If your objects supported binary serialization then using the in-proc Cache was fairly easy.
+        It was all fine until you faced the need for scaling out your web servers to more than one instance. How do you keep the in-proc cache on 2 or more web servers in sync.
+
+        <br />
+        <img src="images/Cache-inproc.PNG" />
+        <br />
+        <br />
+
+        In the scenario of a load balanced farm with more than one web servers, if Web server 1 made an update to a record and invalidated its cache, there is no way for Web server 2 to get that knowledge
+
+        This is where distributed cache products like Memcached and Redis change the game by taking the cache out of the local web server and placing it on an external server(s).
+        Notice the plural. Yes - the distributed cache could itself scale out horizontally.
+
+        <br />
+    </p>
+    <hr />
+
+    <h1>Scenarios where a distributed cache helps</h1>
+    <h2>Landing page of a news web site</h2>
+    <p>
+        If you were to hit <a href="http://bbc.co.uk">bbc.co.uk</a>, one cannot help but notice how fast the page gets loaded.
+        I am not privy to the knowledge if BBC is using Redis or any other caching technology or it could just be a case of a super-fast CMS database.
+        However, the site is an example of what a good page load response time should be and
+        can be fairly easily implemented by caching. If you see the results from the <strong>Chrome Devtools</strong> output, the entire home page loaded in about <strong>1.5 seconds</strong>!<br />
+        <img src="images/bbc.png" />
+        <br />
+        <img src="images/bbc-performance.png" />
+    </p>
+    <h2>Shopping cart of an eCommerce portal</h2>
+    <p>
+       Using a cache for storing transient data such as user session and shopping cart can save expensive database round trips.
+        <br />
+        <img src="images/AmazonShoppingCart.PNG"/>
+    </p>
+    <h2>Any application which has lots of static data or infrequently changing data</h2>
+    <p>
+        Any line of business application where there is infrequently changing static data held in the database.
+        Example - Relational tables which store lookup data like countries, item codes, and static customer information.
+        For most practical purposes there is a lot of mileage to gain if round trips to the database can be minimized.
+    </p>
+    <h2>How do companies like Facebook and Netfix use distributed cache?</h2>
+    <p>
+        This is an old videoby Mark Zuckerberg where he talks about how memcached helped improve the performance.
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/UH7wkvcf0ys" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <br />
+        and this one from Netflix:<br />
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/Rzdxgx3RC0Q" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+    <hr />
+
+    <h1>A bief history of caching in the Microsoft world</h1>
+    <p>
+        <ol>
+            <li><strong>ASP.NET Cache</strong>: When Microsoft introduced ASP.NET , a light weight in-memory cache came along with the framework. </li>
+            <li><strong>Session state server</strong>: An integral part of .NET Framework. This was a stand-alone daemon that let multiple web servers store their session data in the process memory of this executable. You could re-configure your web.config and have all session state stored in a central server, independent of any single web server in a load balanced farm.</li>
+            <li><strong>Microsoft Appfabric</strong>: Microsoft's attempt to go for a full blown distributed cache. Microsoft has ended support for this product </li>
+            <li>Third party products like NCache, Memcached and Redis</li>
+        </ol>
+    </p>
+    <hr />
+
+
+    <h1>What is Redis?</h1>
+    <p>
+        Redis is an open source distributed in-memory key-value pair database and message broker. The acronym stands for Remote Dictionary Server.
+        Put simplistically, Redis is a daemon running on a Linux box and listening on incoming connections on a well published port such as 6379.
+        Redis goes a step ahead of in-memory key-value databases by backing up transient data to a file which helps in rapid recovery in case of failures.
+        It is more sophisticated than traditional in-memory key-value pair databases because it offers support for complex data types,custom server side scripting, partitioning and pub-sub capabilities.
+        Example: A simple distributed cache product like Memcached supports key-value pairs ony.
+    </p>
+    <hr />
+
+    <h1>How do I debug and deveop my application which interacts with Redis?</h1>
+    <p>
+        While coding around Redis you have the the following options:
+        <ol>
+            <li>Install Redis locally</li>
+            <li>Abstract away Redis by using an in-memory abstraction (IDistributedCache)</li>
+        </ol>
+        of interacting with directly with the Redis client or through an abstraction layer.
+        Redis a client-server product which listens on a specific port for incoming requests
+    </p>
+    <h2>Option - When would I need to install Redis locally?</h2>
+    <p>The following scenarios come to my mind:</p>
+    <ol>
+        <li>You are using the advanced features of Redis such as pub-sub and need to develop/debug locally to test the behaviour</li>
+        <li>You are using simple key-value caching, you intend on doing a smoke test of your ASP.NET Core Web app or ASP.NET Azure trigger function and want to debug locally with an actual Redis implementation</li>
+    </ol>
+
+    <h2>Option - When is it enough to just use the in-memory abstraction (IDistributedCache)?</h2>
+    If your scope is limited to key-value pair caching then the interface <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.caching.distributed.idistributedcache?view=dotnet-plat-ext-3.1">IDistributedCache</a> is your first point of call.
+    The interface <strong>IDistributedCache</strong> is implemented in the assembly <strong>Microsoft.Extensions.Caching.Abstractions.dll</strong>. I have presented some of the methods below:
+    <script src="https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf.js"></script>
+    <!--
+        https://gist.github.com/sdg002/95bdb55c185bec276bd37484c27252bf
+        -->
+    <hr />
+
+    <h1>Installing Redis server and client locally on Windows</h1>
+    <ol>
+        <li>Option - Redis has been coded and tested on Linux. Fortunately, Microsoft is maintaining the Windows port of Redis and can be downloaded from <a href="https://github.com/microsoftarchive/redis">here</a> .</li>
+        <li>Option - To run the most recent version of Redis, you could run <a href="https://redislabs.com/blog/redis-on-windows-10/">Redis via Windows Subsystem for Linux</a>. </li>
+    </ol>
+    <p>
+        If you are following the first option, which is good enough for simple key-value caching, then further steps are below:
+        <img src="images/redis-server-windows.png" />
+    </p>
+    <ol>
+        <li>Download and extract the contents to a local folder. E.g. <strong>C:\RedisServer</strong></li>
+        <li>Navigate to <strong>c:\RedisServer\</strong> and type '<strong>redis-server.exe</strong>' and then hit ENTER. If everything went well then you can expect this on the CMD prompt</li>
+        <li>
+            You should see the PORT number (6379) where Redis is listening for active connections
+        </li>
+        <li>
+            If the port used by Redis is already locked down by another process then you could use a command line option to specify the port.
+        </li>
+    </ol>
+    <hr />
+
+    <h1>Redis command line client</h1>
+    <p>
+        When you download the Windows 10 port of Redis , the package also includes a client executable <strong>redis-cli.exe</strong>.
+        The CLI can help you test the server and carry out basic data manipulations as shown in the examples below.
+        <br />
+        <img src="images/redis-client-windows.PNG" />
+    </p>
+    <h2>How to launch the client and connect to the Redis server?</h2>
+    <p>When installed locally:</p>
+    <pre>
+        redis-cli.exe -h localhost -p 6379
+    </pre>
+    <p>From a virtual machine on Azure. Remember to enable non-SSL port because the Redis client may not be compatible with SSL</p>
+    <pre>
+        redis-cli.exe -h &lt;host name from Azure&gt; -p 6379 -a &lt;password from Azure&gt;
+    </pre>
+
+    <h2>Example command - List all keys</h2>
+    <pre>
+        redis localhost:6379> keys *
+
+        39) "foo:rand:000000000016"
+        40) "foo:rand:000000000017"
+        41) "foo:rand:000000000018"
+        42) "foo:rand:000000000019"
+        43) "mykey-f9d21bca-48f6-4cf8-b68d-1652b9533633"
+        44) "mykey-43d5b08a-5b60-4c72-8820-dcb6f6372b4b"
+
+    </pre>
+
+    <h2>Example command - Delete a specific key</h2>
+    <pre>
+        redis localhost:6379> del mykey-0001
+    </pre>
+
+    <h2>Example command - Delete all keys</h2>
+    <pre>
+        redis localhost:6379> flushall
+    </pre>
+
+    <hr />
+
+    <h2>Example command - Set a key-value cached item</h2>
+    <pre>        
+        localhost:6379> set key001 value001
+        Ok
+    </pre>
+
+    <h2>Example command - Get a cached item give the key</h2>
+    <pre>
+        localhost:6379> get key001
+        "value001"
+    </pre>
+    <hr />
+
+
+    <h1>C# client application  - Programming with StackExchange general purpose client</h1>
+
+    <p>
+        We will continue to confine our discussions to using Redis as a key-value pair cache. Redis has a .NET package which wraps up the
+        underlying TCP/IP communications and gives us a nice <strong>IDistributedCache</strong> to work with.
+    </p>
+    <h2>Which NUGET package?</h2>
+    <p>
+        <a href="https://www.nuget.org/packages/StackExchange.Redis/">StackExchange.Redis</a> is a managed wrapper which abstracts the low level client server interactions with the Redis server. This package is completely dependency injection aware.
+    </p>
+
+    <h2>How to create an instance of IDistributedCache without Dependency Injection</h2>
+    <p>This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> via explicit construction, given the host and port number. This is a very simple example and I would recommend following the DI route</p>
+    <script src="https://gist.github.com/sdg002/c2675b82b6c8563987798f1f368b3378.js"></script>
+
+    <h2>How to create an instance of IDistributedCache via dependency injection?</h2>
+    <p>
+        This snippet demonstrates creating an instance of <strong>IDistributedCache</strong> via the ServiceCollection DI container, given the host and port number.
+    </p>
+    <script src="https://gist.github.com/sdg002/1e52f3f32b1acbf61044462b36e9be83.js"></script>
+
+
+    <h2>How to create an instance the IServer interface for performing management operations?  </h2>
+    <p>The IServer interface is useful for managing an instance of Redis cache. </p>
+    <script src="https://gist.github.com/sdg002/470c470d18940fc87d05223bc7c9ebb4.js"></script>
+
+
+
+
+    <h2>IServer or IDistributedCache - which one do we need ? </h2>
+    <p>The interface <strong>IDistributedCache</strong> will address the requirements if you key-value pair caching is all you need. 
+    However, if you want to manage the Redis cache server itself (e.g. flush the cache, enumerate keys, etc.) then the interface <strong>IServer</strong> is more powerful</p>
+
+    <h2>How to work with IDistributedCache without having to intall Redis server locally?</h2>
+    <p>
+        The class <strong>MemoryDistributedCache</strong> provides an inproc implementation of <strong>IDistributedCache</strong> and very 
+        useful during local development and debugging. 
+    </p>
+    <script src="https://gist.github.com/sdg002/c2ec9abb7863e4e6e6fa2e39b7344716.js"></script>
+
+    <h2>How to conditionally inject an IDistributedCache implementation of MemoryDistributedCache during local development?</h2>
+    <p>
+        You are using the key-value caching functionality of Redis. You are coding an Azure function (could be an ASP.NET Core Web app)
+        and you want to develop and debug the code. Do you need to install Redis locally? Not neccessary. Through a couple of lines of clever DI, you can "fool" your
+        classes to use the <strong>MemoryDistributedCache</strong> implementation of the interface <strong>IDistributedCache</strong>.
+    </p>
+    <script src="https://gist.github.com/sdg002/5f9ca2de95ee5007fbf9d28b8aef4a85.js"></script>
+
+    <hr />
+    <h1>Getting started with Redis on Azure</h1>
+
+    <h2>Creating a Redis cache using the Portal</h2>
+    <p>Creating an instance of Redis cache using the Azure portal is fairly easy. Step by step guidance from Microsoft can be found <a href="https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview">here</a>.
+    You should remember to select the correct region and the pricing tier.
+    The region is important because you want the cache to be in close proximity to your application/web servers for lowest latency.
+    You should select the pricing tier as per your requirements. As of July 2020, I am not aware of any consumption plan for Redis cache, i.e. you pay a flat monthly fee.
+    I have presented a snapshot of Redis pricing from the <a href="https://azure.microsoft.com/en-gb/pricing/details/cache/">Azure pricing calculator</a> page.
+    <img src="images/Pricing.PNG"/>
+    I would not mind chosing the C0 instance for a medium sized Development environment. However, for production, I would go for C2 or higher.
+    </p>
+    <h2>How to create a new Azure Redis cache using PowerShell and ARM templates?</h2>
+    <p>
+        The cmdlet <strong>New-AzResourceGroupDeployment</strong> is your friend. The ARM template for Redis cache can be found in the central ARM
+        template's repository <a href="https://github.com/Azure/azure-quickstart-templates/tree/master/101-redis-cache">here</a>.
+        <script src="https://gist.github.com/sdg002/508cd566a0b4d1bc2b270d7accf07e65.js"></script>
+        The deployment can be easily automated via CI/CD on Azure Devops following the steps shown in the script above.
+    </p>
+
+
+    <h2>How to get the connection string?</h2>
+    <p>You have deployed an instance of Redis cache via CI/CD. Good. But, how does your client application become aware about the existence of this cache instance.
+     Your next step would be to update the connection string in the Configuration settings of your Azure function/Webapp
+    <script src="https://gist.github.com/sdg002/b825b141868e0dc33ec739e0b9a574f8.js"></script>
+    </p>
+
+
+    <hr />
+
+    <h1>How do we benchmark the performance of Redis cache?</h1>
+    <h2>Why do we need to benchmark the performance of Redis cache?</h2>
+    <p>The primary motivation for using a distributed cache is to make the application perform better. 
+        In most scenarios the central data storage becomes the bottleneck. Benchmarking the distributed cache 
+        gives us an idea of how much latency and throughput to expect from the cache for various document sizes.
+        
+
+    </p>
+    
+    <h2>Using the out of box Redis cache redis-benchmark.exe tool</h2>
+    <p>
+        <img src="images/redis-benchmark.PNG"/>
+        <br />
+        In the following example I am stressing the cache on my local computer with a document of size 1000 bytes for a total of 5000 requests with the default 
+        number of concurrent threads (50). 
+        To reduce the overheads of network latencies, this test was carried out from a virtual machine which is located in the same Azure location as the Redis cache.
+        In the example below we can see that 94.56% of the requests took less than or equal to 10 milliseconds at an overall throughput of 6544.50 requests per second.
+        
+    </p>
+    <pre>
+        redis-benchmark.exe -h ****.redis.cache.windows.net -p 6379  -a ******* -n 500 -d 1000 -t set,get
+
+====== GET ======
+  5000 requests completed in 0.76 seconds
+  50 parallel clients
+  1000 bytes payload
+  keep alive: 1
+
+0.68% <= 1 milliseconds
+10.26% <= 2 milliseconds
+30.00% <= 3 milliseconds
+33.58% <= 5 milliseconds
+33.62% <= 6 milliseconds
+37.16% <= 7 milliseconds
+48.62% <= 8 milliseconds
+78.00% <= 9 milliseconds
+94.56% <= 10 milliseconds
+97.72% <= 11 milliseconds
+97.96% <= 12 milliseconds
+98.32% <= 13 milliseconds
+98.34% <= 19 milliseconds
+98.74% <= 20 milliseconds
+98.96% <= 41 milliseconds
+99.02% <= 60 milliseconds
+99.28% <= 61 milliseconds
+99.86% <= 62 milliseconds
+100.00% <= 62 milliseconds
+6544.50 requests per second
+    </pre>
+
+    <h2>Results</h2>
+    <p>
+        <img src="images/benchmark-results.PNG"/>
+        <br />
+        <img src="images/benchmark-plot.PNG"/>
+    </p>
+
+
+    <h1>Is there any accompanying source code?</h1>
+    <p>The accompanying sample code can be found in this <a href="https://github.com/sdg002/Redis1001/">Github repo</a>.
+        This implements a basic Azure HTTP trigger and the Azure ARM templates and PowerShell script for deployment</p>
+</body>
+</html>
