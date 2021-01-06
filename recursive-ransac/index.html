@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Recursive RANSAC approach to finding all straight lines in an image</title>
+</head>
+
+<body>
+    <header>
+        <h1>
+            Recursive RANSAC approach to find all straight lines in an image
+        </h1>
+    </header>
+
+    <main>
+        <section>
+            <h1>Overview</h1>
+            <p>
+                In this article I have presented an approach to harness the power of the RANSAC algorithm to detect multiple lines in an image.
+                RANAC is a robust line detection algorithm which iteratively creates line models using a subset of points.
+                Ever model is evaluated for the total count of inlier points. An inlier is defined as a point which is within
+                a specified threshold distance from the line.
+                evaluates the how good the model fits. The text book implementation of the RANSAC algorithm produces a single line (if one exists). This is the line with the maximum outliers.
+                In this article we explore how to improvise the traditional RANSAC algorithm by running it repetitively on the same image to find 
+                multiple straight lines.                
+            </p>
+            <h2>Example - Noise free</h2>
+            <p>A noise free image on the left and the lines detected using the recursive RANSAC approach on the right</p>
+            <img src="images/WheelSpokesNoNoiseDemo.png" />
+
+            <h2>Example - With salt pepper noise</h2>
+            <p>Same image with some salt-pepper noise on the left and the lines detected using the recursive RANSAC approach on the right</p>
+            <img src="images/WheelSpokesWithNoiseDemo.png" />
+
+
+            <!--
+        Show before and after picture of what can be achieved with this approach
+    -->
+        </section>
+        <section>
+            <h1>An overview of RANSAC</h1>
+            <p>This is not a detailed explanation of the RANSAC algorithm.                        
+            </p>
+            <h2>Consider the data points below</h2>
+            <p>
+                We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers
+            </p>
+            <img src="images/all_data_points.png" />
+            <h2>How does RANSAC algorithm help?</h2>
+            <p>
+                RANSAC is a simple voting-based algorithm that iteratively samples the population of points and find the subset of those lines which appear to conform
+                a model. In this case, the model is a straight line.
+            </p>
+            <img src="images/desired_line_mind.png"/>
+        </section>
+        <section>
+            <h1>Running RANSAC recursively- How it works?</h1>
+            <img src="powerpnt/recursive_ransac/Slide2.PNG" /><br />
+            <img src="powerpnt/recursive_ransac/Slide3.PNG" /><br />
+            <img src="powerpnt/recursive_ransac/Slide4.PNG" /><br />
+            <img src="powerpnt/recursive_ransac/Slide5.PNG" /><br />
+            <img src="powerpnt/recursive_ransac/Slide6.PNG" /><br />
+            <img src="powerpnt/recursive_ransac/Slide7.PNG" /><br />
+        </section>
+        <section>
+            <h1>Accompanying code</h1>
+            <p>I have wrapped <a href="https://scikit-image.org/docs/dev/auto_examples/transform/plot_ransac.html">Scikit Learn's RANSAC </a> implementation.
+            As a stopping criteria, I am halting the iteration for further lines when no more inliers
+            are left OR when RANSAC produces a line with a count of inliers below a certain threshold. This threshold is a configurable parameter. 
+            Consider this threshold as a means of eliminating undesired lines.</p>
+            <ul>
+                <li>Link to python code is <a href="src.zip">here</a></li>
+                <li>Sample images used for developing the code is bundles along with the Python code</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Conclusion and caveats</h1>
+            <p>In my approach, I am eliminating the inlier points after every iteration. This could impact the discovery of the next line. 
+            Consider the situation when the region of intersection of 2 lines is heavily crowded and your discovery of line 1 has led to 
+            removal of points which could be potential inliers for the second line</p>
+
+            <p>The overall success of the recursive RANSAC approach is dependent on the stopping criterion. I have used the inlier count as a signal to stop. 
+            But this may not be best choice. Another choice could be the ration of inlier count to the length of the line segment. 
+            A very low value would indicate that the discovered line is too sparse to be of any practical value</p>
+        </section>
+
+    </main>
+</body>
+</html>
