@@ -1,0 +1,14 @@
+﻿//static tables, you cannot use expressions
+
+EVALUATE
+(
+	DATATABLE
+	(
+		"Table", STRING,
+		"RowCount", INTEGER,
+		{
+			{"bi_product",100},
+			{"bi_sentiment",200}
+		}
+	)
+)

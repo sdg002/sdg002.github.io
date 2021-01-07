@@ -1,0 +1,43 @@
+﻿//EVALUATE 
+//(
+//DISTINCT( bi_product[Segment])
+//)
+//
+
+
+//EVALUATE
+//(
+//)
+//
+
+
+//DEFINE MEASURE bi_sales[MyMeasure]=COUNTROWS(bi_salesFact)
+
+
+
+
+
+
+
+
+/*
+//static table, does not work with COUNTROWS
+EVALUATE
+(
+	DATATABLE
+	(
+		"Table", STRING,
+		"RowCount", INTEGER,
+		{
+			{"bi_product",100},
+			{"bi_sentiment",200}
+		}
+	)
+)
+
+*/
+
+
+//top N rows
+
+//order by

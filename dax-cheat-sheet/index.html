@@ -55,14 +55,25 @@
                 <li><a href="https://www.youtube.com/watch?v=fV2ZK4q3FBQ&t=77s">
                     Why you should use DAX Studio with Power BI
                     </a></li>
+                <li><a href="https://www.youtube.com/watch?v=kAniA_N7sB8">Computing a measure in DAX Studio</a></li>
+
+                <!--
+                    https://www.youtube.com/watch?v=kAniA_N7sB8
+                -->
             </ul>
 			<img  src="images/dax-studio-connect.PNG"/>
         </section>
 
         <section>
             <h1>List of unique Product Segments</h1>
-            <p>to be done</p>
-            <img  src="images/PlaceHolder.png"/>
+            <pre>
+EVALUATE 
+(
+DISTINCT( bi_product[Segment])
+)
+
+            </pre>
+            <img  src="images/results-unique-product-segments.PNG"/>
         </section>
 
         <section>
@@ -73,8 +84,24 @@
 
         <section>
             <h1>Count of rows from all the tables</h1>
-            <p>to be done. This helps towards the answering the question - "How much data does my dataset have?"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <p>This helps towards the answering the question - "How much data does my dataset have?"</p>
+            <pre>
+EVALUATE
+(
+	UNION
+	(
+	ROW("Table","bi_date","Rows",{COUNTROWS(bi_date)}),
+	ROW("Table","bi_geo","Rows",{COUNTROWS(bi_geo)}),
+	ROW("Table","bi_manufacturer","Rows",{COUNTROWS(bi_manufacturer)}),
+	ROW("Table","bi_product","Rows",{COUNTROWS(bi_product)}),
+	ROW("Table","bi_salesFact","Rows",{COUNTROWS(bi_salesFact)}),
+	ROW("Table","bi_sentiment","Rows",{COUNTROWS(bi_sentiment)})
+	)
+	
+)
+
+            </pre>
+			<img  src="images/CountOfRowsInAllTables.PNG"/>
         </section>
 
         <section>
