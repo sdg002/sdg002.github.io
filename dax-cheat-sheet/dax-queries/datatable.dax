@@ -4,11 +4,11 @@ EVALUATE
 (
 	DATATABLE
 	(
-		"Table", STRING,
-		"RowCount", INTEGER,
+		"FirstColumn", STRING,
+		"SecondColumn", INTEGER,
 		{
-			{"bi_product",100},
-			{"bi_sentiment",200}
+			{"row1",100},
+			{"row2",200}
 		}
 	)
 )

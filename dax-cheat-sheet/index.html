@@ -46,7 +46,8 @@
         </section>
 
         <section>
-            <h1>How to use DAX studio></h1>
+            <h1>DAX studio primer</h1>
+            <h2>How to use DAX studio?</h2>
             <p>DAX studio from Microsoft is a very handy tool if you want to experiment with DAX queries outside of Power BI. I have listed some informative videos below.
                 DAX Studio runs independently of Power BI, however it expects a running instance of Power BI to establish a connection.
             </p>
@@ -62,18 +63,33 @@
                 -->
             </ul>
 			<img  src="images/dax-studio-connect.PNG"/>
+
+            <h2>How to execute Table expressions?</h2>
+            <p>to be done</p>
+
+            <h2>How to execute Scalar expressions?</h2>
+            <p>to be done</p>
         </section>
 
         <section>
-            <h1>List of unique Product Segments</h1>
+            <h1>List of unique Product Segments (DISTINCT, ORDER BY)</h1>
             <pre>
 EVALUATE 
 (
 DISTINCT( bi_product[Segment])
 )
-
             </pre>
             <img  src="images/results-unique-product-segments.PNG"/>
+            <p>Use the <code>ORDER BY</code> tag if neccessary</p>
+
+            <pre>
+EVALUATE 
+(
+DISTINCT( bi_product[Segment]) 
+) ORDER BY bi_product[Segment] DESC
+
+            </pre>
+            <img  src="images/results-unique-product-segments-orderby.PNG"/>
         </section>
 
         <section>
@@ -83,8 +99,8 @@ DISTINCT( bi_product[Segment])
         </section>
 
         <section>
-            <h1>Count of rows from all the tables</h1>
-            <p>This helps towards the answering the question - "How much data does my dataset have?"</p>
+            <h1>Count of rows from all the tables (ROW,UNION)</h1>
+            <p>This helps towards the answering the question - "How much data does my dataset hold?"</p>
             <pre>
 EVALUATE
 (
@@ -99,9 +115,21 @@ EVALUATE
 	)
 	
 )
-
             </pre>
 			<img  src="images/CountOfRowsInAllTables.PNG"/>
+        </section>
+
+        <section>
+            <h1>Display N rows from a table (TOPN)</h1>
+            <p>Use this when you want a quick inspection of a table</p>
+            <pre>
+EVALUATE
+(
+TOPN (5,bi_salesFact)
+) 
+            </pre>
+			<img  src="images/results-topn.PNG"/>
+
         </section>
 
         <section>
@@ -146,6 +174,18 @@ EVALUATE
         <section>
             <h1>Product segment with best and worst sentiment for every manafacturer</h1>
             <p>to be done. This answers the question "For every customer which is their best and worst product segment"</p>
+			<img  src="images/PlaceHolder.png"/>
+        </section>
+
+        <section>
+            <h1>Create a static table (DATATABLE)</h1>
+            <p>to be done. When should we use this? Consider the scenario when we need to display all Product Segments in a specific order</p>
+			<img  src="images/PlaceHolder.png"/>
+        </section>
+
+        <section>
+            <h1>Create a static table (Table constructor)</h1>
+            <p>to be done. </p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
