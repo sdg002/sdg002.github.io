@@ -123,6 +123,31 @@ COUNTROWS(bi_geo) - COUNTROWS( ALLNOBLANKROW(bi_geo[Region]) )
 
 EVALUATE
 {
-- COUNTROWS( ALLNOBLANKROW(bi_geo[Region]) )
+COUNTROWS(bi_geo) -  COUNTBLANK(bi_geo[Region]) 
 }
 
+
+
+
+EVALUATE
+(
+SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
+)  order by [Count] DESC
+
+
+EVALUATE
+(
+FILTER(bi_geo, bi_geo[Zip]="66620")
+)
+
+
+//you were here - how to get column type
+
+
+
+EVALUATE
+(
+TOPN(10, bi_salesFact)
+)
+
+ 

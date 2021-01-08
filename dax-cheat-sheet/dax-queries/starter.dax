@@ -1,4 +1,30 @@
-﻿//EVALUATE 
+﻿/*
+//HOW TO DEFINE A TABLE
+
+DEFINE 
+TABLE blah = TOPN( 4, bi_manufacturer)
+
+EVALUATE(
+blah
+)
+
+
+//HOW TO DEFINE A CALCULATED TABLE
+
+DEFINE 
+COLUMN bi_salesFact[MyCol] = year(bi_salesFact[Date])
+EVALUATE
+(
+DISTINCT( bi_salesFact[MyCol] )
+)
+
+
+
+*/
+
+
+
+//EVALUATE 
 //(
 //DISTINCT( bi_product[Segment])
 //)
@@ -41,3 +67,5 @@ EVALUATE
 //top N rows
 
 //order by
+
+

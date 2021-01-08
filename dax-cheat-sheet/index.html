@@ -3,7 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="5" />
+    <!--<meta http-equiv="refresh" content="20" />-->
     <title>DAX Cheat sheet</title>
     <style>
         body
@@ -44,7 +44,11 @@
         <section>
             <h1>Database schema</h1>
             <img  src="images/Model.PNG"/>
+            <p>to be done - add some notes about the relationship. Add reasons as to why no relationshp between Sales and Gro
+                Update the image, bring in Geo
+            </p>
         </section>
+        <hr />
 
         <section>
             <h1>DAX studio primer</h1>
@@ -70,8 +74,19 @@
 
             <h2>How to execute Scalar expressions?</h2>
             <p>to be done</p>
-        </section>
 
+            <h2>How to create a measure?</h2>
+            <p>to be done</p>
+
+            <h2>How to create a calculated column?</h2>
+            <p>to be done</p>
+
+            <h2>How to create a calculated table?</h2>
+            <p>to be done</p>
+
+
+        </section>
+        <hr />
         <section>
             <h1>List of unique Product Segments (DISTINCT, ORDER BY)</h1>
             <pre>
@@ -92,12 +107,22 @@ DISTINCT( bi_product[Segment])
             </pre>
             <img  src="images/results-unique-product-segments-orderby.PNG"/>
         </section>
-
+        <hr />
         <section>
             <h1>Distinct list of financial years from the Sales table</h1>
-            <p>to be done</p>
-			<img  src="images/PlaceHolder.png"/>
+            <p>In this query we are creating a calculated column <code>year</code></p>
+            <pre>
+DEFINE 
+COLUMN bi_salesFact[Year] = year(bi_salesFact[Date])
+
+EVALUATE
+(
+DISTINCT( bi_salesFact[Year] )
+)
+            </pre>
+			<img  src="images/results-distinct-years.PNG"/>
         </section>
+        <hr />
 
         <section>
             <h1>Count of rows from all the tables (ROW,UNION)</h1>
@@ -137,6 +162,7 @@ EVALUATE
             </pre>
             <img  src="images/CountOfRowsInAllTables-orderby.PNG"/>
         </section>
+        <hr />
 
         <section>
             <h1>Display N rows from a table (TOPN)</h1>
@@ -149,6 +175,7 @@ TOPN (5,bi_salesFact)
             </pre>
 			<img  src="images/results-topn.PNG"/>
         </section>
+        <hr />
 
         <section>
             <h1>Find rows with blank column values (COUNTBLANK)</h1>
@@ -171,6 +198,7 @@ SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
             </pre>
             <img  src="images/results-summarize-region.PNG"/>
         </section>
+        <hr />
 
         <section>
             <h1>Are there any duplicates in the 'zip' column of bi_Geo table?</h1>
@@ -186,6 +214,7 @@ SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
 			</pre>
 			<img  src="images/resuls-zip-column-duplicates.PNG"/>
         </section>
+        <hr />
 
 
         <section>
@@ -194,6 +223,7 @@ SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
 			<pre></pre>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM)</h1>
@@ -208,23 +238,28 @@ ORDER BY bi_product[Segment] DESC
             </pre>
 			<img  src="images/results-summarize-sum.PNG"/>
         </section>
+        <hr />
+
         <section>
             <h1>Min,Max,Avg,Median sales per Product Segment</h1>
             <p>Stats for every product segment</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer</h1>
             <p>to be done. This answers the question - "<em>Which manufacturer excels in which product</em>?"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer on an yearly basis</h1>
             <p>to be done. This answers the question - "<em>Which manufacturer excels in which product and how did this change over the years?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Create a Date table from Sales table</h1>
@@ -234,36 +269,42 @@ ORDER BY bi_product[Segment] DESC
             </p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Add a calculated RevenuePerUnit column to the Sales table </h1>
             <p>to be done. This hels answering the question "<em>Which product generates more revenue per every unit sold?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Records from Geography table with either missing City,State, District or Region column</h1>
             <p>to be done. This answers the question "<em>Which are the records where information is incomplete?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Product segment with best and worst sentiment for every manafacturer</h1>
             <p>to be done. This answers the question "<em>For every manufacturer which is their best selling and worst selling product segment?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Create a static table (DATATABLE)</h1>
             <p>to be done. When should we use this? Consider the scenario when we need to display all Product Segments in a specific order</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
         <section>
             <h1>Create a static table (Table constructor)</h1>
             <p>to be done. </p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
+        <hr />
 
     </main>
 
