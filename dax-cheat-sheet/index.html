@@ -100,7 +100,7 @@ DISTINCT( bi_product[Segment])
 
         <section>
             <h1>Count of rows from all the tables (ROW,UNION)</h1>
-            <p>This helps towards the answering the question - "How much data does my dataset hold?"</p>
+            <p>This helps towards the answering the question - "<em>How much data does my dataset hold?</em>"</p>
             <pre>
 EVALUATE
 (
@@ -133,6 +133,19 @@ TOPN (5,bi_salesFact)
         </section>
 
         <section>
+            <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM)</h1>
+            
+            <pre>
+EVALUATE
+(
+SUMMARIZE( bi_salesFact, bi_product[Segment] , "Total Revenue",SUM(bi_salesFact[Revenue]) , "Total units", SUM(bi_salesFact[Units]) )
+
+)
+ORDER BY bi_product[Segment] DESC
+            </pre>
+			<img  src="images/results-summarize-sum.PNG"/>
+        </section>
+        <section>
             <h1>Min,Max,Avg,Median sales per Product Segment</h1>
             <p>Stats for every product segment</p>
 			<img  src="images/PlaceHolder.png"/>
@@ -140,13 +153,13 @@ TOPN (5,bi_salesFact)
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer</h1>
-            <p>to be done. This answers the question - "Which manufacturer excels in which product?"</p>
+            <p>to be done. This answers the question - "<em>Which manufacturer excels in which product</em>?"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer on an yearly basis</h1>
-            <p>to be done. This answers the question - "Which manufacturer excels in which product and how did this change over the years?"</p>
+            <p>to be done. This answers the question - "<em>Which manufacturer excels in which product and how did this change over the years?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
@@ -161,19 +174,19 @@ TOPN (5,bi_salesFact)
 
         <section>
             <h1>Add a calculated RevenuePerUnit column to the Sales table </h1>
-            <p>to be done. This hels answering the question "Which product generates more revenue per every unit sold?"</p>
+            <p>to be done. This hels answering the question "<em>Which product generates more revenue per every unit sold?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
         <section>
             <h1>Records from Geography table with either missing City,State, District or Region column</h1>
-            <p>to be done. This answers the question "Which are the records where information is incomplete?"</p>
+            <p>to be done. This answers the question "<em>Which are the records where information is incomplete?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
         <section>
             <h1>Product segment with best and worst sentiment for every manafacturer</h1>
-            <p>to be done. This answers the question "For every customer which is their best and worst product segment"</p>
+            <p>to be done. This answers the question "<em>For every manufacturer which is their best selling and worst selling product segment?</em>"</p>
 			<img  src="images/PlaceHolder.png"/>
         </section>
 
