@@ -1,0 +1,18 @@
+﻿EVALUATE
+{
+COUNTBLANK(bi_geo[Region]) 
+}
+
+
+EVALUATE
+{
+COUNTROWS(bi_geo) -  COUNTBLANK(bi_geo[Region]) 
+}
+
+
+
+//Validate the results
+EVALUATE
+(
+SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
+) 

@@ -3,6 +3,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="5" />
     <title>DAX Cheat sheet</title>
     <style>
         body
@@ -117,6 +118,24 @@ EVALUATE
 )
             </pre>
 			<img  src="images/CountOfRowsInAllTables.PNG"/>
+            <p>In the following example we have added an <code>ORDER BY </code> clause</p>
+            <pre>
+EVALUATE
+(
+	UNION
+	(
+	ROW("Table","bi_date","Rows",{COUNTROWS(bi_date)}),
+	ROW("Table","bi_geo","Rows",{COUNTROWS(bi_geo)}),
+	ROW("Table","bi_manufacturer","Rows",{COUNTROWS(bi_manufacturer)}),
+	ROW("Table","bi_product","Rows",{COUNTROWS(bi_product)}),
+	ROW("Table","bi_salesFact","Rows",{COUNTROWS(bi_salesFact)}),
+	ROW("Table","bi_sentiment","Rows",{COUNTROWS(bi_sentiment)})
+	)
+	
+) ORDER BY [Rows] DESC
+
+            </pre>
+            <img  src="images/CountOfRowsInAllTables-orderby.PNG"/>
         </section>
 
         <section>
@@ -129,7 +148,51 @@ TOPN (5,bi_salesFact)
 ) 
             </pre>
 			<img  src="images/results-topn.PNG"/>
+        </section>
 
+        <section>
+            <h1>Find rows with blank column values (COUNTBLANK)</h1>
+            <p>This answers the question. <em>How many rows in the bi_geo table do not have a Region value</em>?</p>
+			<pre>
+EVALUATE
+{
+COUNTBLANK(bi_geo[Region]) 
+}
+			</pre>
+			<img  src="images/results-count-blank-region.PNG"/>
+
+            <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE)</h1>
+            <p>This verifies that total rows(99618)=total non blanks(18929+14512+6507) + total blanks(59670)</p>
+            <pre>
+EVALUATE
+(
+SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
+) ORDER BY [Count] DESC
+            </pre>
+            <img  src="images/results-summarize-region.PNG"/>
+        </section>
+
+        <section>
+            <h1>Are there any duplicates in the 'zip' column of bi_Geo table?</h1>
+            <p>This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
+            Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
+            </p>
+			<pre>
+EVALUATE
+(
+SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
+) ORDER BY [Count] DESC
+
+			</pre>
+			<img  src="images/resuls-zip-column-duplicates.PNG"/>
+        </section>
+
+
+        <section>
+            <h1>Find rows in bi_salesFact which have NULL zipcode or invalid zipcode </h1>
+            <p>This answers the question. <em>Why are we not able to establish a 1-many relationship between bi_geo table and bi_salesFact table using the Zip colum</em></p>
+			<pre></pre>
+			<img  src="images/PlaceHolder.png"/>
         </section>
 
         <section>

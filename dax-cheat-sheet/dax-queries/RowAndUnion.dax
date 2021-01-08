@@ -11,3 +11,20 @@
 	)
 	
 )
+
+
+EVALUATE
+(
+	UNION
+	(
+	ROW("Table","bi_date","Rows",{COUNTROWS(bi_date)}),
+	ROW("Table","bi_geo","Rows",{COUNTROWS(bi_geo)}),
+	ROW("Table","bi_manufacturer","Rows",{COUNTROWS(bi_manufacturer)}),
+	ROW("Table","bi_product","Rows",{COUNTROWS(bi_product)}),
+	ROW("Table","bi_salesFact","Rows",{COUNTROWS(bi_salesFact)}),
+	ROW("Table","bi_sentiment","Rows",{COUNTROWS(bi_sentiment)})
+	)
+	
+) ORDER BY [rows] ASC
+
+

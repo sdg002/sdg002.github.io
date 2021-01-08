@@ -1,0 +1,128 @@
+﻿//EVALUATE
+//{
+//COUNTROWS(BI_SALESFACT),
+//COUNTROWS(BI_SENTIMENT)
+//}
+//
+
+
+
+//DEFINE 
+//VAR c1=COUNTROWS(bi_salesFact)
+//VAR c2=COUNTROWS(bi_sentiment)
+//
+//EVALUATE
+//{
+//c1,c2
+//}
+//
+
+
+
+/*
+EVALUATE
+{
+	("bi_date",{COUNTROWS(bi_date)}),
+	("bi_geo",{COUNTROWS(bi_geo)}),
+	("bi_manufacturer",{COUNTROWS(bi_manufacturer)}),
+	("bi_product",{COUNTROWS(bi_product)}),
+	("bi_salesFact",{COUNTROWS(bi_salesFact)}),
+	("bi_sentiment",{COUNTROWS(bi_sentiment)})
+}
+*/
+
+
+//EVALUATE
+//(
+//	UNION
+//	(
+//	ROW("Table","bi_date","Rows",{COUNTROWS(bi_date)}),
+//	ROW("Table","bi_geo","Rows",{COUNTROWS(bi_geo)}),
+//	ROW("Table","bi_manufacturer","Rows",{COUNTROWS(bi_manufacturer)}),
+//	ROW("Table","bi_product","Rows",{COUNTROWS(bi_product)}),
+//	ROW("Table","bi_salesFact","Rows",{COUNTROWS(bi_salesFact)}),
+//	ROW("Table","bi_sentiment","Rows",{COUNTROWS(bi_sentiment)})
+//	)
+//	
+//)
+//
+
+
+EVALUATE
+(
+SUMMARIZE( bi_geo, bi_geo[Country] , "Total Revenue",SUM(bi_salesFact[Revenue]) , "Total units", SUM(bi_salesFact[Units]) )
+
+)
+
+//ORDER BY bi_product[Segment] DESC
+
+
+
+EVALUATE
+(
+TOPN(10, bi_salesFact)
+) ORDER BY bi_salesFact[Units] asc
+
+
+EVALUATE
+(
+TOPN(10,bi_geo)
+)
+
+
+
+EVALUATE
+(
+SUMMARIZE( bi_geo, bi_geo[Region] , "Count",COUNT(bi_geo[Region])   )
+
+) ORDER BY COUNT(bi_geo[Region])  asc
+
+EVALUATE
+{
+COUNTROWS(bi_geo)
+}
+
+EVALUATE
+{
+COUNTROWS( ALLNOBLANKROW(bi_geo[Zip]) )
+}
+
+EVALUATE
+{
+COUNTBLANK(( bi_geo[Zip]) )
+}
+
+
+EVALUATE
+{
+COUNTROWS( FILTER( bi_geo, bi_geo[Zip]=BLANK()) )
+}
+
+
+
+EVALUATE
+{
+COUNTBLANK(bi_geo[Region])
+}
+
+EVALUATE
+{
+COUNTBLANK(bi_geo[Zip])
+}
+
+
+EVALUATE
+{
+COUNTROWS(bi_geo) - COUNTROWS( ALLNOBLANKROW(bi_geo[Zip]) )
+}
+
+EVALUATE
+{
+COUNTROWS(bi_geo) - COUNTROWS( ALLNOBLANKROW(bi_geo[Region]) )
+}
+
+EVALUATE
+{
+- COUNTROWS( ALLNOBLANKROW(bi_geo[Region]) )
+}
+
