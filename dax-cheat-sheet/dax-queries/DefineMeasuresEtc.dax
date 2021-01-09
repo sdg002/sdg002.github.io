@@ -1,0 +1,41 @@
+﻿/*
+
+//This works. 2 dummy measures,
+DEFINE
+MEASURE bi_manufacturer[Blah] = COUNTROWS(bi_salesFact)
+MEASURE bi_manufacturer[Blah1] = COUNTROWS(bi_salesFact)
+EVALUATE
+(
+SELECTCOLUMNS(bi_manufacturer, 
+		"id", bi_manufacturer[ManufacturerID],
+		"name", bi_manufacturer[Manufacturer] , 
+		"SalesCount", bi_manufacturer[Blah], 
+		"SalesCount1", bi_manufacturer[Blah1] 
+		)
+)
+
+
+*/
+
+
+/*
+//This works, 2 group by clauses
+EVALUATE
+(
+GROUPBY( bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , "Total units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) )
+) order by [Manufacturer], [Total units]
+
+*/
+
+
+
+/*
+//This works, same as above, but using a TABLE variable
+DEFINE 
+TABLE manuf_segment_totalunits = GROUPBY( bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , "Total units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ) 
+EVALUATE
+(
+manuf_segment_totalunits 
+) 
+
+*/

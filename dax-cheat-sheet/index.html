@@ -26,25 +26,28 @@
     <main>
         <section>
             <h1>Overview</h1>
-            <p>In this article I have presented some of the frequent DAX queries I was encountering in my day to day work.
+            <p>
+                In this article I have presented some of the frequent DAX queries I was encountering in my day to day work.
                 The objective of this article is to help users with DAX through a sample based approach.
-                Note - it is not strictly neccessary that the results have to be obtained via DAX only. 
+                Note - it is not strictly neccessary that the results have to be obtained via DAX only.
                 If the data model is good then Power BI visuals can often meet the requirements
             </p>
         </section>
 
         <section>
             <h1>Sample data</h1>
-            <p>The DAX expressions in this article are written around the 
-            MS Access sample database downloadable from <a href="https://github.com/MicrosoftLearning/Analyzing-Visualizing-Data-PowerBI">Microsoft Learning</a>. 
+            <p>
+                The DAX expressions in this article are written around the
+                MS Access sample database downloadable from <a href="https://github.com/MicrosoftLearning/Analyzing-Visualizing-Data-PowerBI">Microsoft Learning</a>.
 
             </p>
         </section>
 
         <section>
             <h1>Database schema</h1>
-            <img  src="images/Model.PNG"/>
-            <p>to be done - add some notes about the relationship. Add reasons as to why no relationshp between Sales and Gro
+            <img src="images/Model.PNG" />
+            <p>
+                to be done - add some notes about the relationship. Add reasons as to why no relationshp between Sales and Gro
                 Update the image, bring in Geo
             </p>
         </section>
@@ -53,21 +56,24 @@
         <section>
             <h1>DAX studio primer</h1>
             <h2>How to use DAX studio?</h2>
-            <p>DAX studio from Microsoft is a very handy tool if you want to experiment with DAX queries outside of Power BI. I have listed some informative videos below.
+            <p>
+                DAX studio from Microsoft is a very handy tool if you want to experiment with DAX queries outside of Power BI. I have listed some informative videos below.
                 DAX Studio runs independently of Power BI, however it expects a running instance of Power BI to establish a connection.
             </p>
             <ul>
                 <li><a href="https://www.youtube.com/watch?v=UX7WYFX8828">DAX studio tutorial: What should I use it for, tool overview</a></li>
-                <li><a href="https://www.youtube.com/watch?v=fV2ZK4q3FBQ&t=77s">
-                    Why you should use DAX Studio with Power BI
-                    </a></li>
+                <li>
+                    <a href="https://www.youtube.com/watch?v=fV2ZK4q3FBQ&t=77s">
+                        Why you should use DAX Studio with Power BI
+                    </a>
+                </li>
                 <li><a href="https://www.youtube.com/watch?v=kAniA_N7sB8">Computing a measure in DAX Studio</a></li>
 
                 <!--
-                    https://www.youtube.com/watch?v=kAniA_N7sB8
-                -->
+                https://www.youtube.com/watch?v=kAniA_N7sB8
+            -->
             </ul>
-			<img  src="images/dax-studio-connect.PNG"/>
+            <img src="images/dax-studio-connect.PNG" />
 
             <h2>How to execute Table expressions?</h2>
             <p>to be done</p>
@@ -95,7 +101,7 @@ EVALUATE
 DISTINCT( bi_product[Segment])
 )
             </pre>
-            <img  src="images/results-unique-product-segments.PNG"/>
+            <img src="images/results-unique-product-segments.PNG" />
             <p>Use the <code>ORDER BY</code> tag if neccessary</p>
 
             <pre>
@@ -105,7 +111,7 @@ DISTINCT( bi_product[Segment])
 ) ORDER BY bi_product[Segment] DESC
 
             </pre>
-            <img  src="images/results-unique-product-segments-orderby.PNG"/>
+            <img src="images/results-unique-product-segments-orderby.PNG" />
         </section>
         <hr />
         <section>
@@ -120,7 +126,7 @@ EVALUATE
 DISTINCT( bi_salesFact[Year] )
 )
             </pre>
-			<img  src="images/results-distinct-years.PNG"/>
+            <img src="images/results-distinct-years.PNG" />
         </section>
         <hr />
 
@@ -142,7 +148,7 @@ EVALUATE
 	
 )
             </pre>
-			<img  src="images/CountOfRowsInAllTables.PNG"/>
+            <img src="images/CountOfRowsInAllTables.PNG" />
             <p>In the following example we have added an <code>ORDER BY </code> clause</p>
             <pre>
 EVALUATE
@@ -160,7 +166,7 @@ EVALUATE
 ) ORDER BY [Rows] DESC
 
             </pre>
-            <img  src="images/CountOfRowsInAllTables-orderby.PNG"/>
+            <img src="images/CountOfRowsInAllTables-orderby.PNG" />
         </section>
         <hr />
 
@@ -173,20 +179,20 @@ EVALUATE
 TOPN (5,bi_salesFact)
 ) 
             </pre>
-			<img  src="images/results-topn.PNG"/>
+            <img src="images/results-topn.PNG" />
         </section>
         <hr />
 
         <section>
             <h1>Find rows with blank column values (COUNTBLANK)</h1>
             <p>This answers the question. <em>How many rows in the bi_geo table do not have a Region value</em>?</p>
-			<pre>
+            <pre>
 EVALUATE
 {
 COUNTBLANK(bi_geo[Region]) 
 }
 			</pre>
-			<img  src="images/results-count-blank-region.PNG"/>
+            <img src="images/results-count-blank-region.PNG" />
 
             <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE)</h1>
             <p>This verifies that total rows(99618)=total non blanks(18929+14512+6507) + total blanks(59670)</p>
@@ -196,23 +202,24 @@ EVALUATE
 SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
 ) ORDER BY [Count] DESC
             </pre>
-            <img  src="images/results-summarize-region.PNG"/>
+            <img src="images/results-summarize-region.PNG" />
         </section>
         <hr />
 
         <section>
             <h1>Are there any duplicates in the 'zip' column of bi_Geo table?</h1>
-            <p>This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
-            Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
+            <p>
+                This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
+                Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
             </p>
-			<pre>
+            <pre>
 EVALUATE
 (
 SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
 ) ORDER BY [Count] DESC
 
 			</pre>
-			<img  src="images/resuls-zip-column-duplicates.PNG"/>
+            <img src="images/resuls-zip-column-duplicates.PNG" />
         </section>
         <hr />
 
@@ -220,14 +227,14 @@ SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
         <section>
             <h1>Find rows in bi_salesFact which have NULL zipcode or invalid zipcode </h1>
             <p>This answers the question. <em>Why are we not able to establish a 1-many relationship between bi_geo table and bi_salesFact table using the Zip colum</em></p>
-			<pre></pre>
-			<img  src="images/PlaceHolder.png"/>
+            <pre></pre>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM)</h1>
-            
+
             <pre>
 EVALUATE
 (
@@ -236,73 +243,108 @@ SUMMARIZE( bi_salesFact, bi_product[Segment] , "Total Revenue",SUM(bi_salesFact[
 )
 ORDER BY bi_product[Segment] DESC
             </pre>
-			<img  src="images/results-summarize-sum.PNG"/>
+            <img src="images/results-summarize-sum.PNG" />
         </section>
         <hr />
 
         <section>
             <h1>Min,Max,Avg,Median sales per Product Segment</h1>
             <p>Stats for every product segment</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
+        <hr />
+
+        <section>
+            <h1>Total units sold and revenue earned per Manufacturer</h1>
+            <pre>
+EVALUATE
+(
+SELECTCOLUMNS
+	( 
+	bi_manufacturer, 
+	"Manufacturer name", bi_manufacturer[Manufacturer] ,
+	"SumUnits" , CALCULATE(SUM( bi_salesFact[Units])) ,
+	"SumRevenue",CALCULATE(SUM( bi_salesFact[Revenue]))    
+	)
+)
+            </pre>
+            <img src="images/results-manufacturer-units-and-revenue.PNG" />
+
+        </section>
+
+        <section>
+            <h1>Total units sold and revenue earned per Manufacturer per Segment</h1>
+            <pre>
+DEFINE 
+TABLE manuf_segment_totalunits = GROUPBY( bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , "Total units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,"Total revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+EVALUATE
+(
+manuf_segment_totalunits 
+)  order by [Total units] DESC
+
+            </pre>
+            <img src="images/results-manufacturer-units-and-revenue-per-segment.PNG" />
+        </section>
+
         <hr />
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer</h1>
             <p>to be done. This answers the question - "<em>Which manufacturer excels in which product</em>?"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Best selling and worst selling Product segment for every Manufacturer on an yearly basis</h1>
             <p>to be done. This answers the question - "<em>Which manufacturer excels in which product and how did this change over the years?</em>"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Create a Date table from Sales table</h1>
-            <p>to be done. This addresses the problem of reporting against a date hierarchy without the need for explicit data entry
+            <p>
+                to be done. This addresses the problem of reporting against a date hierarchy without the need for explicit data entry
 
                 Refer <a href="#">this link (to be done)</a> to understand the need for a date table
             </p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Add a calculated RevenuePerUnit column to the Sales table </h1>
             <p>to be done. This hels answering the question "<em>Which product generates more revenue per every unit sold?</em>"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Records from Geography table with either missing City,State, District or Region column</h1>
             <p>to be done. This answers the question "<em>Which are the records where information is incomplete?</em>"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Product segment with best and worst sentiment for every manafacturer</h1>
             <p>to be done. This answers the question "<em>For every manufacturer which is their best selling and worst selling product segment?</em>"</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Create a static table (DATATABLE)</h1>
             <p>to be done. When should we use this? Consider the scenario when we need to display all Product Segments in a specific order</p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
         <section>
             <h1>Create a static table (Table constructor)</h1>
             <p>to be done. </p>
-			<img  src="images/PlaceHolder.png"/>
+            <img src="images/PlaceHolder.png" />
         </section>
         <hr />
 
