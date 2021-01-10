@@ -68,4 +68,188 @@ EVALUATE
 
 //order by
 
+	
 
+/*
+//Get complete row with MAX manufacturer id
+EVALUATE
+(
+FILTER(bi_manufacturer, bi_manufacturer[ManufacturerID] = MIN(bi_manufacturer[ManufacturerID]))
+)
+
+*/
+
+
+/*
+//Get manufacture name column with MAX manufacturer id
+EVALUATE
+{
+CALCULATE
+	(
+	VALUES( bi_manufacturer[Manufacturer] ),
+	FILTER(bi_manufacturer, bi_manufacturer[ManufacturerID] = MIN(bi_manufacturer[ManufacturerID]))
+	)
+
+}
+
+*/
+
+
+
+/*
+//Define a simple hard coded measure
+
+DEFINE 
+MEASURE bi_manufacturer[totals] = "ooo"
+
+EVALUATE
+(
+//manuf_segment_totalunits 
+SELECTCOLUMNS(bi_manufacturer,"BLAH", bi_manufacturer[ManufacturerID], "blah total", bi_manufacturer[totals])
+)  
+
+*/
+
+
+/*
+//Define a measure to calculate Total units sold for every manufacturer
+DEFINE 
+MEASURE bi_manufacturer[total_units] = SUM( bi_salesFact[Units])
+
+EVALUATE
+(
+SELECTCOLUMNS(bi_manufacturer,"Name", bi_manufacturer[Manufacturer] ,"Id", bi_manufacturer[ManufacturerID], "Total units", bi_manufacturer[total_units])
+)  
+
+
+*/
+
+
+/*
+
+//Here we are renaming the columns that are produced by GROUPBY/SUMMARIZE
+DEFINE 
+TABLE manuf_segment_totalunits = GROUPBY( bi_salesFact, bi_product[ManufacturerID], bi_product[Segment] , "total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+EVALUATE
+(
+SELECTCOLUMNS( 
+	manuf_segment_totalunits ,
+	"manufacturer_id",[bi_product_ManufacturerID],
+	"product_segment",[bi_product_Segment],
+	"total_units",[total_units],
+	"total_revenue",[total_revenue]
+	)
+) 
+
+
+
+*/
+
+/*
+//How many sales were recoreded by a Manufacturer
+
+EVALUATE
+(
+	SELECTCOLUMNS(
+		bi_manufacturer,
+		"ID", 
+		bi_manufacturer[ManufacturerID], 
+		"Name", bi_manufacturer[Manufacturer] ,
+		"Count of sales",CALCULATE( COUNTROWS(bi_salesFact))
+		)
+)
+
+*/
+
+
+/*
+//Highest Units sold by a product segment and Highest Revenue earned by a product Segment  - per Manufacturer
+DEFINE 
+TABLE manuf_segment_totalunits = GROUPBY( 
+		bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , 
+		"total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,
+		"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+
+EVALUATE
+(
+	SUMMARIZE(
+		manuf_segment_totalunits,[bi_product_Manufacturer] ,
+		"MAX UNIT", CALCULATE(MAX(manuf_segment_totalunits[total_units])),
+		"MAX REVENUE", CALCULATE(MAX(manuf_segment_totalunits[total_revenue]))
+		)
+) ORDER BY [bi_product_Manufacturer]
+
+*/
+
+
+/*
+//Grouping of sales by segment for a specific Manufacturer
+DEFINE
+
+TABLE tbl=		
+	GROUPBY
+			(
+				FILTER(bi_salesFact, RELATED(bi_product[ManufacturerID]) = 1), 
+				bi_product[Segment], 
+				"total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units])
+			)
+
+EVALUATE
+(
+	tbl
+)
+
+*/
+
+
+
+/*
+
+//How to use selected value , here we are displaying the current Manuf ID
+
+DEFINE
+MEASURE bi_manufacturer[demo_of_selectedvalue] = CALCULATE
+	(
+	CALCULATE(SELECTEDVALUE(bi_manufacturer[ManufacturerID]) )
+	)
+
+EVALUATE
+(
+	SELECTCOLUMNS
+	(
+		bi_manufacturer,
+		"id", bi_manufacturer[ManufacturerID],
+		"name",bi_manufacturer[Manufacturer],
+		"demo_of_selectedvalue", bi_manufacturer[demo_of_selectedvalue]
+	)
+)
+
+
+*/
+
+
+
+/*
+DEFINE
+MEASURE bi_manufacturer[count_of_sales_txns] = CALCULATE
+	(
+	
+	COUNTROWS
+		(
+		FILTER(BI_SALESFACT, RELATED(BI_PRODUCT[MANUFACTURERID]) = SELECTEDVALUE(BI_MANUFACTURER[MANUFACTURERID]))
+		)	
+	)
+
+EVALUATE
+(
+	SELECTCOLUMNS
+	(
+		bi_manufacturer,
+		"id", bi_manufacturer[ManufacturerID],
+		"name",bi_manufacturer[Manufacturer],
+		"count_of_sales_txns", bi_manufacturer[count_of_sales_txns]
+	)
+)
+
+
+*/

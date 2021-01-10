@@ -255,7 +255,7 @@ ORDER BY bi_product[Segment] DESC
         <hr />
 
         <section>
-            <h1>Total units sold and revenue earned per Manufacturer</h1>
+            <h1>Total units sold and revenue earned per Manufacturer (SELECTCOLUMNS)</h1>
             <pre>
 EVALUATE
 (
@@ -272,6 +272,39 @@ SELECTCOLUMNS
 
         </section>
 
+
+        <section>
+            <h1>Sort the manufacturers on Total units sold (SELECTCOLUMNS, ORDER BY)</h1>
+            <pre>
+EVALUATE
+(
+SELECTCOLUMNS
+	( 
+	bi_manufacturer, 
+	"Manufacturer name", bi_manufacturer[Manufacturer] ,
+	"SumUnits" , CALCULATE(SUM( bi_salesFact[Units])) ,
+	"SumRevenue",CALCULATE(SUM( bi_salesFact[Revenue]))    
+	) 
+) ORDER BY  [SumUnits] DESC
+
+
+            </pre>
+            <img src="images/results-manufacturer-units-and-revenue-orderby.PNG" />
+            <p>The above can also be achieved by using SUMMARIZE </p>
+            <pre>
+EVALUATE
+(
+	SUMMARIZE(
+		bi_manufacturer, bi_manufacturer[Manufacturer], 
+		"SumUnits" , CALCULATE(SUM( bi_salesFact[Units])),
+		"SumRevenue",CALCULATE(SUM( bi_salesFact[Revenue])) 
+		)
+		
+) ORDER BY [SumUnits] DESC
+            </pre>
+
+        </section>
+
         <section>
             <h1>Total units sold and revenue earned per Manufacturer per Segment</h1>
             <pre>
@@ -284,6 +317,26 @@ manuf_segment_totalunits
 
             </pre>
             <img src="images/results-manufacturer-units-and-revenue-per-segment.PNG" />
+
+            <h1>Total units sold and revenue earned per Manufacturer per Segment (renamed columns)</h1>
+            <p>In this example we demonstrate how to rename the columns</p>
+            <pre>
+DEFINE 
+TABLE manuf_segment_totalunits = GROUPBY( bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , "total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+
+EVALUATE
+(
+SELECTCOLUMNS( 
+	manuf_segment_totalunits ,
+	"Manufacturer Name",[bi_product_Manufacturer],
+	"Product segment",[bi_product_Segment],
+	"Total units",[total_units],
+	"Total revenue",[total_revenue]
+	)
+) ORDER BY [Manufacturer Name]
+
+            </pre>
+            <img src="images/results-manufacturer-units-and-revenue-per-segment-renamed-columns.PNG" />
         </section>
 
         <hr />
