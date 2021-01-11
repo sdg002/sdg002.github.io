@@ -129,7 +129,13 @@ SELECTCOLUMNS(bi_manufacturer,"Name", bi_manufacturer[Manufacturer] ,"Id", bi_ma
 
 //Here we are renaming the columns that are produced by GROUPBY/SUMMARIZE
 DEFINE 
-TABLE manuf_segment_totalunits = GROUPBY( bi_salesFact, bi_product[ManufacturerID], bi_product[Segment] , "total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+TABLE manuf_segment_totalunits = GROUPBY
+	( 
+		bi_salesFact, bi_product[ManufacturerID], bi_product[Segment] , 
+		"total_units",SUMX( CURRENTGROUP(), 
+		bi_salesFact[Units] ) ,"total_revenue",
+		SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) 
+	) 
 EVALUATE
 (
 SELECTCOLUMNS( 
@@ -165,10 +171,12 @@ EVALUATE
 /*
 //Highest Units sold by a product segment and Highest Revenue earned by a product Segment  - per Manufacturer
 DEFINE 
-TABLE manuf_segment_totalunits = GROUPBY( 
+TABLE manuf_segment_totalunits = GROUPBY
+		( 
 		bi_salesFact, bi_product[Manufacturer], bi_product[Segment] , 
 		"total_units",SUMX( CURRENTGROUP(), bi_salesFact[Units] ) ,
-		"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) ) 
+		"total_revenue",SUMX( CURRENTGROUP(), bi_salesFact[Revenue] ) 
+		) 
 
 EVALUATE
 (
@@ -230,6 +238,7 @@ EVALUATE
 
 
 /*
+//In this query we are printing out the count of sales transactions per customer
 DEFINE
 MEASURE bi_manufacturer[count_of_sales_txns] = CALCULATE
 	(
@@ -251,5 +260,150 @@ EVALUATE
 	)
 )
 
+
+*/
+
+
+
+
+/*
+//List of all product segments a manufacturer is involved with
+
+DEFINE
+MEASURE bi_manufacturer[count_of_segments] = CALCULATE
+	(
+	
+		COUNTROWS
+		(
+			GROUPBY
+			(
+				FILTER(bi_salesFact, RELATED(bi_product[ManufacturerID]) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment]
+			)
+		)
+	
+	)
+
+EVALUATE
+(
+	SELECTCOLUMNS
+	(
+		bi_manufacturer,
+		"id", bi_manufacturer[ManufacturerID],
+		"name",bi_manufacturer[Manufacturer],
+		"count_of_segments", bi_manufacturer[count_of_segments]
+	)
+)
+
+*/
+
+
+
+/*
+//Power BI generated DAX query
+
+DEFINE
+  VAR __DS0Core = 
+    SUMMARIZECOLUMNS(
+      ROLLUPADDISSUBTOTAL('bi_manufacturer'[Manufacturer], "IsGrandTotalRowTotal"),
+      "SumUnits", CALCULATE(SUM('bi_salesFact'[Units])),
+      "SumRevenue", CALCULATE(SUM('bi_salesFact'[Revenue]))
+    )
+
+  VAR __DS0PrimaryWindowed = 
+    TOPN(502, __DS0Core, [IsGrandTotalRowTotal], 0, 'bi_manufacturer'[Manufacturer], 1)
+
+EVALUATE
+  __DS0PrimaryWindowed
+
+
+*/
+
+
+
+/*
+
+//How to use SUMMARIZECOLUMNS to do the first level of Grouping
+EVALUATE
+(
+	SUMMARIZECOLUMNS
+		(
+		bi_product[Segment],
+		bi_salesFact,
+		"MAX UNIT", CALCULATE(MAX(bi_salesFact[Units]))
+		)
+)
+
+//2 levels of grouping
+EVALUATE
+(
+	SUMMARIZECOLUMNS
+		(
+		bi_manufacturer[Manufacturer],
+		bi_product[Segment],
+		bi_salesFact,
+		"MAX UNIT", CALCULATE(SUM(bi_salesFact[Units]))
+		)
+) ORDER BY [Manufacturer] , [max unit] desc
+
+
+*/
+
+
+
+
+/*
+HOW TO USE MAXX and SUMMARIZE 
+
+EVALUATE
+{
+	MAXX(bi_manufacturer,[ManufacturerID])
+}
+
+*/
+
+
+/*
+How to use MAXX of a group
+
+EVALUATE
+{
+	MAXX(
+		SUMMARIZE
+			(
+			bi_salesFact,
+			bi_product[Segment],
+			"MAX UNIT", CALCULATE(MAX(bi_salesFact[Units]))
+			),
+		[MAX UNIT]
+		)
+}
+
+
+
+//The following works - It displays the Product Segment with MAX UNITS, But this is not a measure!! You need the Segment name which produces the max value!!
+EVALUATE
+(
+    SELECTCOLUMNS (
+        bi_manufacturer,
+        "ID", bi_manufacturer[ManufacturerID],
+        "Name", bi_manufacturer[Manufacturer],
+        "Max Stream Units", 
+        CALCULATE
+        (
+		MAXX(
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"MAX UNIT", CALCULATE(SUM(bi_salesFact[Units]))
+				),
+			[MAX UNIT]
+			)
+        ) 
+                
+        //bi_manufacturer[max_stream_units]
+    )
+) ORDER BY [ID]
 
 */
