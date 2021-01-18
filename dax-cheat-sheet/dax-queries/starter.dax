@@ -407,3 +407,62 @@ EVALUATE
 ) ORDER BY [ID]
 
 */
+
+/*
+//Example of a multi-line measure
+//We are returning another column value with some concatenation
+
+DEFINE MEASURE bi_product[segment_maxmanuf] = 
+	VAR	x=SELECTEDVALUE(bi_product[Category])
+	RETURN CONCATENATE( x,"100")
+	
+EVALUATE
+(
+	SELECTCOLUMNS( 
+		bi_product,
+		"id",[ProductID], 
+		"segment",[Segment], 
+		"max_segment",[segment_maxmanuf])
+)
+
+*/
+
+
+/*
+How to use RANK to create a new computed column to show the ordering of Revenu
+
+DEFINE MEASURE bi_manufacturer[rank_revenue] = RANKX( ALL(bi_manufacturer), SUMx( RELATEDTABLE( bi_salesFact) ,[Revenue]),,DESC)
+	
+	
+EVALUATE
+(
+	SELECTCOLUMNS( 
+		bi_manufacturer,
+		"ID",[ManufacturerID], 
+		"Name",[Manufacturer], 
+		"Total revenue",  ROUND(SUMx( RELATEDTABLE( bi_salesFact) ,[Revenue]),2),
+		"rank_revenue",[rank_revenue])
+) ORDER BY [rank_revenue]
+
+
+*/
+
+
+/*
+How to use RANKX without a measure
+
+
+EVALUATE
+(
+	SELECTCOLUMNS
+	( 
+	bi_manufacturer,
+	"id", bi_manufacturer[ManufacturerID],
+	"name", bi_manufacturer[Manufacturer],
+	"total revenue",ROUND(SUMX(RELATEDTABLE(bi_salesFact), [Revenue]),2),
+	"RevenueRank",RANKX(bi_manufacturer,SUMX(RELATEDTABLE(bi_salesFact), [Revenue]),,ASC)
+	)
+)
+
+
+*/

@@ -1,0 +1,48 @@
+﻿//DEFINE
+//MEASURE bi_manufacturer[max_stream_units] =
+//        CALCULATE 
+//        (
+//            //	SELECTEDVALUE(bi_manufacturer[ManufacturerID])
+//            MAXX (
+//                SUMMARIZECOLUMNS
+//                (
+//                    bi_manufacturer[ManufacturerID],
+//                    bi_product[Segment],
+//                    //FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+//                    bi_salesFact,
+//                    "MAX UNIT", CALCULATE ( SUM ( bi_salesFact[Units] ) )
+//                ),
+//                [MAX UNIT]
+//            )
+//        )
+//
+
+EVALUATE
+(
+    SELECTCOLUMNS (
+        bi_manufacturer,
+        "ID", bi_manufacturer[ManufacturerID],
+        "Name", bi_manufacturer[Manufacturer],
+        "Max Stream Units", 
+        CALCULATE
+        (
+		MAXX(
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"MAX UNIT", CALCULATE(SUM(bi_salesFact[Units]))
+				),
+			[MAX UNIT]
+			)
+        ) 
+                
+        //bi_manufacturer[max_stream_units]
+    )
+) ORDER BY [ID]
+
+
+//YOU WERE HERE - WHAT WAS I THINKING?
+//STEP 1  - Create a table variable and assign to SUMMARIZE/SUMMARIZECOLUMNS
+//STEP 2  - Create a measure in bi_manufacture which will use the SELECTEDVALUE and filter the max values from the table variable
+
