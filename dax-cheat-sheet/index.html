@@ -70,22 +70,66 @@
                 <li><a href="https://www.youtube.com/watch?v=kAniA_N7sB8">Computing a measure in DAX Studio</a></li>
 
                 <!--
-                https://www.youtube.com/watch?v=kAniA_N7sB8
-            -->
+            https://www.youtube.com/watch?v=kAniA_N7sB8
+        -->
             </ul>
             <img src="images/dax-studio-connect.PNG" />
 
             <h2>How to execute Table expressions?</h2>
             <p>to be done</p>
+            <img src="images/PlaceHolder.png" />
+            <hr />
 
             <h2>How to execute Scalar expressions?</h2>
-            <p>to be done</p>
+            <p>To execute any expression that returns a scalar value (i.e. not a table) encapsulate the expression
+            in a <code>EVALUATE {}</code> block  </p>
+            <pre>
+EVALUATE
+{
+MAX(bi_salesFact[Date])
+}
+
+EVALUATE
+{
+MIN(bi_salesFact[Date])
+}
+</pre>
+            <img src="images/create-scalar-expression.PNG" />
+            <hr />
 
             <h2>How to create a measure?</h2>
-            <p>to be done</p>
+            <p>In this example we are calculating the total sales per manufacturer. 
+            When using DAX studio the <code>EVALUATE()</code> keyword should be used for encapsulating any 
+            expression that produces a tabular output</p>
+ <pre>
+DEFINE 
+MEASURE bi_manufacturer[TotalUnits]= SUM(bi_salesFact[Units])
+EVALUATE
+(
+SELECTCOLUMNS
+	(
+	bi_manufacturer,
+	"id",bi_manufacturer[ManufacturerID],
+	"name",bi_manufacturer[Manufacturer],
+	"TotalUnits",bi_manufacturer[TotalUnits]
+	)
 
-            <h2>How to create a calculated column?</h2>
-            <p>to be done</p>
+)
+</pre>
+            <img src="images/results-create-measure.png" />
+            <hr />
+
+            <h1>How to create a calculated column?</h1>
+            <pre>
+DEFINE 
+COLUMN bi_manufacturer[ManufacturerUpper]= UPPER(bi_manufacturer[Manufacturer])
+EVALUATE
+(
+bi_manufacturer
+)
+</pre>
+            <img src="images/results-calculated-column.PNG" />
+            <hr />
 
             <h2>How to create a calculated table?</h2>
             <p>to be done</p>
@@ -115,7 +159,7 @@ DISTINCT( bi_product[Segment])
         </section>
         <hr />
         <section>
-            <h1>Distinct list of financial years from the Sales table</h1>
+            <h1>Distinct list of financial years from the Sales table (DISTINCT)</h1>
             <p>In this query we are creating a calculated column <code>year</code></p>
             <pre>
 DEFINE 
@@ -127,6 +171,20 @@ DISTINCT( bi_salesFact[Year] )
 )
             </pre>
             <img src="images/results-distinct-years.PNG" />
+
+            <h1>Distinct list of financial years from the Sales table(VALUES)</h1>
+            <p>The <code>VALUES</code> expression has a similar behaviour to <code>DISTINCT</code></p>
+<pre>
+DEFINE 
+COLUMN bi_salesFact[Year] = year(bi_salesFact[Date])
+
+EVALUATE
+(
+VALUES( bi_salesFact[Year] )
+)
+
+</pre>
+            <img src="images/results-distinct-years-using-values.PNG" />
         </section>
         <hr />
 
@@ -194,6 +252,21 @@ COUNTBLANK(bi_geo[Region])
 			</pre>
             <img src="images/results-count-blank-region.PNG" />
 
+
+            <hr />
+            <h1>Add a calculated column to return 0 if region is blank otherwise 1 (ISBLANK)</h1>
+            <p>to be done</p>
+            <pre>code comes here</pre>
+            <img src="images/PlaceHolder.png" />
+            <hr />
+
+            <h1>Summarize rows in bi_geo where region is blank (GROUPBY, ISBLANK)</h1>
+            <p>to be done</p>
+            <pre>code comes here</pre>
+            <img src="images/PlaceHolder.png" />
+            <hr />
+
+
             <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE)</h1>
             <p>This verifies that total rows(99618)=total non blanks(18929+14512+6507) + total blanks(59670)</p>
             <pre>
@@ -206,39 +279,47 @@ SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
         </section>
         <hr />
 
-        <section>
-            <h1>Are there any duplicates in the 'zip' column of bi_Geo table?</h1>
-            <p>
-                This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
-                Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
-            </p>
-            <pre>
+        <h1>Are there any duplicates in the 'zip' column of bi_Geo table? (SUMMARIZE,COUNT)</h1>
+        <p>
+            This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
+            Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
+        </p>
+        <pre>
 EVALUATE
 (
 SUMMARIZE(bi_geo,bi_geo[Zip], "Count", COUNT(bi_geo[Zip]) )
 ) ORDER BY [Count] DESC
 
-			</pre>
-            <img src="images/resuls-zip-column-duplicates.PNG" />
-        </section>
+		</pre>
+        <img src="images/resuls-zip-column-duplicates.PNG" />
+        <hr />
+
+        <h1>What is the highest number of times a single 'zip' code has been duplicated? (SUMMARIZE)</h1>
+        <p>to be done</p>
+        <pre>code comes here</pre>
+        <img src="images/PlaceHolder.png" />
+        <hr />
+
+        <h1>How many values in the 'zip' column are not duplicated? (SUMMARIZE)</h1>
+        <p>to be done</p>
+        <pre>code comes here</pre>
+        <img src="images/PlaceHolder.png" />
         <hr />
 
 
-        <section>
-            <h1>Find rows in bi_salesFact which have NULL zipcode or invalid zipcode </h1>
-            <p>This answers the question. <em>Why are we not able to establish a 1-many relationship between bi_geo table and bi_salesFact table using the Zip colum</em></p>
-            <pre></pre>
-            <img src="images/PlaceHolder.png" />
-        </section>
+        <h1>Find rows in bi_salesFact which have NULL zipcode or invalid zipcode </h1>
+        <p>This answers the question. <em>Why are we not able to establish a 1-many relationship between bi_geo table and bi_salesFact table using the Zip colum</em></p>
+        <pre></pre>
+        <img src="images/PlaceHolder.png" />
         <hr />
 
         <section>
-            <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM)</h1>
+            <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM, ROUND)</h1>
 
             <pre>
 EVALUATE
 (
-SUMMARIZE( bi_salesFact, bi_product[Segment] , "Total Revenue",SUM(bi_salesFact[Revenue]) , "Total units", SUM(bi_salesFact[Units]) )
+SUMMARIZE( bi_salesFact, bi_product[Segment] , "Total Revenue",ROUND(SUM(bi_salesFact[Revenue]),2) , "Total units", SUM(bi_salesFact[Units]) )
 
 )
 ORDER BY bi_product[Segment] DESC
@@ -254,9 +335,8 @@ ORDER BY bi_product[Segment] DESC
         </section>
         <hr />
 
-        <section>
-            <h1>Total units sold and revenue earned per Manufacturer (SELECTCOLUMNS)</h1>
-            <pre>
+        <h1>Total units sold and revenue earned per Manufacturer (SELECTCOLUMNS)</h1>
+        <pre>
 EVALUATE
 (
 SELECTCOLUMNS
@@ -268,9 +348,14 @@ SELECTCOLUMNS
 	)
 )
             </pre>
-            <img src="images/results-manufacturer-units-and-revenue.PNG" />
+        <img src="images/results-manufacturer-units-and-revenue.PNG" />
 
-        </section>
+        <h1>Total units sold and revenue earned per Manufacturer (SUMMARIZE)</h1>
+        <p>to be done</p>
+        <pre>code comes here</pre>
+        <img src="images/PlaceHolder.png" />
+        <hr />
+
 
 
         <section>

@@ -110,6 +110,7 @@ SELECTCOLUMNS(bi_manufacturer,"BLAH", bi_manufacturer[ManufacturerID], "blah tot
 
 */
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 //Define a measure to calculate Total units sold for every manufacturer
@@ -124,6 +125,7 @@ SELECTCOLUMNS(bi_manufacturer,"Name", bi_manufacturer[Manufacturer] ,"Id", bi_ma
 
 */
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -167,6 +169,7 @@ EVALUATE
 
 */
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 //Highest Units sold by a product segment and Highest Revenue earned by a product Segment  - per Manufacturer
@@ -190,6 +193,9 @@ EVALUATE
 */
 
 
+///////////////////////////////////////////////////////////////////////////////
+
+
 /*
 //Grouping of sales by segment for a specific Manufacturer
 DEFINE
@@ -210,6 +216,7 @@ EVALUATE
 */
 
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -235,6 +242,7 @@ EVALUATE
 
 */
 
+///////////////////////////////////////////////////////////////////////////////
 
 
 /*
@@ -264,7 +272,7 @@ EVALUATE
 */
 
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 //List of all product segments a manufacturer is involved with
@@ -297,7 +305,7 @@ EVALUATE
 
 */
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 //Power BI generated DAX query
@@ -320,6 +328,7 @@ EVALUATE
 */
 
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 
@@ -350,7 +359,7 @@ EVALUATE
 */
 
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 HOW TO USE MAXX and SUMMARIZE 
@@ -361,6 +370,9 @@ EVALUATE
 }
 
 */
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 
 /*
@@ -379,7 +391,7 @@ EVALUATE
 		)
 }
 
-
+///////////////////////////////////////////////////////////////////////////////
 
 //The following works - It displays the Product Segment with MAX UNITS, But this is not a measure!! You need the Segment name which produces the max value!!
 EVALUATE
@@ -427,6 +439,7 @@ EVALUATE
 
 */
 
+///////////////////////////////////////////////////////////////////////////////
 
 /*
 How to use RANK to create a new computed column to show the ordering of Revenu
@@ -462,6 +475,126 @@ EVALUATE
 	"total revenue",ROUND(SUMX(RELATEDTABLE(bi_salesFact), [Revenue]),2),
 	"RevenueRank",RANKX(bi_manufacturer,SUMX(RELATEDTABLE(bi_salesFact), [Revenue]),,ASC)
 	)
+)
+
+
+*/
+
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+//How to FILTER on the results of SUMMARIZE
+DEFINE
+var summary=SUMMARIZE(
+	FILTER(bi_salesFact, RELATED( bi_manufacturer[ManufacturerID])=1),
+	bi_product[Segment], "TOTAL UNITS", SUM(bi_salesFact[Units]) )
+
+var maxSegmentTotalUnitsValue=MAXX(summary,[TOTAL UNITS])
+var minSegmentTotalUnitsValue=MINX(summary,[TOTAL UNITS])
+var maxSegmentTotalUnitsName=CALCULATE( MAXX(FILTER(summary, [TOTAL UNITS]=maxSegmentTotalUnitsValue),[Segment]))
+var minSegmentTotalUnitsName=CALCULATE( MAXX(FILTER(summary, [TOTAL UNITS]=minSegmentTotalUnitsValue),[Segment]))
+//moderation is expected  as Max
+//select is expected as Min
+
+EVALUATE
+{
+	maxSegmentTotalUnitsName
+}
+EVALUATE
+{
+	maxSegmentTotalUnitsValue
+}
+
+EVALUATE
+{
+	minSegmentTotalUnitsValue
+}
+
+
+EVALUATE
+{
+	minSegmentTotalUnitsName
+}
+
+
+*/
+
+
+
+/*
+
+//HER WE HAVE IMPLEMENTED TWO MEASURES - 1)Get the product SEGMENT for a MANUFACTURER which sold the max units 2)Get the value of the max units for that SEGMENT
+
+DEFINE 
+
+MEASURE bi_manufacturer[segment_maxunits_value] = 
+//Get the max units sold by a segment
+	
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR maxUnit=MAXX(summary,[TOTAL UNITS])
+	VAR	x=SELECTEDVALUE(bi_product[Category])
+	RETURN maxUnit
+
+MEASURE bi_manufacturer[segment_maxunits_name] = 
+//Now get the segment name which sold the max units
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR maxUnitValue=MAXX(summary,[TOTAL UNITS])
+	var maxSegmentName = CALCULATE( MAXX(FILTER( summary, [TOTAL UNITS]=maxUnitValue),[Segment]))
+	
+	RETURN maxSegmentName
+
+
+MEASURE bi_manufacturer[segment_minunits_value] = 
+//Get the min units sold by a segment
+	
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR minUnit=MINX(summary,[TOTAL UNITS])
+	RETURN minUnit
+
+MEASURE bi_manufacturer[segment_minunits_name] = 
+//Now get the segment name which sold the min units
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR minUnit=MINX(summary,[TOTAL UNITS])
+	var minSegmentName = CALCULATE( MAXX(FILTER( summary, [TOTAL UNITS]=minUnit),[Segment]))
+	
+	RETURN minSegmentName
+
+
+EVALUATE
+(
+	SELECTCOLUMNS( 
+		bi_manufacturer,
+		"id",[ManufacturerID], 
+		"name",[Manufacturer], 
+		"max_segment_name",	[segment_maxunits_name],
+		"max_segment_units",[segment_maxunits_value],
+		"min_segment_name",	[segment_minunits_name],	
+		"min_segment_units",[segment_minunits_value]
+		)
 )
 
 
