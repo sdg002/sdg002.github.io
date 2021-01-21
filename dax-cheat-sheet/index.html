@@ -76,8 +76,16 @@
             <img src="images/dax-studio-connect.PNG" />
 
             <h2>How to execute Table expressions?</h2>
-            <p>to be done</p>
-            <img src="images/PlaceHolder.png" />
+            <p>DAX studio expects any table expression to be encapsulated inside a <code>EVALUATE()</code> block.
+            In the following example, we are inspecting the first 20 rows of the <strong>bi_salesFact</strong> table.
+            </p>
+            <pre>
+EVALUATE
+(
+	TOPN(20, bi_salesFact)
+)
+            </pre>
+            <img src="images/evaluate-simple-table.PNG" />
             <hr />
 
             <h2>How to execute Scalar expressions?</h2>
@@ -230,7 +238,7 @@ EVALUATE
 
         <section>
             <h1>Display N rows from a table (TOPN)</h1>
-            <p>Use this when you want a quick inspection of a table</p>
+            <p>Use this when you want a quick inspection of a table. </p>
             <pre>
 EVALUATE
 (
@@ -238,11 +246,18 @@ TOPN (5,bi_salesFact)
 ) 
             </pre>
             <img src="images/results-topn.PNG" />
+            <p>The <code>TOPN</code> expression can also order the results</p>
+<pre>
+EVALUATE
+( 
+TOPN ( 5, bi_salesFact, bi_salesFact[Units], DESC ) 
+)
+</pre>
         </section>
         <hr />
 
         <section>
-            <h1>Find rows with blank column values (COUNTBLANK)</h1>
+            <h1>Find rows with blank column values (COUNTBLANK, FILTER, logical operator)</h1>
             <p>This answers the question. <em>How many rows in the bi_geo table do not have a Region value</em>?</p>
             <pre>
 EVALUATE
@@ -251,8 +266,29 @@ COUNTBLANK(bi_geo[Region])
 }
 			</pre>
             <img src="images/results-count-blank-region.PNG" />
+            <p>The same result can also be achieved by using <code>COUNTROWS</code> on a <code>FILTER</code> expression</p>
+<pre>
+EVALUATE
+{
+	COUNTROWS
+		(
+		FILTER(bi_geo, ISBLANK(bi_geo[Region]))
+		)
+}
 
+</pre>
+            <p>In the following example we are counting blank regions for a specific country</p>
+            <pre>
 
+EVALUATE
+{
+	COUNTROWS
+		(
+		FILTER(bi_geo, ISBLANK(bi_geo[Region]) && bi_geo[Country]="France")
+		)
+}
+
+</pre>
             <hr />
             <h1>Add a calculated column to return 0 if region is blank otherwise 1 (ISBLANK)</h1>
             <p>to be done</p>

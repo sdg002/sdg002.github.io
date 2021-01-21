@@ -598,4 +598,44 @@ EVALUATE
 )
 
 
+//Using a measure as a calculated column
+//In this example - we are calculating the Year component of the Date column using SELECTEDVALUE
+DEFINE
+MEASURE bi_salesFact[Year] = 
+	VAR x=YEAR(SELECTEDVALUE(bi_salesFact[Date]))
+	RETURN x
+
+EVALUATE
+( 
+SELECTCOLUMNS(	
+	TOPN(30,bi_salesFact), 
+	"product_id", bi_salesFact[ProductID],
+	"date", bi_salesFact[Date],
+	"year", bi_salesFact[year]
+	)
+)
+
+
+//SUMMARIZE and GROUPBY
+EVALUATE
+(
+    GROUPBY(
+		bi_geo,
+        bi_geo[Country],
+        "TotalRows1", COUNTX( CURRENTGROUP(), [Country] ) //Will not work with SUMMARIZE        
+    )
+)
+
+
+EVALUATE
+(
+    SUMMARIZE(
+		bi_geo,
+        bi_geo[Country],
+        "TotalRows", COUNT( bi_geo[Country] ) //Will not work with GROUPBY
+        
+    )
+)
+
+
 */
