@@ -340,17 +340,68 @@ EVALUATE
             <hr />
 
 
-            <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE)</h1>
-            <p>This verifies that total rows(99618)=total non blanks(18929+14512+6507) + total blanks(59670)</p>
-            <pre>
+            <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE,SUMMARIZECOLUMNS,GROUPBY)</h1>
+            <p>
+                This verifies that total rows(99618)=total non blanks(18929+14512+6507) + total blanks(59670).
+                Note the presence of the blank row and the value of the <code>Count</code> is blank too. This is because by default the
+                <code>SUMMARIZE</code> ,<code>SUMMARIZECOLUMNS</code> and <code>GROUPBY</code> functions ignore blanks.
+            </p>
+            <strong>Example using SUMMARIZE</strong>
+<pre>
 EVALUATE
 (
 SUMMARIZE(bi_geo,bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
 ) ORDER BY [Count] DESC
-            </pre>
+</pre>
+            <strong>Example using SUMMARIZECOLUMNS</strong>
+<pre>
+EVALUATE
+(
+	SUMMARIZECOLUMNS(bi_geo[Region], "Count", COUNT(bi_geo[Region]) )
+)
+</pre>
+            <strong>Example using GROUPBY</strong>
+<pre>
+EVALUATE
+(
+	GROUPBY(
+		bi_geo,bi_geo[Region], 
+		"Count", COUNTX(CURRENTGROUP() ,bi_geo[Region]) 
+		)
+)
+</pre>
             <img src="images/results-summarize-region.PNG" />
+
+            <h1>What is the distribution of values in the Region columm of the bi_geo table taking into account the blank values? (GROUPBY, SELECTEDGROUP(),IF, ISBLANK) </h1>
+            <p>In this example we are using <code>GROUPBY</code> and using <code>ISBLANK</code> and <code>IF</code> to convert the blank values into a non-blank value. 
+            Take note that the specified replacement value in the <code>IF</code> only helps in <code>GROUPBY</code> counting correctly</p>
+<pre>
+EVALUATE
+(
+	GROUPBY
+	(
+		bi_geo, bi_geo[Region], "Count", 
+		COUNTX
+			(
+			CURRENTGROUP(), 
+			IF
+				(
+					ISBLANK([Region]),
+						"some non blank value", 
+						[Region]
+				)
+			)
+		
+	)
+)
+</pre>
+            <img src="images/results-groupby-region-blank-values.PNG" />
+            <hr />
+
+
+
+            <hr />
         </section>
-        <hr />
 
         <h1>Are there any duplicates in the 'zip' column of bi_Geo table? (SUMMARIZE,COUNT)</h1>
         <p>
@@ -405,7 +456,8 @@ EVALUATE
 
         <h1>How many values in the 'zip' column are not duplicated? (SUMMARIZECOLUMNS, FILTER, COUNT)</h1>
         <p>We will arrive at this result in 2 steps</p>
-        <p>Step 1: Use <code>FILTER</code> and <code>SUMMARIZECOLUMNS</code> to produce a flat table of all zip codes which are used only once</strong></p>
+        <p><strong>Step 1:</strong>  Use <code>FILTER</code> and <code>SUMMARIZECOLUMNS</code> to produce a flat table of all zip codes which are used only once</strong></p>
+
 <pre>
 EVALUATE
 (
@@ -421,8 +473,8 @@ EVALUATE
 )
 
 </pre>
-        <p>Step 2:Use <code>COUNTROWS</code> on the table produced in the previous step to get a scalar value</p>
-
+        <p><strong>Step 2:</strong>Use <code>COUNTROWS</code> on the table produced in the previous step to get a scalar value</p>
+        
 <pre>
 EVALUATE
 {
@@ -446,12 +498,6 @@ EVALUATE
         <img src="images/count_of_non_duplicated_zipcount.PNG" />
         <hr />
 
-
-        <h1>Find rows in bi_salesFact which have NULL zipcode or invalid zipcode </h1>
-        <p>This answers the question. <em>Why are we not able to establish a 1-many relationship between bi_geo table and bi_salesFact table using the Zip colum</em></p>
-        <pre></pre>
-        <img src="images/PlaceHolder.png" />
-        <hr />
 
         <section>
             <h1>Total units sold and total revenue earned per Product Segment (SUMMARIZE, SUM, ROUND)</h1>
