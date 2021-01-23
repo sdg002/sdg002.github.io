@@ -373,8 +373,12 @@ EVALUATE
             <img src="images/results-summarize-region.PNG" />
 
             <h1>What is the distribution of values in the Region columm of the bi_geo table taking into account the blank values? (GROUPBY, SELECTEDGROUP(),IF, ISBLANK) </h1>
-            <p>In this example we are using <code>GROUPBY</code> and using <code>ISBLANK</code> and <code>IF</code> to convert the blank values into a non-blank value. 
-            Take note that the specified replacement value in the <code>IF</code> only helps in <code>GROUPBY</code> counting correctly</p>
+            <strong>Approach 1</strong>
+            <p>
+                In this approach we are using <code>GROUPBY</code> and using <code>ISBLANK</code> and <code>IF</code> to convert the blank values into a non-blank value.
+                Take note that the specified replacement value in the <code>IF</code> only helps in <code>GROUPBY</code> counting correctly
+            </p>
+
 <pre>
 EVALUATE
 (
@@ -395,12 +399,100 @@ EVALUATE
 	)
 )
 </pre>
-            <img src="images/results-groupby-region-blank-values.PNG" />
+            <img src="images/results-groupby-region-blank-values.PNG" /><br />
+
+            <strong>Approach 2</strong>
+            <p>
+                In this approach we are first creating a calculated table with a new column <code>NewRegion</code> where the blank value has been replaced by the string 'blank'
+                and then using <code>SUMMARIZECOLUMNS</code> to do the grouping
+            </p>
+<pre>
+DEFINE 
+TABLE allRegions=CALCULATETABLE(
+	SELECTCOLUMNS
+		(
+		bi_geo, 
+		"NewRegion", 
+		IF(ISBLANK(bi_geo[Region]),"blank", bi_geo[Region])
+		)
+		)
+
+EVALUATE
+(
+	SUMMARIZECOLUMNS(allRegions[NewRegion],"Count",COUNT(allRegions[NewRegion]))
+)
+
+</pre>
+            <img src="images/results-summarizecolumns-newregion-column-blank-values.PNG" /><br />
+
+            <strong>Approach 3</strong>
+            <p>
+                This is similar to the previous approach where we first created a calculated table using <code>CALCULATETABLE</code> and replaced the blank values with the string 'blank'.
+                We are now using <code>GROUPBY</code> to do the grouping on the calculated table
+            </p>
+<pre>
+DEFINE 
+TABLE allRegions=CALCULATETABLE(
+	SELECTCOLUMNS
+		(
+		bi_geo, 
+		"NewRegion", 
+		IF(ISBLANK(bi_geo[Region]),"blank", bi_geo[Region])
+		)
+		)
+
+EVALUATE
+(
+	GROUPBY
+		(
+		allRegions,
+		allRegions[NewRegion],
+		"CountUsingGroupBy",
+		COUNTX(
+			CURRENTGROUP(),
+			allRegions[NewRegion])
+		)
+)
+
+</pre>
+            <img src="images/results-groupby-newregion-column-blank-values.PNG" /><br />
+            <strong>Approach 4</strong>
+            <p>
+                We are expanding on the previous approach of using <code>GROUPBY</code> and <code>CALCULATETABLE</code> and grouping by Country and Region
+            </p>
+<pre>
+DEFINE
+    TABLE allRegions =
+        CALCULATETABLE (
+            SELECTCOLUMNS (
+                bi_geo,
+                "Country", bi_geo[Country],
+                "NewRegion",
+                    IF (
+                        ISBLANK ( bi_geo[Region] ),
+                        "blank",
+                        bi_geo[Region]
+                    )
+            )
+        )
+EVALUATE
+(
+    GROUPBY (
+        allRegions,
+        allRegions[Country],
+        allRegions[NewRegion],
+        "CountUsingGroupBy",
+            COUNTX (
+                CURRENTGROUP (),
+                allRegions[NewRegion]
+            )
+    )
+)
+</pre>
+            <img src="images/results-groupby-newregion-column-blank-values-country-region.PNG" /><br />
             <hr />
 
 
-
-            <hr />
         </section>
 
         <h1>Are there any duplicates in the 'zip' column of bi_Geo table? (SUMMARIZE,COUNT)</h1>
