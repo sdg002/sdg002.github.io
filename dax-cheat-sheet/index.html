@@ -50,6 +50,9 @@
                 to be done - add some notes about the relationship. Add reasons as to why no relationshp between Sales and Gro
                 Update the image, bring in Geo
             </p>
+
+            <h1>Data</h1>
+            <p>to be done. Show a screen capture of the TOP 10 rows from each of the tables</p>
         </section>
         <hr />
 
@@ -333,12 +336,6 @@ EVALUATE
             <img src="images/column-isblank.PNG" />
             <hr />
 
-            <h1>Summarize rows in bi_geo where region is blank (GROUPBY, ISBLANK)</h1>
-            <p>to be done</p>
-            <pre>code comes here</pre>
-            <img src="images/PlaceHolder.png" />
-            <hr />
-
 
             <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE,SUMMARIZECOLUMNS,GROUPBY)</h1>
             <p>
@@ -493,7 +490,7 @@ EVALUATE
 
             <strong>Approach 5</strong>
             <p>
-                We could simply use <code>GROUPBY</code> and <code>IF</code>, <code>ISBLANK</code> to replace blank values with some string. 
+                We could simply use <code>GROUPBY</code> and <code>IF</code>, <code>ISBLANK</code> to replace blank values with some string.
                 Attention! <code>COUNTX</code> will refuse to count rows with blank values and therefore the <code>IF</code> clause is very important
             </p>
 <pre>
@@ -589,7 +586,7 @@ EVALUATE
 
 </pre>
         <p><strong>Step 2:</strong>Use <code>COUNTROWS</code> on the table produced in the previous step to get a scalar value</p>
-        
+
 <pre>
 EVALUATE
 {
@@ -620,7 +617,10 @@ EVALUATE
             <pre>
 EVALUATE
 (
-SUMMARIZE( bi_salesFact, bi_product[Segment] , "Total Revenue",ROUND(SUM(bi_salesFact[Revenue]),2) , "Total units", SUM(bi_salesFact[Units]) )
+SUMMARIZE( 
+        bi_salesFact, bi_product[Segment] , 
+        "Total Revenue",ROUND(SUM(bi_salesFact[Revenue]),2) , 
+        "Total units", SUM(bi_salesFact[Units]) )
 
 )
 ORDER BY bi_product[Segment] DESC
@@ -630,9 +630,30 @@ ORDER BY bi_product[Segment] DESC
         <hr />
 
         <section>
-            <h1>Min,Max,Avg,Median sales per Product Segment</h1>
-            <p>Stats for every product segment</p>
-            <img src="images/PlaceHolder.png" />
+            <h1>Min,Max,Avg sales per Product Segment (GROUPBY, SUMX,MINX, MAXX, AVERAGEX)</h1>
+            <p>In this example we are calculating the statistics of sales in bi_SalesFact table on a per segment basis</p>
+<pre>
+ EVALUATE
+ (
+	GROUPBY
+	(
+		bi_salesFact,
+		bi_product[Segment],
+		"Total units", (SUMX(CURRENTGROUP(),bi_salesFact[Units])),
+		"Max units", MAXX(CURRENTGROUP(),bi_salesFact[Units]),
+		"Average units", AVERAGEX(CURRENTGROUP(),bi_salesFact[Units]),
+		"Min units", MINX(CURRENTGROUP(),bi_salesFact[Units]),
+		
+		"Total revenue", (SUMX(CURRENTGROUP(),bi_salesFact[Revenue])),
+		"Max revenue", MAXX(CURRENTGROUP(),bi_salesFact[Revenue]),
+		"Average revenue", AVERAGEX(CURRENTGROUP(),bi_salesFact[Revenue]),
+		"Min revenue", MINX(CURRENTGROUP(),bi_salesFact[Revenue])
+
+	)
+ ) order by [segment] DESC
+ 
+</pre>
+            <img src="images/groupby-sumx-maxx-minx-averagex.PNG" />
         </section>
         <hr />
 
@@ -728,13 +749,113 @@ SELECTCOLUMNS(
         <hr />
 
 
-        <h1>You were below- trying to figure out how to address the questions below (see new summarized column, write a measure on bi_manufacturer and using SELECTEVALUE)</h1>
         <hr />
-        <section>
-            <h1>Best selling and worst selling Product segment for every Manufacturer</h1>
-            <p>to be done. This answers the question - "<em>Which manufacturer excels in which product</em>?"</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
+        <h1>Best selling and worst selling Product segment for every Manufacturer (SELECTEDVALUE,SUMMARIZE, MAXX, SUM, MINX)</h1>
+        <p>
+            We will attempt to answer the question - "<em>For every manufacturer what was the best performing and worst performing product segment with regards to units sold</em>?"
+            To achieve this we will create 4 measures
+        </p>
+        <ol>
+            <li>
+                <strong>segment_maxunits_name</strong> Calculates the name of the product segment for a manufacturer which sold the highest number of units
+            </li>
+            <li>
+                <strong>segment_maxunits_value</strong> Calculates the total units sold by a manufacturer for the product segment calculated by the measure <code>segment_maxunits_name</code>
+            </li>
+            <li>
+                <strong>segment_minunits_name</strong> Calculates the name of the product segment for a manufacturer which sold the least number of units
+            </li>
+            <li>
+                <strong>segment_minunits_value</strong> Calculates the total units sold by a manufacturer for the product segment calculated by the measure <code>segment_minunits_name</code>
+            </li>
+        </ol>
+        <p>
+            <strong>Step 1 </strong> Use the <code>SUMMARIZE</code> expression on the <code>bi_salesFact</code> and group by Segment. 
+            Use the <code>SELECTEDVALUE</code> to filter the records going into <code>SUMMARIZE</code> so that we are dealing with sales related to the current manufacturer only.
+            <br />
+            <strong>Step 2</strong> Create measures on the <code>bi_manufacturer</code> which will pick the maximum and minimum  from the output of <strong>Step 1</strong>
+            <br />
+            <strong>Step 3</strong> Create measures which use the maximum and minimum values from <strong>Step 2</strong> to filter the results of the <code>SUMMARIZE</code> operation in <strong>Step 1</strong> and 
+            we are now left with the rows which have the <code>segment</code> name.
+        </p>
+        
+<pre>
+DEFINE 
+
+MEASURE bi_manufacturer[segment_maxunits_value] = 
+//Get the max units sold by a segment
+	
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR maxUnit=MAXX(summary,[TOTAL UNITS])
+	VAR	x=SELECTEDVALUE(bi_product[Category])
+	RETURN maxUnit
+
+MEASURE bi_manufacturer[segment_maxunits_name] = 
+//Now get the segment name which sold the max units
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR maxUnitValue=MAXX(summary,[TOTAL UNITS])
+	var maxSegmentName = CALCULATE( MAXX(FILTER( summary, [TOTAL UNITS]=maxUnitValue),[Segment]))
+	
+	RETURN maxSegmentName
+
+
+MEASURE bi_manufacturer[segment_minunits_value] = 
+//Get the min units sold by a segment
+	
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR minUnit=MINX(summary,[TOTAL UNITS])
+	RETURN minUnit
+
+MEASURE bi_manufacturer[segment_minunits_name] = 
+//Now get the segment name which sold the min units
+	VAR summary=
+			SUMMARIZE
+				(
+				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
+				bi_product[Segment],
+				"TOTAL UNITS", CALCULATE(SUM(bi_salesFact[Units]))
+				)
+	VAR minUnit=MINX(summary,[TOTAL UNITS])
+	var minSegmentName = CALCULATE( MAXX(FILTER( summary, [TOTAL UNITS]=minUnit),[Segment]))
+	
+	RETURN minSegmentName
+
+
+EVALUATE
+(
+	SELECTCOLUMNS( 
+		bi_manufacturer,
+		"id",[ManufacturerID], 
+		"name",[Manufacturer], 
+		"max_segment_name",	[segment_maxunits_name],
+		"max_segment_units",[segment_maxunits_value],
+		"min_segment_name",	[segment_minunits_name],	
+		"min_segment_units",[segment_minunits_value]
+		)
+)
+
+
+
+</pre>
+        <img src="images/manufacturer_best_and_worst_performing_segment.PNG" />
         <hr />
 
         <section>
