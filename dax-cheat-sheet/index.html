@@ -490,6 +490,29 @@ EVALUATE
 )
 </pre>
             <img src="images/results-groupby-newregion-column-blank-values-country-region.PNG" /><br />
+
+            <strong>Approach 5</strong>
+            <p>
+                We could simply use <code>GROUPBY</code> and <code>IF</code>, <code>ISBLANK</code> to replace blank values with some string. 
+                Attention! <code>COUNTX</code> will refuse to count rows with blank values and therefore the <code>IF</code> clause is very important
+            </p>
+<pre>
+EVALUATE
+(
+	GROUPBY(
+		bi_geo, 
+		bi_geo[Country],bi_geo[Region], 
+		"Count",
+			COUNTX
+				(
+					CURRENTGROUP(),
+					IF(ISBLANK ( bi_geo[Region] ),"blank",bi_geo[Region])
+				)
+		)
+)
+</pre>
+            <img src="images/results-groupby-isblank-blank-values-country-region.PNG" /><br />
+
             <hr />
 
 
