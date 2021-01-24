@@ -80,11 +80,7 @@
 
         <section>
             <h1>Database schema</h1>
-            <img src="images/Model.PNG" />
-            <p>
-                to be done - add some notes about the relationship. Add reasons as to why no relationshp between Sales and Gro
-                Update the image, bring in Geo
-            </p>
+            <img src="images/Model.PNG"  title="Power BI model"/>
 
             <h1>Data</h1>
             <p>To get a feel of what the data looks like I have presented the top 5 rows from each of the tables in this database</p>
@@ -281,7 +277,7 @@ EVALUATE
 
         <section>
             <h1>Display N rows from a table (TOPN)</h1>
-            <p>Use this when you want a quick inspection of a table. </p>
+            <p>Use this when you want to do a quick visual inspection of a table. </p>
             <pre>
 EVALUATE
 (
@@ -569,7 +565,7 @@ EVALUATE
         <h1>Are there any duplicates in the 'zip' column of bi_Geo table? (SUMMARIZE,COUNT)</h1>
         <p>
             This will help us establish the cardinality of a foreign key relationship with the <code>zip</code> column.
-            Looking at the results we can conclude that there are indeed duplicates and hence this 1-many relationships between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
+            Looking at the results we can conclude that there are indeed duplicates and hence a 1-many relationship between <code>bi_Geo</code> and <code>bi_SalesFact</code> is ruled out.
         </p>
 <pre>
 EVALUATE
