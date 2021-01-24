@@ -28,10 +28,43 @@
             <h1>Overview</h1>
             <p>
                 In this article I have presented some of the frequent DAX queries I was encountering in my day to day work.
-                The objective of this article is to help users with DAX through a sample based approach.
+                The objective of this article is to help users with DAX through an example based approach.
                 Note - it is not strictly neccessary that the results have to be obtained via DAX only.
-                If the data model is good then Power BI visuals can often meet the requirements
+                If the data model is good then Power BI visuals can often meet the requirements.
+                In this article I have covered the following DAX expressions:
             </p>
+            <ol>
+                <li>EVALUATE</li>
+                <li>DEFINE</li>
+                <li>TABLE</li>
+                <li>COLUMN</li>
+                <li>MEASURE</li>
+                <li>MIN</li>
+                <li>MAX</li>
+                <li>TOPN</li>
+                <li>SELECTCOLUMNS</li>
+                <li>SUM</li>
+                <li>UPPER</li>
+                <li>DISTINCT</li>
+                <li>ORDERBY</li>
+                <li>UNION</li>
+                <li>ROW</li>
+                <li>COUNTBLANK</li>
+                <li>COUNTROWS</li>
+                <li>FILTER</li>
+                <li>IF</li>
+                <li>ISBLANK</li>
+                <li>SUMMARIZE</li>
+                <li>SUMMARIZECOLUMNS</li>
+                <li>GROUPBY</li>
+                <li>CURRENTGROUP</li>
+                <li>COUNTX</li>
+                <li>SUMX</li>
+                <li>MINX</li>
+                <li>MAXX</li>
+                <li>SUMX</li>
+                <li>CURRENTGROUP</li>
+            </ol>
         </section>
 
         <section>
@@ -111,7 +144,7 @@ MIN(bi_salesFact[Date])
             <img src="images/create-scalar-expression.PNG" />
             <hr />
 
-            <h2>How to create a measure?</h2>
+            <h2>How to create a measure (MEASURE,SUM)?</h2>
             <p>
                 In this example we are calculating the total sales per manufacturer.
                 When using DAX studio, the&nbsp; <code>DEFINE</code> keyword should be used to create a new <code>MEASURE</code> and 
@@ -134,7 +167,7 @@ SELECTCOLUMNS
             <img src="images/results-create-measure.png" />
             <hr />
 
-            <h1>How to create a calculated column?</h1>
+            <h1>How to create a calculated column(UPPER,COLUMN)?</h1>
             <p>In the following example we are creating a new column which converts the manufacturer name to upper case</p>
 <pre>
 DEFINE 

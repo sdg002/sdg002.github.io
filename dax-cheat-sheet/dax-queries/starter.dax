@@ -616,7 +616,9 @@ SELECTCOLUMNS(
 )
 
 
-//SUMMARIZE and GROUPBY
+//SUMMARIZE and GROUPBY 
+//In the following example we are showing count of rows per Country
+
 EVALUATE
 (
     GROUPBY(
@@ -637,5 +639,20 @@ EVALUATE
     )
 )
 
+
+
+Action item
+-------------
+Try the filter expression using CURRENTGROUP
+https://www.sqlbi.com/articles/nested-grouping-using-groupby-vs-summarize/
+
+MAXX (
+        CURRENTGROUP (),
+        IF ( [Average Price] > 500, [Average Price], BLANK () )
+    ),
+
+Action item
+-----------
+Talk about the benefits of GROUPBY over SUMMARIZE
 
 */
