@@ -114,9 +114,8 @@ MIN(bi_salesFact[Date])
             <h2>How to create a measure?</h2>
             <p>
                 In this example we are calculating the total sales per manufacturer.
-                When using DAX studio the <code>EVALUATE()</code> keyword should be used for encapsulating any
-                expression that produces a tabular output
-            </p>
+                When using DAX studio, the&nbsp; <code>DEFINE</code> keyword should be used to create a new <code>MEASURE</code> and 
+                this declaration should precede the&nbsp; <code>EVALUATE()</code> keyword.</p>
             <pre>
 DEFINE 
 MEASURE bi_manufacturer[TotalUnits]= SUM(bi_salesFact[Units])
@@ -136,7 +135,8 @@ SELECTCOLUMNS
             <hr />
 
             <h1>How to create a calculated column?</h1>
-            <pre>
+            <p>In the following example we are creating a new column which converts the manufacturer name to upper case</p>
+<pre>
 DEFINE 
 COLUMN bi_manufacturer[ManufacturerUpper]= UPPER(bi_manufacturer[Manufacturer])
 EVALUATE
@@ -147,14 +147,12 @@ bi_manufacturer
             <img src="images/results-calculated-column.PNG" />
             <hr />
 
-            <h2>How to create a calculated table?</h2>
-            <p>to be done</p>
-
 
         </section>
         <hr />
         <section>
             <h1>List of unique Product Segments (DISTINCT, ORDER BY)</h1>
+            <p>In this example we are displaying an unique list of product segments.</p>
             <pre>
 EVALUATE 
 (
@@ -176,7 +174,8 @@ DISTINCT( bi_product[Segment])
         <hr />
         <section>
             <h1>Distinct list of financial years from the Sales table (DISTINCT)</h1>
-            <p>In this query we are creating a calculated column <code>year</code></p>
+            <p>In this query we are creating a calculated column to get the year component from the sales transaction date 
+                and then using the <code>DISTINCT</code> on the <code>year</code> column</p>
             <pre>
 DEFINE 
 COLUMN bi_salesFact[Year] = year(bi_salesFact[Date])
@@ -265,7 +264,7 @@ TOPN ( 5, bi_salesFact, bi_salesFact[Units], DESC )
         <hr />
 
         <section>
-            <h1>Find rows with blank column values (COUNTBLANK, FILTER, logical operator)</h1>
+            <h1>Find rows with blank column values (COUNTBLANK, FILTER,COUNTROWS)</h1>
             <p>This answers the question. <em>How many rows in the bi_geo table do not have a Region value</em>?</p>
             <pre>
 EVALUATE
@@ -297,6 +296,7 @@ EVALUATE
 }
 
 </pre>
+            <img src="images/count_of_rows_with_france.PNG" />
 
             <p>In the following example we are displaying all rows where <strong>Region</strong> is non-blank</p>
 <pre>
@@ -335,6 +335,21 @@ EVALUATE
 </pre>
             <img src="images/column-isblank.PNG" />
             <hr />
+            <h1>What is the distribution of values in the Country column of the bi_geo table? (SUMMARIZE)</h1>
+            <p>In this example we want to know the distinct list of countries and the total number of rows per country</p>
+<pre>
+EVALUATE
+(
+	SUMMARIZE( 
+		bi_geo, 
+		bi_geo[Country],
+		"RowCount",COUNT(bi_geo[Country])
+		)
+) order by [RowCount] desc
+
+</pre>
+			<img  src="images/summarize_country_rowcount.PNG"/>
+			<hr />
 
 
             <h1>What is the distribution of values in the Region columm of the bi_geo table? (SUMMARIZE,SUMMARIZECOLUMNS,GROUPBY)</h1>
@@ -567,8 +582,10 @@ EVALUATE
         <hr />
 
         <h1>How many values in the 'zip' column are not duplicated? (SUMMARIZECOLUMNS, FILTER, COUNT)</h1>
-        <p>We will arrive at this result in 2 steps</p>
-        <p><strong>Step 1:</strong>  Use <code>FILTER</code> and <code>SUMMARIZECOLUMNS</code> to produce a flat table of all zip codes which are used only once</strong></p>
+        <p>We will arrive at this result in 2 steps. We will first <code>SUMMARIZE</code> the row counts per group and then <code>FILTER</code> on this result
+            to give us ony those rows where the row count is 1
+        </p>
+        <p><strong>Step 1:</strong>  Use <code>FILTER</code> and <code>SUMMARIZECOLUMNS</code> to produce a flat table of all zip codes which are used only once</p>
 
 <pre>
 EVALUATE
@@ -585,9 +602,11 @@ EVALUATE
 )
 
 </pre>
+        <img src="images/count_of_non_duplicated_zipcount_firststep_summarize.PNG" /><br/>
         <p><strong>Step 2:</strong>Use <code>COUNTROWS</code> on the table produced in the previous step to get a scalar value</p>
 
 <pre>
+    
 EVALUATE
 {
 	COUNTROWS
@@ -673,9 +692,20 @@ SELECTCOLUMNS
         <img src="images/results-manufacturer-units-and-revenue.PNG" />
 
         <h1>Total units sold and revenue earned per Manufacturer (SUMMARIZE)</h1>
-        <p>to be done</p>
-        <pre>code comes here</pre>
-        <img src="images/PlaceHolder.png" />
+        <p>We are using <code>SUMMARIZE</code> to produce the same result</p>
+<pre>
+EVALUATE
+(
+	SUMMARIZE(
+		bi_manufacturer, bi_manufacturer[Manufacturer], 
+		"SumUnits" , CALCULATE(SUM( bi_salesFact[Units])),
+		"SumRevenue",CALCULATE(SUM( bi_salesFact[Revenue])) 
+		)
+		
+) ORDER BY [SumUnits] DESC
+
+</pre>
+        <img src="images/results-manufacturer-units-and-revenue-using-summarize.PNG" />
         <hr />
 
 
@@ -858,58 +888,6 @@ EVALUATE
         <img src="images/manufacturer_best_and_worst_performing_segment.PNG" />
         <hr />
 
-        <section>
-            <h1>Best selling and worst selling Product segment for every Manufacturer on an yearly basis</h1>
-            <p>to be done. This answers the question - "<em>Which manufacturer excels in which product and how did this change over the years?</em>"</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Create a Date table from Sales table</h1>
-            <p>
-                to be done. This addresses the problem of reporting against a date hierarchy without the need for explicit data entry
-
-                Refer <a href="#">this link (to be done)</a> to understand the need for a date table
-            </p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Add a calculated RevenuePerUnit column to the Sales table </h1>
-            <p>to be done. This hels answering the question "<em>Which product generates more revenue per every unit sold?</em>"</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Records from Geography table with either missing City,State, District or Region column</h1>
-            <p>to be done. This answers the question "<em>Which are the records where information is incomplete?</em>"</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Product segment with best and worst sentiment for every manafacturer</h1>
-            <p>to be done. This answers the question "<em>For every manufacturer which is their best selling and worst selling product segment?</em>"</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Create a static table (DATATABLE)</h1>
-            <p>to be done. When should we use this? Consider the scenario when we need to display all Product Segments in a specific order</p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
-
-        <section>
-            <h1>Create a static table (Table constructor)</h1>
-            <p>to be done. </p>
-            <img src="images/PlaceHolder.png" />
-        </section>
-        <hr />
 
     </main>
 
