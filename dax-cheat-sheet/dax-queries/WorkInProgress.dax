@@ -1,48 +1,56 @@
-﻿//DEFINE
-//MEASURE bi_manufacturer[max_stream_units] =
-//        CALCULATE 
-//        (
-//            //	SELECTEDVALUE(bi_manufacturer[ManufacturerID])
-//            MAXX (
-//                SUMMARIZECOLUMNS
-//                (
-//                    bi_manufacturer[ManufacturerID],
-//                    bi_product[Segment],
-//                    //FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
-//                    bi_salesFact,
-//                    "MAX UNIT", CALCULATE ( SUM ( bi_salesFact[Units] ) )
-//                ),
-//                [MAX UNIT]
-//            )
-//        )
-//
+﻿DEFINE 
+
+TABLE segment_names=DISTINCT(bi_product[Segment])
 
 EVALUATE
 (
-    SELECTCOLUMNS (
-        bi_manufacturer,
-        "ID", bi_manufacturer[ManufacturerID],
-        "Name", bi_manufacturer[Manufacturer],
-        "Max Stream Units", 
-        CALCULATE
-        (
-		MAXX(
-			SUMMARIZE
-				(
-				FILTER (  bi_salesFact, RELATED(bi_product[ManufacturerID] ) = SELECTEDVALUE(bi_manufacturer[ManufacturerID])),
-				bi_product[Segment],
-				"MAX UNIT", CALCULATE(SUM(bi_salesFact[Units]))
-				),
-			[MAX UNIT]
-			)
-        ) 
-                
-        //bi_manufacturer[max_stream_units]
+	CALCULATE(EARLIEST(segment_names))
+)
+
+
+VAR x=segment_names
+
+TABLE manuf_segments_revenue=CALCULATETABLE
+(
+	SELECTCOLUMNS
+	(
+		bi_manufacturer,
+		"MaufacturerId", bi_manufacturer[ManufacturerID],
+		"MaufacturerName", bi_manufacturer[Manufacturer]
+		CALCULATE(segment_names[0]),0
+	)
+)
+
+EVALUATE
+(
+	manuf_segments_revenue
+)
+
+EVALUATE
+(
+	segment_names
+)
+
+
+/*
+BloodPivot1Old = SUMMARIZECOLUMNS(
+    vwBloodResultsObservationsMostRecent[ParticipantId],
+    "Ast", 
+    CALCULATE(MAX(vwBloodResultsObservationsMostRecent[ObservationValue]),FILTER(vwBloodResultsObservationsMostRecent, vwBloodResultsObservationsMostRecent[ObservationKey]="AST")),
+    "Alt", 
+    CALCULATE(MAX(vwBloodResultsObservationsMostRecent[ObservationValue]),FILTER(vwBloodResultsObservationsMostRecent, vwBloodResultsObservationsMostRecent[ObservationKey]="ALT")),
+    "FERR", 
+    CALCULATE(MAX(vwBloodResultsObservationsMostRecent[ObservationValue]),FILTER(vwBloodResultsObservationsMostRecent, vwBloodResultsObservationsMostRecent[ObservationKey]="FERR")),
+    "GGT", 
+    CALCULATE(MAX(vwBloodResultsObservationsMostRecent[ObservationValue]),FILTER(vwBloodResultsObservationsMostRecent, vwBloodResultsObservationsMostRecent[ObservationKey]="GGT"))
+
+
     )
-) ORDER BY [ID]
 
+*/
 
-//YOU WERE HERE - WHAT WAS I THINKING?
-//STEP 1  - Create a table variable and assign to SUMMARIZE/SUMMARIZECOLUMNS
-//STEP 2  - Create a measure in bi_manufacture which will use the SELECTEDVALUE and filter the max values from the table variable
+/*
+what was I thinking?
+How to get the index of the rows
+*/
 
