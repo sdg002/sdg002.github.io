@@ -53,6 +53,7 @@
         In the interest of brevity, I will skip the details.
     </p>
 
+    <!-- -->
     <h1>Table with Manufacturers along the rows and Segment revenues along the columns (Visual approach, no DAX)</h1>
     <img src="images-part2/manuf-segment-no-dax.png" />
     <p>
@@ -86,8 +87,8 @@
             A zero would convey more meaning.
         </li>
     </ol>
+    <!-- -->
     <hr />
-
     <h1>Table with Manufacturers along the rows and Segment revenues along the columns (Visual approach, with DAX measure to return 0)</h1>
     <p>In this approach we create a measure on the <code>bi_manufacture</code> table with the name <code>RevenuePerSegment</code></p>
     <pre>
@@ -98,8 +99,38 @@ return retval
     </pre>
     <img src="images-part2/manuf-segment-dax-isblank.png" />
 
+    <!-- -->
     <hr />
+    <h1>Table with Manufacturers along the rows and % of Total Segment revenues along the columns (Visual approach, DAX measure)</h1>
+    <p>In this approach we create a measure on the <code>bi_manufacture</code> table with the name <code>PercentageOfTotalRevenuePerSegment</code> which will calculate the 
+    percentage revenuer per segment as (Total revenue per manufacturer per segment)/(Total revenue across all manufacturers).
+    This example demonstrates the use of <code>ALL</code> keyword to override the filter context. 
 
+    </p>
+    
+    <pre>
+%OfTotalRevenuePerSegment = 
+
+VAR totalRevenueAcross= CALCULATE( SUM(bi_salesFact[Revenue]), ALL(bi_salesFact))
+
+VAR totalRevenue=SUM(bi_salesFact[Revenue])
+VAR totalRevenuePerSegment=CALCULATE( IF(ISBLANK(totalRevenue),0,totalRevenue)  )
+
+VAR percentageRevenue=totalRevenuePerSegment/totalRevenueAcross * 100.0
+return percentageRevenue
+    </pre>
+    
+    <img src="images-part2/manuf-segment-dax-isblank-percentage-of-total.png" />
+    <hr />
+    <h1>Why is 'ALL' neccessary?</h1>
+    <img src="images-part2/importance_of_all_filter.png" />
+    <p>
+        The 'ALL' keyword will ignore the current filter context. i.e. it will query for all sales records regardless of the visual filters imposed by the Matrix cell or slicer.
+        In the above example, without the <code>ALL</code> , <code>SUM(bi_salesFact[Revenue])</code> will compute the total sum of sales for the manufacturer <strong>Currus</strong> and segment <strong>All Season</strong>.
+    </p>
+
+
+    <!-- -->
     <hr style="height:1em;" />
     <h2>My ideas 1</h2>
     <p>
