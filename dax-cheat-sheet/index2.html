@@ -53,7 +53,7 @@
         In the interest of brevity, I will skip the details.
     </p>
 
-    <h1>I want a table of Manufacturers along the rows and revenues for every Segment along the columns (Visual approach, no DAX)</h1>
+    <h1>Table with Manufacturers along the rows and Segment revenues along the columns (Visual approach, no DAX)</h1>
     <img src="images-part2/manuf-segment-no-dax.png" />
     <p>
         In this approach, we use a Matrix visual. There is no need for any custom DAX. Power BI will harness the relationships 
@@ -88,7 +88,7 @@
     </ol>
     <hr />
 
-    <h1>I want a table of Manufacturers along the rows and revenues for every Segment along the columns (Visual approach, with DAX measure to return 0)</h1>
+    <h1>Table with Manufacturers along the rows and Segment revenues along the columns (Visual approach, with DAX measure to return 0)</h1>
     <p>In this approach we create a measure on the <code>bi_manufacture</code> table with the name <code>RevenuePerSegment</code></p>
     <pre>
 RevenuePerSegment = 
@@ -99,9 +99,6 @@ return retval
     <img src="images-part2/manuf-segment-dax-isblank.png" />
 
     <hr />
-    <h1>I want a table of Manufacturers along the rows and revenues for every Segment along the columns (Segments in a slicer)</h1>
-    <p>you were here - use PIVOT</p>
-    <pre> code snippet comes here</pre>
 
     <hr style="height:1em;" />
     <h2>My ideas 1</h2>
