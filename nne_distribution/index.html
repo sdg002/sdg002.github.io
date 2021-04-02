@@ -128,7 +128,10 @@ print("Average=%f after iterations=%d" % (average,iterations))
     </h2>
     <p>
         We will not try and create a theoretical model. 
-        Instead we will write a simple Python program to do a Monte Carlo simulation with various densities of points.        
+        Instead we will write a simple Python program to do a Monte Carlo simulation with various densities of points.
+        We will gradually increase the count of points and at every stage we will generate N random points. 
+        We will compute the mean nearest neighbour distance using the <em>KDTree</em> class of <em>scitkit-learn</em>. 
+        For every N we will repeat the trials and compute the average.
     </p>
     <img src="images/average_distance_n_points.png" alt="Average nearest neighbour distance with various values of N"/>
     <pre>
@@ -225,7 +228,7 @@ plot(lst_pointcount, lst_meandistance)
     <hr />
 
     <h2>
-        Plotting the simple mathematical model with N
+        Plotting the simple mathematical model vs the number of points(N)
     </h2>
     <p>
     We can clearly see that this curve exhibits the same characteristics that we obtained from our Monte Carlo simulation, i.e. a steep fall and then flattening out.
@@ -258,15 +261,33 @@ plot(lst_pointcount, lst_meandistance)
 
     </pre>
     <h2>
-        Lessons learnt
+        Lessons learnt and conclusions
     </h2>
     <p>
-        What did we begin with?
+        <strong>What was our original quest?</strong>
+        <br/>
+        We examined images with salt and pepper noise and set about understanding how the nearest neighbour distance varies with increasing density of points
+        <br/>
+        <br/>
+        <strong>What happens with 2 random points in an unit square?</strong>
+        <br/>
+        Mathematics has already given us a strong theoretical model which proves that this distance is <em>0.5214</em>. We were also to arrive at this number via Monte Carlo simulations
+        <br/>
+        <br/>
+        <strong>What happens with N random points?</strong>
+        <br/>
+        We did a Monte Carlo simulation. We then created an approximate model. Both models exhibit the same trends.
+        <br/>
         <br />
-        Show a derivative
-        <br />
+        <strong>How do we calculate the nearest neighbour distance of a point?</strong>
+        <br/>
+        The <em>KDtree</em> class of <em>scikite-learn</em> library makes this very simple and efficient.
+        <br/>
+        <br/>
+
 
     </p>
+    <img src="images/side_by_side_comparison.png" alt="Comparison of 2 approaches"/>
     <hr />
 
 

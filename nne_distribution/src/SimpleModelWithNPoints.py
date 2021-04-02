@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 
 
 def plot(points_count:List,  means:List):
-    plt.title("Plot of simple mathematical model versus N")
+    plt.title("Approximate mathematical model of the mean nearest neighbour distance")
     plt.ylim([0, 0.5])
+    plt.xlabel("Number of points (N)")
+    plt.ylabel("Mean nearest neighbour distance")
     plt.scatter(points_count,means, marker='.', s=5)
     plt.grid(b=True, which='major', color='#666666', linestyle='-')
 
