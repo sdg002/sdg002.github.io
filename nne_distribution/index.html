@@ -73,39 +73,54 @@
     <hr />
 
     <h2>
-        Example of images with salt and pepper noise
-    </h2>
-    <p>
-        Explain salt and pepper. Show some sample pics
-    </p>
-    <img src="images/NoisyImage-0.600.png" />
-    <img src="images/NoisyImage-0.990.png" />
-    <p>Display the SP ratios of all the images</p>
-    <hr />
-
-    <h2>
         Begin with just 2 points in an unit square
     </h2>
     <p>
-        Talk about the problem of the expected distance between 2 randomly selected points in a square
-
-
-        <br />
-        Show picture of the equation
-        <br />
-        Link to Youtube videos
+        This is a classical problem. What is the expected distance between 2 randomly selected points in a square with side 1 unit?        
     </p>
+    <img src="images/average_distance_2points_square.png"/>
+    <p>The mathematical solution to this problem is not trivial and I will leave the details out this discussion. 
+    A wonderful treatise on this subject can be found <a href="https://mindyourdecisions.com/blog/2016/07/03/distance-between-two-random-points-in-a-square-sunday-puzzle/">here.</a>
+    From the same article, I present the equation below, which is the solution to our problem. The expected distance turns out to be <strong>0.5214</strong>.
+    </p>
+    <img src="images/average_distance_2points_integral.png"/>
     <hr />
 
     <h2>
-        Python program to compute expected distance with 2 points
+        Monte Carlo approach to compute expected distance between 2 random points
     </h2>
-    <p>
-        to be done 13
-    </p>
     <pre>
-        Python code comes here
+import datetime
+import math
+import numpy as np
+import random
+import statistics
+
+
+#
+#Pick 2 randmom points, compute the distance and repeat several times. 
+#Compute average of all distances
+#
+def compute_expected_distance_between_2points_n_trials(max_trials:int):
+    seed=datetime.datetime.now().second
+    random.seed(seed)
+    distances=[]
+    for i in range(0,max_trials):
+        x1=random.random()
+        y1=random.random()
+        x2=random.random()
+        y2=random.random()
+
+        distance=math.sqrt( (x1-x2)**2 + (y1-y2)**2 )
+        distances.append(distance)
+    return statistics.mean(distances)
+
+iterations=100000
+average=compute_expected_distance_between_2points_n_trials(10000)
+print("Average=%f after iterations=%d" % (average,iterations))
     </pre>
+    <p>In this simple Python program we generate pairs of random points and calculate the distance using Pythagoras theorem. 
+     Running the above with 100000 iterations gave me a value of 0.522079 which is quite close to the theoretical value of 0.5214</p>
     <hr />
 
 
