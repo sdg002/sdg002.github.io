@@ -231,7 +231,32 @@ plot(lst_pointcount, lst_meandistance)
     We can clearly see that this curve exhibits the same characteristics that we obtained from our Monte Carlo simulation, i.e. a steep fall and then flattening out.
     </p>
     <img src="images/model_using_python.png" alt="Simple model of the mean nearest neighbour distance with n points"/>
+    <pre>
+from typing import List
+import numpy as np
+import math
+import matplotlib.pyplot as plt
 
+
+def plot(points_count:List,  means:List):
+    plt.ylim([0, 0.5])
+    plt.scatter(points_count,means, marker='.', s=5)
+    plt.grid(b=True, which='major', color='#666666', linestyle='-')
+
+    plt.show()
+    pass
+
+lst_pointcount=[]
+lst_meandistance=[]
+for point_count in range(2,2000):
+    mean_distance=1/(math.sqrt(point_count)+1)
+    lst_pointcount.append(point_count)
+    lst_meandistance.append(mean_distance)
+    print("Computed mean NN distance of %f for %d points" % (mean_distance,point_count))
+
+plot(lst_pointcount, lst_meandistance)
+
+    </pre>
     <h2>
         Lessons learnt
     </h2>

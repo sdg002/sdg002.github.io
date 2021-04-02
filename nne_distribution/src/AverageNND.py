@@ -36,6 +36,7 @@ class NearestNeighbourDistance(object):
         return statistics.mean(means_across_iterations)
 
 def plot(points_count:List,  means:List):
+    plt.ylim([0, 0.5])
     plt.scatter(points_count,means, marker='.', s=5)
     plt.grid(b=True, which='major', color='#666666', linestyle='-')
 
