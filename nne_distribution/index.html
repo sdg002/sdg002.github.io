@@ -29,7 +29,7 @@
     </h2>
     <p>
         I was staring at images which were dotted with various densities of salt and pepper noise. Some natural questions popped up in my mind - what happens to the distance between the points when they
-        get more and more crowded? If we were to define a metric to measure the proximity between points, say <em>average nearest neighbour</em> , 
+        get more and more crowded? If we were to define a metric to measure the proximity between points, say <em>average nearest neighbour distance</em> , 
         then how does this metric behave with increasing density of points?
         <br />
         <img src="images/NoisyImage-0.600.png" />
@@ -69,7 +69,6 @@
         <li>Point 4 is the nearest neighbour of point 5</li>
     </ol>
     <img src="images/definition_average_nne.png" />
-    <h1>YOU WERE HEE</h1>
     <hr />
 
     <h2>
@@ -198,28 +197,30 @@ plot(lst_pointcount, lst_meandistance)
         Why does the average neighbour distance exhibit such a distribution?
     </h2>
     <p>
-        We can see that at N=2, the average is .5BLAH. With increasing N, the average distance falls very rapidly and then flattens out.
+        We can see that at N=2, the average is<em> 0.5214</em>. With increasing N, the average distance falls very rapidly and then flattens out. 
+        Can we work out a simple mathematical model that would explain such a behaviour?
     </p>
     <hr />
 
     <h2>
-        Finding a mathematical model
+        Finding a simple mathematical model
     </h2>
     <p>
-        We will make some approximations. Consider a square with N=4 points, N=9 points and N=16 points
-        <br />
-        <img src="images/WorkInProgress.png" />
-        <br />
-        <img src="images/WorkInProgress.png" />
-        <br />
-        <img src="images/WorkInProgress.png" />
-        <br />
-        <img src="images/WorkInProgress.png" />
+        We will make some approximations. Consider a square with N=4 points and N=9 points.
     </p>
+        <br />
+        <img src="images/model_with_4_points.png" />
+        <br />
+        <em>N=4, average nearest neighbour distance=1/3</em>
+        <br />
+        <img src="images/model_with_9_points.png" />
+        <br />
+        <em>N=9, average nearest neighbour distance=1/4</em>
+        <br />
     <p>
-        Looking at the above, we can come up with the following approximation:
-        Show approx equation here
+        Extrapolating from the above, we can see the following pattern emerging. Obviously, this will not work for <em>n=2</em> because we have a rigorous formula which we discussed earlier.
     </p>
+    <img src="images/model_equation.png" alt="Simple model of the mean nearest neighbour distance with n points"/>
 
     <hr />
 
@@ -227,17 +228,19 @@ plot(lst_pointcount, lst_meandistance)
         Plotting the simple mathematical model with N
     </h2>
     <p>
-        Show desmos here
-        Write down the derivative
-        Conclude that with increasing N the slope becomes 0 and thus the curve flattens out.
+    We can clearly see that this curve exhibits the same characteristics that we obtained from our Monte Carlo simulation, i.e. a steep fall and then flattening out.
     </p>
-
+    <img src="images/model_using_python.png" alt="Simple model of the mean nearest neighbour distance with n points"/>
 
     <h2>
-        Introduction
+        Lessons learnt
     </h2>
     <p>
-        to be done 13
+        What did we begin with?
+        <br />
+        Show a derivative
+        <br />
+
     </p>
     <hr />
 
