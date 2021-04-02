@@ -36,6 +36,7 @@ class NearestNeighbourDistance(object):
         return statistics.mean(means_across_iterations)
 
 def plot(points_count:List,  means:List):
+    plt.title("Plot of Monte Carlo simulation versus N")
     plt.ylim([0, 0.5])
     plt.scatter(points_count,means, marker='.', s=5)
     plt.grid(b=True, which='major', color='#666666', linestyle='-')
@@ -47,7 +48,8 @@ def plot(points_count:List,  means:List):
 lst_pointcount=[]
 lst_meandistance=[]
 iterations=50
-for point_count in range(2,1000):
+max_points=2000
+for point_count in range(2,max_points):
     nn=NearestNeighbourDistance(squaresize=1,point_count=point_count,iterations=iterations)
     mean_distance=nn.compute_mean()
     lst_pointcount.append(point_count)
