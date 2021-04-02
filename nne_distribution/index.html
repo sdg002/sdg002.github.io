@@ -28,21 +28,28 @@
         Introduction
     </h2>
     <p>
-        I was staring at images which were dotted with various densities of salt and pepper noise, when a thought struck my mind about
-        measuring how far apart the points are. The question I asked myself - what happens to the average nearest neighbour distance when points 
-        get more and more crowded.
+        I was staring at images which were dotted with various densities of salt and pepper noise. Some natural questions popped up in my mind - what happens to the distance between the points when they
+        get more and more crowded? If we were to define a metric to measure the proximity between points, say <em>average nearest neighbour</em> , 
+        then how does this metric behave with increasing density of points?
         <br />
         <img src="images/NoisyImage-0.600.png" />
         <br />
         <em>Image with salt pepper ratio=0.6</em>
+        <br />
+        <br />
+        <img src="images/NoisyImage-0.900.png" />
+        <br />
+        <em>Image with salt pepper ratio=0.90</em>
+        <br />
         <br />
         <img src="images/NoisyImage-0.990.png" />
         <br />
         <em>Image with salt pepper ratio=0.99</em>
         <br />
         <br />
-        The salt and pepper ratio is the probability of a randomly selected pixel being white (salt) in colour. Higher the value, lesser is the number of black pixels
-        and hence the points appear to be further apart.
+        The salt and pepper ratio is defined as the probability of a randomly selected pixel being white (salt) in colour. Higher the value, lesser is the number of black pixels
+        and hence the points appear to be further apart. Salt and pepper noise can be applied only any image, i.e. color or gray scale. 
+        We will restrict our examples to monochrome images only. A pixel can be white or black only.
         <br />
     </p>
     <hr />
