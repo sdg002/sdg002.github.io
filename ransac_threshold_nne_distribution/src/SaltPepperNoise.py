@@ -34,8 +34,8 @@ def replace_pixels_with_noise(image:np.ndarray, prob_noise:float):
                 image[y][x][0]=255
 
 
-def generate_filename(basename:str,salt_pepper:float):
-    return ("%s-%.3f.png") % (basename, salt_pepper)
+def generate_filename(basename:str,salt_pepper:float, max_distance:float):
+    return ("%s-SP-%.3f-MAXD-%.1f.png") % (basename, salt_pepper,max_distance)
 
 
 def save_image(image:np.ndarray,filename):
@@ -91,26 +91,34 @@ def superimpose_random_straight_line(image:np.ndarray, max_distance:float):
 
     return image
 
-def generate_image_with_salt_pepper_noise(salt_pepper:float):
+def generate_image_with_salt_pepper_noise(salt_pepper:float, max_distance:float):
     print("--------------------------------------------------")
     print("Generating noisy image with salt_pepper=%f" % (salt_pepper))
     #
     noisy_image=Util.generate_noisy_image(width=width, height=width,salt_pepper=salt_pepper)
-    new_filename=generate_filename(basename="noisy_image", salt_pepper=salt_pepper)
-    save_image(image=noisy_image,filename=new_filename)
     display_count_of_blackwhite_pixels(noisy_image)
+
+    start_x=width*random.random()
+    end_x=width*random.random()
+    noisy_image=Util.superimpose_straight_line_between_2_points(noisy_image,start_x=start_x, start_y=0, end_x=end_x, end_y=width, max_distance=5)
+    new_filename=generate_filename(basename="noisy_image", salt_pepper=salt_pepper, max_distance=max_distance)
+    save_image(image=noisy_image,filename=new_filename)
     #
     # img = np.zeros([width,width,1],dtype=np.uint8)
     # superimpose_random_straight_line(image=img, max_distance=10)
     #replace_pixels_with_noise(noisy_image,salt_pepper)
 
-generate_image_with_salt_pepper_noise(salt_pepper=0.5)
-generate_image_with_salt_pepper_noise(salt_pepper=0.6)
-generate_image_with_salt_pepper_noise(salt_pepper=0.7)
-generate_image_with_salt_pepper_noise(salt_pepper=0.8)
-generate_image_with_salt_pepper_noise(salt_pepper=0.9)
-generate_image_with_salt_pepper_noise(salt_pepper=0.92)
-generate_image_with_salt_pepper_noise(salt_pepper=0.95)
-generate_image_with_salt_pepper_noise(salt_pepper=0.97)
-generate_image_with_salt_pepper_noise(salt_pepper=0.99)
+
+salt_pepper_ratios=[0.9, 0.92, 0.95, 0.97,0.99]
+max_distances=[3,5,7,10]
+for salt_pepper in salt_pepper_ratios:
+    for max_distance in max_distances:
+        generate_image_with_salt_pepper_noise(salt_pepper=salt_pepper, max_distance=max_distance)
+
+# generate_image_with_salt_pepper_noise(salt_pepper=0.8, max_distance=5)
+# generate_image_with_salt_pepper_noise(salt_pepper=0.9)
+# generate_image_with_salt_pepper_noise(salt_pepper=0.92)
+# generate_image_with_salt_pepper_noise(salt_pepper=0.95)
+# generate_image_with_salt_pepper_noise(salt_pepper=0.97)
+# generate_image_with_salt_pepper_noise(salt_pepper=0.99)
 
