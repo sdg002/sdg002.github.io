@@ -4,15 +4,17 @@ import math
 
 from numpy.core.numeric import NaN
 from numpy.lib import utils
+from RansacLineInfo import  RansacLineInfo
+from typing import List
 
-#
-#Generates a monochrome image with specified width and height.
-#Noise is generated as per the ration salt_pepper. 
-#salt=white pixel and pepper=black pixel
-#
 WHITE_COLOR:int=255
 BLACK_COLOR:int=0
 
+'''
+Generates a monochrome image with specified width and height.
+Noise is generated as per the ration salt_pepper. 
+salt=white pixel and pepper=black pixel
+'''
 def generate_noisy_image(width:int, height:int,salt_pepper:float):
     image = np.zeros([height,width,1],dtype=np.uint8)
     for y in range(0,height):
@@ -76,4 +78,10 @@ def superimpose_straight_line_between_2_points(input_image:np.ndarray,start_x:fl
             continue
         input_image[y][x][0]=BLACK_COLOR
     return input_image
+    pass
+
+def superimpose_all_ransac_lines(image:np.ndarray,line_results:List[RansacLineInfo]):
+    #to be done
+    #Draw all Randsac lines and inliers on top of the image
+    #See method superimpose_all_inliers in SequentialRansac.py
     pass
