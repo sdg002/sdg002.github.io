@@ -44,15 +44,13 @@ class Test_SequentialRansac(unittest.TestCase):
         all_y_horizontal_line=list(map(lambda p: p.Y, horizontal_line.inliers))
 
 
-        self.assertEqual(max(all_x_vertical_line),100,"All inliers along the vertical line should have a constant value of X=100")
-        self.assertLessEqual(max(all_y_vertical_line),100,"The max of the inliers along the vertical line should have a max Y of 100")
-        self.assertLessEqual(min(all_y_vertical_line),1,"The min of the inliers along the vertical line should have a max Y of 1")
+        self.assertAlmostEquals(max(all_x_vertical_line),100,delta=2.0,msg="All inliers along the vertical line should have a constant value of X=100")
+        self.assertAlmostEquals(max(all_y_vertical_line),100,delta=2.0,msg="The max of the inliers along the vertical line should have a max Y of 100")
+        self.assertAlmostEquals(min(all_y_vertical_line),1,delta=2.0,msg="The min of the inliers along the vertical line should have a max Y of 1")
 
-        self.assertEqual(max(all_y_horizontal_line),51,"All inliers along the horizontal  line should have a constant value of Y=51")
-        self.assertLessEqual(max(all_x_horizontal_line),200,"The max of the inliers along the horizontal line should have a max X of 200")
-        self.assertLessEqual(min(all_x_horizontal_line),1,"The min of the inliers along the horizontal line should have a max X of 1")
+        self.assertAlmostEquals(max(all_y_horizontal_line),51,delta=2.0,msg="All inliers along the horizontal  line should have a constant value of Y=51")
+        self.assertAlmostEquals(max(all_x_horizontal_line),200,delta=2.0,msg="The max of the inliers along the horizontal line should have a max X of 200")
+        self.assertAlmostEquals(min(all_x_horizontal_line),1,delta=2.0,msg="The min of the inliers along the horizontal line should have a max X of 1")
         
-        pass
-
 if __name__ == '__main__':
     unittest.main()
