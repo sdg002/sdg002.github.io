@@ -25,6 +25,14 @@
 
     </header>
     <h2>
+        Introduction
+    </h2>
+    <p>
+        The RANSAC algorithm is a very robust and a well established approach to determinine the straight line(s) which fit a noisy set of data points. 
+        In this article I have explored the possiblity of using the Nearest Neighbour Distance statistic 
+        as a means of arriving at the RANSAC threshold distance parameter
+    </p>
+    <h2>
         What problem does the RANSAC algorithm solve?
     </h2>
     <p>
@@ -72,19 +80,50 @@
         What problem are we attempting to address in this article?
     </h2>
     <p>
-        What are we trying to solve? 
+        How do we determine the optimum RANSAC threshold parameter 'd'? 
         <br />
-        The intuition behind NNE distance
+        <img src="images/find_the_optimum_ransac_threshold_distance.png" alt="Determine threshold distance"/>
         <br />
-        What was the inspirtion for using NNE distance?
-        <br />
-        Show picture of NNE from previous article
-        <br />
-        <img src="images/workinprogress.png" />
+        Too large and RANSAC will accept potentialoutliers. 
+        Too small and RANSAC might not find anything at all.
     </p>
     <hr />
 
+    <h2>
+        What is the the intuition behind Nearest Neighbour Distance?
+    </h2>
+    <p>
+        <strong>What is Nearest Neighbour Distance (NNE)?</strong><br />
+        Consider the points displayed in this image. By definition, every point has 1 one point which is closest. You could have multiple points which are equidistant and hence multiple nearest neighbours. But for this discussion we will pick the closest neighbour.
+        <br />
+        <img src="images/nne_introduction.png" alt="NNE introduction"/>
+    </p>
+    <ol>
+        <li>
+            Point 2 is the nearest neighbour of point 1
+        </li>
+        <li>
+            Point 2 is the nearest neighbour of point 4 and vice-versa
+        </li>
+        <li>
+            Point 4 is the nearest neighbour of point 3
+        </li>
+        <li>
+            Point 4 is the nearest neighbour of point 5
+        </li>
+    </ol>
+    <img src="images/definition_average_nne.png" alt="Definition of average NNE"/>
+    <p>
+        <br />
+        <strong>What was the inspiration for using NNE distance?</strong>
+        <br />
+        The NNE statistic gives us an idea of how close or spread out the data points are.
+        The RANSAC threshold distance parameter must have some correlation with the mean or median NNE.
+        
+        <br />
 
+    </p>
+    <hr />
 
     <h2>
         How to calculate the the nearest neighbour distance?
