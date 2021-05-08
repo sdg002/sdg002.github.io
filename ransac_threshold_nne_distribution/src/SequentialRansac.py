@@ -9,9 +9,9 @@ from skimage.measure import LineModelND, ransac
 '''
 RANSAC parameter - The minimum number of data points to fit a model to.
 '''
-MIN_SAMPLES=3
-MAX_TRIALS=1000
-MIN_ALLOWABLE_THRESHOLD=1.0
+MIN_SAMPLES=3  #how many points in a single sampling
+MAX_TRIALS_FACTOR=0.5 #influences how many randmon samples to pick
+MIN_ALLOWABLE_THRESHOLD=1.0  #if the nearest neighbour statistic is zero then this should be used for the RANSAC threshold
 
 class SequentialRansac(object):
     """
@@ -77,14 +77,14 @@ class SequentialRansac(object):
         median=statistics.median(nne_distances)
         stdev=statistics.stdev(nne_distances)
         distance_from_line=median 
-        print("Mean=%f, Median=%f, Stddev=%f calculated ransca_threshold=%f" % (mean,median,stdev,distance_from_line))
+        print("\tMean=%f, Median=%f, Stddev=%f calculated " % (mean,median,stdev))
         if (distance_from_line == 0.0):
             return MIN_ALLOWABLE_THRESHOLD
         else:
             return distance_from_line
 
-    def __extract_first_ransac_line(self,data_points:List, ransac_threshold:int):
-        model_robust, inliers = ransac(data_points, LineModelND, min_samples=MIN_SAMPLES,residual_threshold=ransac_threshold, max_trials=MAX_TRIALS)
+    def __extract_first_ransac_line(self,data_points:List, ransac_threshold:int, max_trials:int):
+        model_robust, inliers = ransac(data_points, LineModelND, min_samples=MIN_SAMPLES,residual_threshold=ransac_threshold, max_trials=max_trials)
         results_inliers=[]
         results_inliers_removed=[]
         for i in range(0,len(data_points)):
@@ -104,16 +104,23 @@ class SequentialRansac(object):
 
         starting_points=self.black_points
         for index in range(0,self._max_lines):
-            ransac_threshold=self.__calculate_ransac_threshold_from_nearest_neighbour_estimate(starting_points) #*threshold_factor
+            
+            nearest_neighbour_estimate=self.__calculate_ransac_threshold_from_nearest_neighbour_estimate(starting_points) 
+            ransac_threshold=nearest_neighbour_estimate*self._ransac_threshold_factor
+
+            number_of_samples_to_draw=(int(MAX_TRIALS_FACTOR* len(starting_points)))**2
+
+            print("\tAttempting RANSAC using threshold factor=%f, nearest neighbour estimate=%f ,calculated threshold=%f, black pixel count=%d, max_samples=%d," % (self._ransac_threshold_factor, nearest_neighbour_estimate,ransac_threshold,len(starting_points), number_of_samples_to_draw))
             min_needed_points=MIN_SAMPLES*2
             if (len(starting_points) <= min_needed_points):
                 print("No more points available. Terminating search for RANSAC. Available points=%d Cutt off points count=%d" % (len(starting_points),min_needed_points))
                 break
-            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_line(data_points=starting_points,ransac_threshold=ransac_threshold) 
+
+            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_line(data_points=starting_points,ransac_threshold=ransac_threshold, max_trials=number_of_samples_to_draw) 
             if (len(inlier_points) < self._min_inliers_allowed):
-                print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self._min_inliers_allowed))
+                print("\tNot sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self._min_inliers_allowed))
                 break
-            print("Found RANSAC line with %d inliers" % (len(inlier_points)))
+            print("\tFound RANSAC line with %d inliers, line number %d" % (len(inlier_points),index))
             starting_points=inliers_removed_from_starting
             results.append(RansacLineInfo(inlier_points,model))        
         

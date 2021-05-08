@@ -20,3 +20,7 @@ class RansacLineInfo(object):
         points = list(map(lambda p: Point(p[0],p[1]), self._inliers))
         return points
 
+    @property
+    def scikit_model(self):
+        """The scikit model"""
+        return self._model

@@ -7,7 +7,7 @@ import skimage.io
 
 
 
-class Test_testRansac(unittest.TestCase):
+class Test_Util(unittest.TestCase):
 
     def test_create_noisy_image_and_verify_that_width_height_match_expected(self):
         expected_width=100

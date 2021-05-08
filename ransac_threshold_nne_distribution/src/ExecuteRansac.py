@@ -11,10 +11,10 @@ from SequentialRansac import SequentialRansac
 # Do ransac
 
 
-def run(inputfilepath:str,outputfolder:str,num_trials:int,threshold_factor:float):
+def run(inputfilepath:str,outputfolder:str,max_lines_to_find:int,threshold_factor:float):
     print("-----------------------------------------")
     print("Going to run RANSAC on the file %s" % inputfilepath)
-    seq=SequentialRansac(path=inputfilepath,max_lines_to_find=num_trials,ransac_threshold_factor=threshold_factor)
+    seq=SequentialRansac(path=inputfilepath,max_lines_to_find=max_lines_to_find,ransac_threshold_factor=threshold_factor)
     line_results:List[RansacLineInfo]=seq.run_sequential_ransac()
     superimposed_image=Util.superimpose_all_ransac_lines(seq.image_array,line_results)
 
@@ -30,15 +30,24 @@ def run(inputfilepath:str,outputfolder:str,num_trials:int,threshold_factor:float
 
 
 current_folder_with_samples=os.path.join(os.path.dirname(__file__),"In/")
+current_folder_with_unittests=os.path.join(os.path.dirname(__file__),"test/")
 output_folder=os.path.join(os.path.dirname(__file__),"Out/")
 THRESHOLD_FACTOR=0.25
 
-def run_selected_filepattern(folder:str,pattern:str,num_trials:int):
+def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int):
     matching_files=glob.glob(folder+"/"+pattern)
     print("Found %d files which match the pattern %s in the folder: %s" % (len(matching_files),pattern,folder))
     for matching_file in matching_files:
-        run(inputfilepath=matching_file,outputfolder=output_folder,num_trials=num_trials, threshold_factor=THRESHOLD_FACTOR)
+        run(inputfilepath=matching_file,outputfolder=output_folder,max_lines_to_find=max_lines_to_find, threshold_factor=THRESHOLD_FACTOR)
 
 
 
-run_selected_filepattern(folder=current_folder_with_samples, pattern="*noisy*.png",num_trials=5000)
+#run_selected_filepattern(folder=current_folder_with_samples, pattern="*noisy*990*.png",max_lines_to_find=2)
+#run_selected_filepattern(folder=current_folder_with_unittests, pattern="*.png",max_lines_to_find=2)
+# run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.990-MAXD-3.0.png",max_lines_to_find=1)
+# run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.970-MAXD-10.0.png",max_lines_to_find=1)
+# run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.950-MAXD-3.0.png",max_lines_to_find=1)
+# run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.950-MAXD-5.0.png",max_lines_to_find=1)
+#run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.970*.png",max_lines_to_find=2)
+run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.95*.png",max_lines_to_find=2)
+run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.92*.png",max_lines_to_find=2)

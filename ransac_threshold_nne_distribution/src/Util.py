@@ -6,6 +6,7 @@ from numpy.core.numeric import NaN
 from numpy.lib import utils
 from RansacLineInfo import  RansacLineInfo
 from typing import List
+from skimage.measure import LineModelND, ransac
 
 WHITE_COLOR:int=255
 BLACK_COLOR:int=0
@@ -80,8 +81,67 @@ def superimpose_straight_line_between_2_points(input_image:np.ndarray,start_x:fl
     return input_image
     pass
 
-def superimpose_all_ransac_lines(image:np.ndarray,line_results:List[RansacLineInfo]):
+def generate_plottable_points_along_line(model:LineModelND, xmin:int,xmax:int, ymin:int, ymax:int):
+    """
+    Computes points along the specified line model
+    The visual range is 
+    between xmin and xmax along X axis
+        and
+    between ymin and ymax along Y axis
+    return shape is [[x1,y1],[x2,y2]]
+    """
+    unit_vector=model.params[1]
+    slope=abs(unit_vector[1]/unit_vector[0])
+    x_values=None
+    y_values=None
+    if (slope > 1):
+        y_values=np.arange(ymin, ymax,1)
+        x_values=model.predict_x(y_values)
+    else:        
+        x_values=np.arange(xmin, xmax,1)
+        y_values=model.predict_y(x_values)
+
+    np_data_points=np.column_stack((x_values,y_values)) 
+    return np_data_points
+
+
+def superimpose_all_ransac_lines(image:np.ndarray,ransac_lines:List[RansacLineInfo]):
     #to be done
     #Draw all Randsac lines and inliers on top of the image
     #See method superimpose_all_inliers in SequentialRansac.py
+    
+    width=image.shape[1]
+    height=image.shape[0]
+
+    #new_image=np.array(image, copy=True)
+    new_image=np.full([height,width,3],255,dtype='int')
+
+    colors=[(255,0,0),(255,255,0),(0,0,255)]
+    for line_index in range(0,len(ransac_lines)):
+        color=colors[line_index % len(colors)]
+        ransac_lineinfo:RansacLineInfo=ransac_lines[line_index]
+        inlier_points=ransac_lineinfo.inliers 
+        y_values=list(map(lambda p:p.Y,inlier_points))
+        x_values=list(map(lambda p:p.X,inlier_points))
+
+        y_min=min(y_values)
+        y_max=max(y_values)
+        x_min=min(x_values)
+        x_max=max(x_values)
+        plottable_points=generate_plottable_points_along_line(ransac_lineinfo.scikit_model, xmin=x_min,xmax=x_max, ymin=y_min,ymax=y_max)
+        for point in plottable_points:
+            x=int(round(point[0]))
+            if (x >= width) or (x < 0):
+                continue
+            y=int(round(point[1]))
+            if (y >= height) or (y < 0):
+                continue
+            new_y=height-y-1
+            new_image[new_y][x][0]=color[0]
+            new_image[new_y][x][1]=color[1]
+            new_image[new_y][x][2]=color[2]
+    return new_image
+
+
+    raise Exception("Could not complete ")
     pass
