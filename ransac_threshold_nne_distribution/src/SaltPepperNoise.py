@@ -92,31 +92,60 @@ def superimpose_random_straight_line(image:np.ndarray, max_distance:float):
 
     return image
 
-def generate_image_with_salt_pepper_noise(salt_pepper:float, max_distance_between_points:float):
+'''
+    Creates a noisy image comprising of black and white pixels with specified salt-pepper ratio
+    One random line is generated where the points are separated with the specified distance
+'''
+def generate_image_with_salt_pepper_noise_and_1_line(salt_pepper:float, max_distance_between_points:float):
     print("--------------------------------------------------")
-    print("Generating noisy image with salt_pepper=%f , max_distance=%f" % (salt_pepper, max_distance_between_points))
+    print("Generating noisy image with 1 line, salt_pepper=%f , max_distance=%f" % (salt_pepper, max_distance_between_points))
     
     noisy_image=Util.generate_noisy_image(width=IMAGE_WIDTH, height=IMAGE_HEIGHT,salt_pepper=salt_pepper)
     display_count_of_blackwhite_pixels(noisy_image)
 
-    random_x_first_half_of_width=(IMAGE_WIDTH*0.5)*random.random()
-    random_x_second_half_of_width=(IMAGE_WIDTH*0.5)*(1+random.random())
+    random_x_first=(IMAGE_WIDTH)*random.random()
+    random_x_second=IMAGE_WIDTH - random_x_first
 
     bottom_edge=0
     top_edge=IMAGE_HEIGHT
 
-    noisy_image=Util.superimpose_straight_line_between_2_points(noisy_image,start_x=random_x_first_half_of_width, start_y=bottom_edge, end_x=random_x_second_half_of_width, end_y=top_edge, max_distance=max_distance_between_points)
+    noisy_image=Util.superimpose_straight_line_between_2_points(noisy_image,start_x=random_x_first, start_y=bottom_edge, end_x=random_x_second, end_y=top_edge, max_distance=max_distance_between_points)
     
-    new_filename=generate_filename(basename="noisy_image", salt_pepper=salt_pepper, max_distance=max_distance_between_points)
+    new_filename=generate_filename(basename="noisy_image_with_1_line", salt_pepper=salt_pepper, max_distance=max_distance_between_points)
     save_image(image=noisy_image,filename=new_filename)
 
+def generate_image_with_salt_pepper_noise_and_2_lines(salt_pepper:float, max_distance_between_points:float):
+    print("--------------------------------------------------")
+    print("Generating noisy image with 2 lines,salt_pepper=%f , max_distance=%f" % (salt_pepper, max_distance_between_points))
+    
+    noisy_image=Util.generate_noisy_image(width=IMAGE_WIDTH, height=IMAGE_HEIGHT,salt_pepper=salt_pepper)
+    display_count_of_blackwhite_pixels(noisy_image)
 
-def generate_images_with_various_degrees_of_salt_pepper_rations():
+    random_x_first=(IMAGE_WIDTH)*random.random()
+    random_x_second=IMAGE_WIDTH - random_x_first
+    bottom_edge=0
+    top_edge=IMAGE_HEIGHT
+
+    noisy_image_with_first_line=Util.superimpose_straight_line_between_2_points(noisy_image,start_x=random_x_first, start_y=bottom_edge, end_x=random_x_second, end_y=top_edge, max_distance=max_distance_between_points)
+
+    left_edge=0
+    right_edge=IMAGE_WIDTH
+    random_y_first=(IMAGE_HEIGHT)*random.random()
+    random_y_second=IMAGE_HEIGHT -random_y_first
+
+    noisy_image_with_second_line=Util.superimpose_straight_line_between_2_points(noisy_image_with_first_line,start_x=left_edge, start_y=random_y_first, end_x=right_edge, end_y=random_y_second, max_distance=max_distance_between_points)
+    
+    new_filename=generate_filename(basename="noisy_image_2_lines", salt_pepper=salt_pepper, max_distance=max_distance_between_points)
+    save_image(image=noisy_image_with_second_line,filename=new_filename)
+
+
+def generate_images_with_various_degrees_of_salt_pepper_ratios():
     salt_pepper_ratios=[0.9, 0.92, 0.95, 0.97,0.99]
     max_distances=[2,3,5,7,10]
     for salt_pepper in salt_pepper_ratios:
         for max_distance in max_distances:
-            generate_image_with_salt_pepper_noise(salt_pepper=salt_pepper, max_distance_between_points=max_distance)
+            generate_image_with_salt_pepper_noise_and_1_line(salt_pepper=salt_pepper, max_distance_between_points=max_distance)
+            generate_image_with_salt_pepper_noise_and_2_lines(salt_pepper=salt_pepper, max_distance_between_points=max_distance)
 
 
-generate_images_with_various_degrees_of_salt_pepper_rations()
+generate_images_with_various_degrees_of_salt_pepper_ratios()

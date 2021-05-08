@@ -5,6 +5,7 @@ from RansacLineInfo import  RansacLineInfo
 import Util
 import skimage.io
 from SequentialRansac import SequentialRansac
+import time
 
 # Read the image
 # use Kdtree to determine nearest neighbour
@@ -14,10 +15,11 @@ from SequentialRansac import SequentialRansac
 def run(inputfilepath:str,outputfolder:str,max_lines_to_find:int,threshold_factor:float):
     print("-----------------------------------------")
     print("Going to run RANSAC on the file %s" % inputfilepath)
+    start=time.time()
     seq=SequentialRansac(path=inputfilepath,max_lines_to_find=max_lines_to_find,ransac_threshold_factor=threshold_factor)
     line_results:List[RansacLineInfo]=seq.run_sequential_ransac()
     superimposed_image=Util.superimpose_all_ransac_lines(seq.image_array,line_results)
-
+    elapsed_time=(time.time() - start)
 
     #Save the results
     inputfilename=os.path.basename(inputfilepath)
@@ -25,11 +27,11 @@ def run(inputfilepath:str,outputfolder:str,max_lines_to_find:int,threshold_facto
     file_result=os.path.join(os.path.dirname(__file__),"./out/",("sequential-ransac-%s-tfac-%.2f.png") % (filename_noextension,round(threshold_factor,2)))
     skimage.io.imsave(file_result,superimposed_image)
     print("Results saved to file %s" % (file_result))
+    print("Time elapsed=%f seconds" % (elapsed_time))
+    
 
-    pass
 
-
-current_folder_with_samples=os.path.join(os.path.dirname(__file__),"In/")
+in_folder_with_samples=os.path.join(os.path.dirname(__file__),"In/")
 current_folder_with_unittests=os.path.join(os.path.dirname(__file__),"test/")
 output_folder=os.path.join(os.path.dirname(__file__),"Out/")
 THRESHOLD_FACTOR=0.25
@@ -49,5 +51,10 @@ def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int):
 # run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.950-MAXD-3.0.png",max_lines_to_find=1)
 # run_selected_filepattern(folder=current_folder_with_samples, pattern="noisy_image-SP-0.950-MAXD-5.0.png",max_lines_to_find=1)
 #run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.970*.png",max_lines_to_find=2)
-run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.95*.png",max_lines_to_find=2)
-run_selected_filepattern(folder=current_folder_with_samples, pattern="*0.92*.png",max_lines_to_find=2)
+#run_selected_filepattern(folder=in_folder_with_samples, pattern="*0.95*.png",max_lines_to_find=2)
+
+#run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*0.92*.png",max_lines_to_find=2)
+#run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*0.92*.png",max_lines_to_find=1)
+
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*.png",max_lines_to_find=1)
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*.png",max_lines_to_find=2)

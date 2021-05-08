@@ -10,7 +10,7 @@ from skimage.measure import LineModelND, ransac
 RANSAC parameter - The minimum number of data points to fit a model to.
 '''
 MIN_SAMPLES=3  #how many points in a single sampling
-MAX_TRIALS_FACTOR=0.5 #influences how many randmon samples to pick
+MAX_TRIALS_FACTOR=0.1 #influences how many randmon samples to pick , 0.5  has worked well
 MIN_ALLOWABLE_THRESHOLD=1.0  #if the nearest neighbour statistic is zero then this should be used for the RANSAC threshold
 
 class SequentialRansac(object):
@@ -108,9 +108,9 @@ class SequentialRansac(object):
             nearest_neighbour_estimate=self.__calculate_ransac_threshold_from_nearest_neighbour_estimate(starting_points) 
             ransac_threshold=nearest_neighbour_estimate*self._ransac_threshold_factor
 
-            number_of_samples_to_draw=(int(MAX_TRIALS_FACTOR* len(starting_points)))**2
+            number_of_samples_to_draw= int(MAX_TRIALS_FACTOR * (len(starting_points)**2))
 
-            print("\tAttempting RANSAC using threshold factor=%f, nearest neighbour estimate=%f ,calculated threshold=%f, black pixel count=%d, max_samples=%d," % (self._ransac_threshold_factor, nearest_neighbour_estimate,ransac_threshold,len(starting_points), number_of_samples_to_draw))
+            print("\tAttempting RANSAC using threshold factor=%f, nearest neighbour estimate=%f ,calculated threshold=%f, black pixel count=%d, max_samples=%d,MAX_TRIALS_FACTOR=%f" % (self._ransac_threshold_factor, nearest_neighbour_estimate,ransac_threshold,len(starting_points), number_of_samples_to_draw, MAX_TRIALS_FACTOR))
             min_needed_points=MIN_SAMPLES*2
             if (len(starting_points) <= min_needed_points):
                 print("No more points available. Terminating search for RANSAC. Available points=%d Cutt off points count=%d" % (len(starting_points),min_needed_points))
