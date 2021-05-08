@@ -20,50 +20,74 @@
 
     <header>
         <h1>
-            TITLE COMES HERE
+            Nearest neighbour distance metric approach to determine the RANSAC threshold
         </h1>
 
     </header>
     <h2>
-        Introduction
+        What problem does the RANSAC algorithm solve?
     </h2>
     <p>
-        TO BE DONE
+        Consider the data points below.
+        We have a mix of inliers (black) and outliers (red). We want to find the model of the straight line which fits the inliers. 
+        The human mind can easily distinguish the inliers from the outliers and produce a line which neatly fits all the inliers.
         <br />
+        <img src="images/all_data_points.png" alt="All data points" />
+        <br />
+        RANSAC is a simple voting-based algorithm that iteratively samples the population of points and find the subset of those lines which appear to conform to a model. In this case, the model is a straight line.
+        <img src="images/desired_line_mind.png" alt="All data points" />
+        <br />
+        Least squares method will encompass all points thereby producing a line which is away from the desired line
+        <br />
+        <img src="images/actual_line_leastsquares.png" alt="All data points" />
     </p>
-
     <hr />
+
     <h2>
-        Problem overview
+        How does the RANSAC algorithm work?
     </h2>
     <p>
-        What are we trying to solve? Introduce RANSAC concepts and terms
+        This is not a detailed discussion on RANSAC. 
+        <br />
+        <img src="images/Wikipedia_RANSAC_Inliers_and_Outliers.png" alt="Outliers, inliers and threshold distance" />
+        <br />
+        Copyright information for this image can be found <a href="https://commons.wikimedia.org/w/index.php?curid=37017886">here</a>
+    </p>
+    <ol>
+        <li>Pick any N random points from the entire population</li>
+        <li>Find the line using Least Squares which fits the N points</li>
+        <li>Find all points which are inliers to this new line. Inliers are points which are within threshold distance 'd' of the line</li>
+        <li>Repeat the above for a configured number of trials.</li>
+        <li>The line which produces the highest inliers is the winnder</li>
+    </ol>
+    <p>
+        <br />
+        Detailed working of the RANSACA can be found in this <a href="https://en.wikipedia.org/wiki/Random_sample_consensus">Wikipedia article</a> 
+        and <a href="https://medium.com/mlearning-ai/outlier-detection-using-the-ransac-algorithm-de52670adb4a">my article on Medium</a> .
+    </p>
+    <hr />
+
+
+    <h2>
+        What problem are we attempting to address in this article?
+    </h2>
+    <p>
+        What are we trying to solve? 
+        <br />
+        The intuition behind NNE distance
+        <br />
+        What was the inspirtion for using NNE distance?
+        <br />
+        Show picture of NNE from previous article
         <br />
         <img src="images/workinprogress.png" />
     </p>
-
     <hr />
-    <h2>
-        Overview of RANSAC algorithm
-    </h2>
-    <p>
-        Caveat that this is not a detailed discussion on RANSAC.
-        Provide link to original RANSAC (https://medium.com/mlearning-ai/outlier-detection-using-the-ransac-algorithm-de52670adb4a)
 
-        Show picture 1 with inliers and outliers
-        <br />
-        Show picture 2 with the line that would have been calculated by the least squares method
-        <br />
-        Show picture 3 with the line that is calculated by RANSAC
-        <br />
-        Show picture 4 which demonstrates the RANSAC threshold
-        <br />
-        <img src="images/workinprogress.png" />
-    </p>
 
-    <hr />
+
     <h2>
-        Finding the nearest neighbours and mean of the nearest neighbour distance
+        How to calculate the the nearest neighbour distance?
     </h2>
     <p>
         Refer to my article on NNE
@@ -78,19 +102,7 @@
 
     <hr />
     <h2>
-        Intuition behind using the mean Nearest Neighbour Distance
-    </h2>
-    <p>
-        What was the inspirtion for using NNE distance?
-        <br />
-        We will use various values of threshold and apply RANSAC on images with varying noise density
-        <br />
-        <img src="images/workinprogress.png" />
-    </p>
-
-    <hr />
-    <h2>
-        Results
+        Results - When image contains a one line
     </h2>
     <p>
         Different images (SP,MAXD) vs THRESHOLD (factor * mean nne)
@@ -98,6 +110,30 @@
         <img src="images/workinprogress.png" />
     </p>
 
+    <h2>
+        Results - When image contains two lines
+    </h2>
+    <p>
+        Different images (SP,MAXD) vs THRESHOLD (factor * mean nne)
+        <br />
+        <img src="images/workinprogress.png" />
+    </p>
+
+    <h2>
+        Accompanying source code
+    </h2>
+    <p>
+        Show folder structure
+        <br />
+        explain the purpose of the Python files
+    </p>
+
+    <h2>
+        Generating noisy images
+    </h2>
+    <p>
+        explain which file, what to run
+    </p>
 
 
 
