@@ -36,11 +36,11 @@ current_folder_with_unittests=os.path.join(os.path.dirname(__file__),"test/")
 output_folder=os.path.join(os.path.dirname(__file__),"Out/")
 THRESHOLD_FACTOR=0.25
 
-def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int):
+def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int,threshold_factor:float):
     matching_files=glob.glob(folder+"/"+pattern)
     print("Found %d files which match the pattern %s in the folder: %s" % (len(matching_files),pattern,folder))
     for matching_file in matching_files:
-        run(inputfilepath=matching_file,outputfolder=output_folder,max_lines_to_find=max_lines_to_find, threshold_factor=THRESHOLD_FACTOR)
+        run(inputfilepath=matching_file,outputfolder=output_folder,max_lines_to_find=max_lines_to_find, threshold_factor=threshold_factor)
 
 
 
@@ -56,5 +56,5 @@ def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int):
 #run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*0.92*.png",max_lines_to_find=2)
 #run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*0.92*.png",max_lines_to_find=1)
 
-run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*.png",max_lines_to_find=1)
-run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*.png",max_lines_to_find=2)
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*.png",max_lines_to_find=1, threshold_factor=0.5)
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*.png",max_lines_to_find=2,threshold_factor=0.5)
