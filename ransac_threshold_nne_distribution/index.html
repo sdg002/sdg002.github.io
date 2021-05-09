@@ -129,14 +129,18 @@
         How to calculate the the nearest neighbour distance?
     </h2>
     <p>
-        Refer to my article on NNE
-        <br />
-        Show some snippet
-        <br />
-        Show picture from old article explaining what NNE distance is.
-        <br />
-        <img src="images/workinprogress.png" />
+        scikit-learn provides the excellent class <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KDTree.html">KDTree</a>
     </p>
+        <pre>
+import numpy as np
+rng = np.random.RandomState(0)
+X = rng.random_sample((10, 3))  # 10 points in 3 dimensions
+tree = KDTree(X, leaf_size=2)              
+dist, ind = tree.query(X[:1], k=3)                
+print(ind)  # indices of 3 closest neighbors
+
+print(dist)  # distances to 3 closest neighbors
+        </pre>
 
 
     <hr />

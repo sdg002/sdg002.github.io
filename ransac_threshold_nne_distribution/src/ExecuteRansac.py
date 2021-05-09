@@ -56,5 +56,5 @@ def run_selected_filepattern(folder:str,pattern:str,max_lines_to_find:int,thresh
 #run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*0.92*.png",max_lines_to_find=2)
 #run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*0.92*.png",max_lines_to_find=1)
 
-run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*.png",max_lines_to_find=1, threshold_factor=0.5)
-run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*.png",max_lines_to_find=2,threshold_factor=0.5)
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*1_line*.png",max_lines_to_find=1, threshold_factor=1.0)
+run_selected_filepattern(folder=in_folder_with_samples, pattern="*2_lines*.png",max_lines_to_find=2,threshold_factor=1.0)
