@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import math
 
 from numpy.core.numeric import NaN
@@ -7,6 +6,7 @@ from numpy.lib import utils
 from RansacLineInfo import  RansacLineInfo
 from typing import List
 from skimage.measure import LineModelND, ransac
+import datetime
 
 WHITE_COLOR:int=255
 BLACK_COLOR:int=0
@@ -17,10 +17,11 @@ Noise is generated as per the ration salt_pepper.
 salt=white pixel and pepper=black pixel
 '''
 def generate_noisy_image(width:int, height:int,salt_pepper:float):
+    np.random.seed(datetime.datetime.now().second)
     image = np.zeros([height,width,1],dtype=np.uint8)
     for y in range(0,height):
         for x in range(0,width):
-            r=random.random()
+            r=np.random.random()
             if (r > salt_pepper):
                 image[y][x][0]=0
             else:
