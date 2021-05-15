@@ -18,7 +18,7 @@ from skimage import io
 import os
 import datetime
 import math;
-import Util
+from algorithms.Util import Util
 import csv
 from algorithms.NoisyImageGenerator import NoisyImageGenerator
 from data.InputRow import InputRow

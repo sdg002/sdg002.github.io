@@ -9,7 +9,7 @@ import random
 import datetime
 from skimage import io
 import os
-from Util import Util
+from algorithms.Util import Util
 
 WHITE=255
 

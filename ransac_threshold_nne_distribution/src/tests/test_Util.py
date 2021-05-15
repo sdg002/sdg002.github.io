@@ -1,5 +1,5 @@
 import unittest
-from Util import Util
+from algorithms.Util import Util
 import numpy as np
 import os
 import skimage
