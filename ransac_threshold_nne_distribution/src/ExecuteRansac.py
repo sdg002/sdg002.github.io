@@ -3,10 +3,10 @@ import glob
 from typing import List, Pattern
 
 from numpy.lib.function_base import append
-from RansacLineInfo import  RansacLineInfo
+from algorithms.RansacLineInfo import  RansacLineInfo
 import Util
 import skimage.io
-from SequentialRansac import SequentialRansac
+from algorithms.SequentialRansac import SequentialRansac
 import time
 import csv
 from data.InputRow import InputRow

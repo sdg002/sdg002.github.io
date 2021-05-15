@@ -3,7 +3,7 @@ import math
 
 from numpy.core.numeric import NaN
 from numpy.lib import utils
-from RansacLineInfo import  RansacLineInfo
+from algorithms.RansacLineInfo import RansacLineInfo
 from typing import List
 from skimage.measure import LineModelND, ransac
 import datetime

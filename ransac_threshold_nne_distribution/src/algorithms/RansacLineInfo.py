@@ -1,6 +1,6 @@
 from skimage.measure import LineModelND, ransac
 import numpy as np
-from Point import Point
+from .Point import Point
 from typing import List
 
 class RansacLineInfo(object):

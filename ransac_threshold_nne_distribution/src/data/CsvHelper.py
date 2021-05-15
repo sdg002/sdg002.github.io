@@ -4,6 +4,7 @@ from typing import List
 from .OutputRow import OutputRow
 import csv
 
+
 class CsvHelper(object):
     """CsvHelper is a class that facilitates writing and reading  to/from CSV files"""
     def __init__(self):

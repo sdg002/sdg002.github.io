@@ -20,7 +20,7 @@ import datetime
 import math;
 import Util
 import csv
-from NoisyImageGenerator import NoisyImageGenerator
+from algorithms.NoisyImageGenerator import NoisyImageGenerator
 from data.InputRow import InputRow
 from data.CsvHelper import CsvHelper
 

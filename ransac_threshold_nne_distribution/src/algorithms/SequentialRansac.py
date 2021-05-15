@@ -1,5 +1,5 @@
 import numpy as np
-from RansacLineInfo import  RansacLineInfo
+from algorithms.RansacLineInfo import  RansacLineInfo
 import skimage.io
 from typing import List
 from sklearn.neighbors import KDTree
