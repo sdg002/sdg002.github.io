@@ -21,6 +21,8 @@ import math;
 import Util
 import csv
 from NoisyImageGenerator import NoisyImageGenerator
+from data.InputRow import InputRow
+from data.CsvHelper import CsvHelper
 
 IMAGE_WIDTH=150
 IMAGE_HEIGHT=100
@@ -46,25 +48,39 @@ def generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepp
         os.mkdir(folder_results)
         print("The folder %s was created" % (folder_results))
     print("Results will be generated in the output folder %s" % (folder_results))
-    csv_output=os.path.join(folder_results,"input_images.csv")
-    count_of_images=0
-    with open(csv_output, mode='w', newline='') as csv_file:
-        testimage_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        testimage_writer.writerow(["imagefile","salt_pepper","max_distance","line_count","total_pixels","black_pixels"])
-        for salt_pepper in salt_pepper_ratios:
-            for max_distance in max_distances:
-                generator=NoisyImageGenerator(salt_pepper_ratio=salt_pepper, max_distance_between_points=max_distance, output_folder=folder_results,width=IMAGE_WIDTH, height=IMAGE_HEIGHT, max_lines=lines_count)
-                generator.create_noisy_image()
-                outputfile=generator.filename
-                count_of_black_pixels=generator.count_of_blackpixels
-                total_pixels=generator.total_pixel_count
-                print("Generated noisy image with salt-pepper=%f, max_distance=%f , filename=%s, black_pixels=%d total_pixels=%d" % (salt_pepper,max_distance,outputfile, count_of_black_pixels,total_pixels))
-                testimage_writer.writerow([outputfile,salt_pepper,max_distance,lines_count,count_of_black_pixels,total_pixels])
-                count_of_images+=1
-    print("Total images generated=%d" % (count_of_images))
+    csv_output_file=os.path.join(folder_results,"input_images.csv")
+    input_rows:List[InputRow]=[]
+
+    for salt_pepper in salt_pepper_ratios:
+        for max_distance in max_distances:
+            generator=NoisyImageGenerator(salt_pepper_ratio=salt_pepper, max_distance_between_points=max_distance, output_folder=folder_results,width=IMAGE_WIDTH, height=IMAGE_HEIGHT, max_lines=lines_count)
+            generator.create_noisy_image()
+            outputfile=generator.filename
+            count_of_black_pixels=generator.count_of_blackpixels
+            total_pixels=generator.total_pixel_count
+            print("\tGenerated noisy image with salt-pepper=%f, max_distance=%f , filename=%s, black_pixels=%d total_pixels=%d" % (salt_pepper,max_distance,outputfile, count_of_black_pixels,total_pixels))
+
+            new_row=InputRow()
+            new_row.imagefile=outputfile
+            new_row.total_pixels=total_pixels
+            new_row.black_pixels=count_of_black_pixels
+            new_row.salt_pepper=salt_pepper
+            new_row.max_distance=max_distance
+            new_row.line_count=lines_count
+            input_rows.append(new_row)
+
+    print("Total images generated=%d" % (len(input_rows)))
+    CsvHelper.write_input_rows_to_csv(filename=csv_output_file,input_rows=input_rows)
+    print("------------------------------------------------------")
 
 
-generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.99],max_distances=[2,3,5], sub_folder="very_small_dataset_2lines", lines_count=2)
-generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_2lines", lines_count=2)
-generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_1line", lines_count=1)
+
+def main():
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.99],max_distances=[2,3,5], sub_folder="very_small_dataset_2lines", lines_count=2)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_2lines", lines_count=2)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_1line", lines_count=1)
+
+if __name__ == "__main__":
+    main()
+
 

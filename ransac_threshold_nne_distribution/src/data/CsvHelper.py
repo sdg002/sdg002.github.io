@@ -20,12 +20,26 @@ class CsvHelper(object):
                 testimage_writer.writerow([output_row.imagefile,output_row.outputimagefile,output_row.actualthreshold,output_row.thresholdfactor])
         pass 
 
+    def write_input_rows_to_csv(filename:str,input_rows:List[InputRow]):
+        with open(filename, mode='w', newline='') as csv_file:
+            testimage_writer=csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            testimage_writer.writerow(["imagefile","salt_pepper","max_distance","line_count","total_pixels","black_pixels"])            
+            for row in input_rows:
+                testimage_writer.writerow([row.imagefile,row.salt_pepper,row.max_distance,row.line_count,row.total_pixels,row.black_pixels])
+        pass
+
     """Read all input images from the specified CSV file and creates a data object for every line"""
     @staticmethod
     def read_input_rows_from_csv(filename:str)->List[InputRow]:
         input_file=csv.DictReader(open(filename))
         results=[]
         for row_dict in input_file:
-            input_row=InputRow(row_dict)
+            input_row=InputRow()
+            input_row.imagefile=row_dict["imagefile"]
+            input_row.salt_pepper=float(row_dict["salt_pepper"])
+            input_row.line_count=int(row_dict["line_count"])
+            input_row.total_pixels=int(row_dict["total_pixels"])
+            input_row.black_pixels=int(row_dict["black_pixels"])
+
             results.append(input_row)
         return results
