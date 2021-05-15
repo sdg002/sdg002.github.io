@@ -64,6 +64,7 @@ def generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepp
     print("Total images generated=%d" % (count_of_images))
 
 
+generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.99],max_distances=[2,3,5], sub_folder="very_small_dataset_2lines", lines_count=2)
 generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_2lines", lines_count=2)
 generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_1line", lines_count=1)
 
