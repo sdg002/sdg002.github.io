@@ -4,7 +4,7 @@ from typing import List, Pattern
 
 from numpy.lib.function_base import append
 from algorithms.RansacLineInfo import  RansacLineInfo
-import Util
+from Util import Util
 import skimage.io
 from algorithms.SequentialRansac import SequentialRansac
 import time
