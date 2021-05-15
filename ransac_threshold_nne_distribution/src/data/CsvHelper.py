@@ -1,4 +1,5 @@
 
+from data.InputRow import InputRow
 from typing import List
 from .OutputRow import OutputRow
 import csv
@@ -17,4 +18,14 @@ class CsvHelper(object):
             testimage_writer.writerow(csvcolumns)
             for output_row in output_rows:
                 testimage_writer.writerow([output_row.imagefile,output_row.outputimagefile,output_row.actualthreshold,output_row.thresholdfactor])
-        pass        
+        pass 
+
+    """Read all input images from the specified CSV file and creates a data object for every line"""
+    @staticmethod
+    def read_input_rows_from_csv(filename:str)->List[InputRow]:
+        input_file=csv.DictReader(open(filename))
+        results=[]
+        for row_dict in input_file:
+            input_row=InputRow(row_dict)
+            results.append(input_row)
+        return results

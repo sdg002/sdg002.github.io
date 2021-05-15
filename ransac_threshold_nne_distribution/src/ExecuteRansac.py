@@ -10,7 +10,6 @@ from SequentialRansac import SequentialRansac
 import time
 import csv
 from data.InputRow import InputRow
-from data.InputRow import read_input_rows_from_file
 import shutil
 from data.OutputRow import OutputRow
 from data.CsvHelper import CsvHelper
@@ -85,7 +84,7 @@ def create_empty_folder_for_results(csvfile:str):
 def execute_ransac_on_files(csvfile:str,threshold_factors:List[float]):
     csv_results_file=None # initialize this to the path of a csv file in output_folder, all results will be written here
 
-    input_datarows=read_input_rows_from_file(filename=csvfile)
+    input_datarows=CsvHelper.read_input_rows_from_csv(filename=csvfile)
     ransac_results:List[OutputRow]=[]
     new_directory_for_results=create_empty_folder_for_results(csvfile=csvfile)
     new_csv_file_for_results=os.path.join(new_directory_for_results,"result_image.csv")

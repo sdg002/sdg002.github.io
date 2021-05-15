@@ -31,13 +31,3 @@ class InputRow(object):
     def __repr__(self):
         return f'imagefile={self.__impagefile} , salt_pepper={self.__salt_pepper}'
 
-'''
-    Parses the specified file and converts all lines into objects
-'''
-def read_input_rows_from_file(filename:str)->List[InputRow]:
-    input_file=csv.DictReader(open(filename))
-    results=[]
-    for row_dict in input_file:
-        input_row=InputRow(row_dict)
-        results.append(input_row)
-    return results
