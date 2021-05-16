@@ -153,4 +153,21 @@ class Util(object):
                 new_image[new_y][x][2]=color[2]
         return new_image
 
-
+    '''
+    Given a long absolute file path such as c:/folder1/folder2/folder3/hello.txt
+    this function will display only the specified number of leaf folders 
+    e.g. /folder3/hello.txt
+    When to use this? 
+    When you want to skip the details and keep the output more succinct
+    '''
+    @staticmethod
+    def display_leaf_folders_from_path(path:str,count:int):
+        result=""
+        parts=path.split("\\")
+        total_parts=len(parts)
+        for partindex in range(total_parts-count,total_parts):
+            result=result+parts[partindex]
+            if (partindex == total_parts-1):
+                break
+            result=result+"/"
+        return result

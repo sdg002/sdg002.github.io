@@ -41,6 +41,21 @@ class CsvHelper(object):
             input_row.line_count=int(row_dict["line_count"])
             input_row.total_pixels=int(row_dict["total_pixels"])
             input_row.black_pixels=int(row_dict["black_pixels"])
+            input_row.max_distance=int(row_dict["max_distance"])
 
             results.append(input_row)
         return results
+
+    @staticmethod
+    def read_result_rows_from_csv(filename:str)->List[OutputRow]:
+        output_file=csv.DictReader(open(filename))
+        results=[]
+        for row_dict in output_file:
+            output_row=OutputRow()
+            output_row.imagefile=row_dict["inputimagefile"]
+            output_row.outputimagefile=row_dict["outputimagefile"]
+            output_row.thresholdfactor=row_dict["thresholdfactor"]
+            output_row.actualthreshold=row_dict["threshold"]
+            results.append(output_row)
+        return results
+        

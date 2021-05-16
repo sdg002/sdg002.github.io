@@ -1,5 +1,6 @@
 import os
 import glob
+from os import path
 from typing import List, Pattern
 
 from numpy.lib.function_base import append
@@ -106,15 +107,15 @@ def main():
     for file_index in range(0,len(matching_files)):
         matching_file=matching_files[file_index]
         csvfile=os.path.basename(matching_file)
-        print("%d......%s" % (file_index,matching_file))
+        print(f"{file_index}......{Util.display_leaf_folders_from_path(path=matching_file, count=3)}")
     choice=input("Select the index of the file which you want to run RANSAC on: ")
     ichoice=int(choice)
     if (ichoice < 0 or ichoice >= len(matching_files)):
         print("Choice cannot be less than 0 or greater than %d . Quitting." % (len(matching_files)))
         return
-    print("You selected %d" % (ichoice))
-    print("file = %s " % (matching_files[file_index]))
-    execute_ransac_on_files(csvfile=matching_files[file_index],threshold_factors=[0.5, 0.1])
+    print(f"You selected {ichoice}")
+    print(f"{Util.display_leaf_folders_from_path(path=matching_files[ichoice],count=3)}")
+    execute_ransac_on_files(csvfile=matching_files[ichoice],threshold_factors=[0.5, 0.1])
 
 if __name__ == "__main__":
     main()

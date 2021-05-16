@@ -63,6 +63,13 @@ class Test_Util(unittest.TestCase):
         self.__save_numpy_image("Util_unittest_vertical_dotted_line.png", actual_image)
         pass
 
+    def test_display_leaf_folders_from_path(self):
+        inputfolder="c:\\folder1\\folder2\\folder3\\cool.txt"
+        actual_count_of_parts_to_display=2
+        expected_display="folder3/cool.txt"
+        actual_display=Util.display_leaf_folders_from_path(path=inputfolder,count=actual_count_of_parts_to_display)
+        self.assertEqual(expected_display,actual_display)
+
     '''
     Saves the numpy image to a file under the local script folder
     Use for manual inspection
@@ -73,5 +80,6 @@ class Test_Util(unittest.TestCase):
         skimage.io.imsave(file_result,image)
 
 
+    
 if __name__ == '__main__':
     unittest.main()

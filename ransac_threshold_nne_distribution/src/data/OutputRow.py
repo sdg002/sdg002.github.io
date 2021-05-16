@@ -43,4 +43,4 @@ class OutputRow(object):
 
 
     def __repr__(self):
-        return f'input imagefile={self.imagefile}, outputimagefile={self.outputimagefile} , threshold factor={self.actualthreshold}, threshold factor={self.thresholdfactor}'
+        return f'input imagefile={self.imagefile}, outputimagefile={self.outputimagefile} , threshold factor={self.thresholdfactor}, actual threshold ={self.actualthreshold}'
