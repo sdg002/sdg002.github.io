@@ -1,0 +1,46 @@
+body
+{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+div.result
+{
+    display: inline-block;
+    position: relative;
+}
+div.result h3.saltpepper
+{
+    position: absolute;
+    margin: 0;padding: 0;
+    left: 0;top: 0;
+}
+
+div.result h3.maxdistance
+{
+    position: absolute;
+    margin: 0;padding: 0;
+    right: 0;top: 0;
+}
+
+div.result figure img.input
+{
+    margin: 1em;
+    border: 1px black solid;
+}
+
+div.result figure img.ransac
+{
+    margin: 1em;
+    border: 1px lightgray solid;
+}
+
+div.result figure
+{
+    display: inline-block;
+}
+
+div.result figure figcaption
+{
+    text-align: center;
+    font-size: 0.9em;
+}
