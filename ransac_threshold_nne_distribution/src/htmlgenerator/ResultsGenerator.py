@@ -99,6 +99,12 @@ class ResultsGenerator(object):
     def print_endresultsblock(self):
         self.__append_html("</div>")
 
+    def get_absolutepath_inputimage(self,filename:str):
+        return os.path.join(self.viewmodel.inputfolder,filename)
+
+    def get_absolutepath_resultimage(self,filename:str):
+        return os.path.join(self.viewmodel.resultsfolder,filename)
+
     def generate_report(self):
         self.copy_cssfile()
         self.start_body()
@@ -111,14 +117,19 @@ class ResultsGenerator(object):
                 self.print_startresultsblock()
                 self.print_salt_pepper(salt_pepper)
                 self.print_maxdistance(max_distance=input_row.max_distance)
+
                 input_image_caption=self.generate_caption_for_input_image(mean_nnd=2.11)
-                self.render_image(input_row.imagefile,input_image_caption)
+                input_image_absolute_filename=self.get_absolutepath_inputimage(input_row.imagefile)
+                self.render_image(input_image_absolute_filename,input_image_caption)
+                
                 matching_result_rows=self.viewmodel.get_results_from_inputrow(input_row)
                 print(f"\t\tProcessing input image:{input_row.imagefile}...result files={len(matching_result_rows)}...max_distance={input_row.max_distance}")
                 for result_file in matching_result_rows:
                     print(f"\t\t\t{result_file.outputimagefile}...tfac={result_file.thresholdfactor}...threshold={result_file.actualthreshold}")
+                    result_image_absolute_filename=self.get_absolutepath_resultimage(result_file.outputimagefile)
+
                     result_image_caption=self.generate_caption_for_result_image(ransac_threshold_factor=0.333, ransac_threshold=1.1)
-                    self.render_image(result_file.imagefile,result_image_caption)  
+                    self.render_image(result_image_absolute_filename,result_image_caption)  
                 self.print_endresultsblock()
                 self.print_line()
         self.close_body()

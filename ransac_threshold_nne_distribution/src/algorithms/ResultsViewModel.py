@@ -4,10 +4,22 @@ from data.OutputRow import OutputRow
 
 class ResultsViewModel(object):
     """Holds all the inputs data and results data and provides methods to emti these records."""
-    def __init__(self,inputrows:List[InputRow], outputrows:List[OutputRow]):
+    def __init__(self,inputrows:List[InputRow], outputrows:List[OutputRow],inputfolder:str, resultsfolder:str):
         self.__inputrows=inputrows
         self.__outputrows=outputrows
+        self.__inputfolder=inputfolder
+        self.__resultsfolder=resultsfolder
 
+    @property
+    def inputfolder(self):
+        """The absolute folder which contains the input images"""
+        return self.__inputfolder
+
+    @property
+    def resultsfolder(self):
+        """The absolute folder which contains the result images"""
+        return self.__resultsfolder
+    
     @property
     def inputrows(self):
         """The inputrows property."""

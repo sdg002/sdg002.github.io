@@ -29,7 +29,9 @@ def find_results_csv_from_input_csv(inputfilename:str):
     return results_file
 
 def generate_html_filepath_from_input(inputfilename:str):
-    return "C://truetemp//results.html"
+    folder_output=os.path.join(os.path.dirname(__file__),"out")
+    dir_name=os.path.basename(os.path.dirname(inputfilename))
+    return os.path.join(folder_output,f"{dir_name}-result.html")
 
 def generate_report_for_input_csv(input_images_csvfile:str):
     input_image_folder=os.path.dirname(input_images_csvfile)
@@ -41,25 +43,13 @@ def generate_report_for_input_csv(input_images_csvfile:str):
     input_rows=CsvHelper.read_input_rows_from_csv(filename=input_images_csvfile)
     result_rows=CsvHelper.read_result_rows_from_csv(filename=results_csv_file)
 
-    view_model=ResultsViewModel(inputrows=input_rows, outputrows=result_rows)    
+    view_model=ResultsViewModel(inputrows=input_rows, outputrows=result_rows, inputfolder=os.path.dirname(input_images_csvfile), resultsfolder=os.path.dirname(results_csv_file))
     html_file=generate_html_filepath_from_input(inputfilename=input_images_csvfile)
 
     report_generator = ResultsGenerator(viewmodel=view_model,filename=html_file)
     report_generator.generate_report()
 
     # #The code below exemplifies the structural validity
-
-    # #we will go with the expectation that the input rows in the CSV is in the order we desire
-    # for salt_pepper_key,g in groupby(input_rows, key=lambda x:x.salt_pepper):
-    #     files_in_group=list(g)
-    #     print(f"\tProcessing salt_pepper={salt_pepper_key}, found {len(files_in_group)} input files")
-    #     for file_in_group in files_in_group:
-    #         matching_result_rows=list(filter(lambda x: x.imagefile == file_in_group.imagefile , result_rows))
-    #         print(f"\t\t{file_in_group.imagefile}...result files={len(matching_result_rows)}...max_distance={file_in_group.max_distance}")
-    #         for result_file in matching_result_rows:
-    #             print(f"\t\t\t{result_file.outputimagefile}...tfac={result_file.thresholdfactor}...threshold={result_file.actualthreshold}")
-    #             #TODO This works - you now need to find a way to present this information
-
     pass
 
 def main():
