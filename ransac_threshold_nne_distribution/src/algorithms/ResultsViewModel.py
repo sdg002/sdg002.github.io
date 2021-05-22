@@ -32,7 +32,9 @@ class ResultsViewModel(object):
 
     def get_saltpepperratios(self)->List[float]:
        unique_salt_pepper=set(map(lambda x: x.salt_pepper, self.inputrows))
-       return unique_salt_pepper
+       l=list(unique_salt_pepper)
+       l.sort()
+       return l
 
     def get_inputrows_with_salt_pepper(self,salt_pepper_ratio:float):
         results=filter(lambda x: x.salt_pepper == salt_pepper_ratio, self.inputrows)

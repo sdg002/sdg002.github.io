@@ -13,12 +13,12 @@ class CsvHelper(object):
     """ Write all objects of test results in the specified array into a CSV format at the specified file"""
     @staticmethod
     def write_results_to_csv(filename:str, output_rows:List[OutputRow]):
-        csvcolumns=["inputimagefile","outputimagefile","threshold","thresholdfactor"]
+        csvcolumns=["inputimagefile","outputimagefile","threshold","thresholdfactor","nearest_neighbour","time"]
         with open(filename, mode='w', newline='') as csv_file:
             testimage_writer = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             testimage_writer.writerow(csvcolumns)
             for output_row in output_rows:
-                testimage_writer.writerow([output_row.imagefile,output_row.outputimagefile,output_row.actualthreshold,output_row.thresholdfactor])
+                testimage_writer.writerow([output_row.imagefile,output_row.outputimagefile,output_row.actualthreshold,output_row.thresholdfactor,output_row.nearest_neighbour_distance_statistic,output_row.elapsed_time])
         pass 
 
     def write_input_rows_to_csv(filename:str,input_rows:List[InputRow]):
@@ -41,7 +41,7 @@ class CsvHelper(object):
             input_row.line_count=int(row_dict["line_count"])
             input_row.total_pixels=int(row_dict["total_pixels"])
             input_row.black_pixels=int(row_dict["black_pixels"])
-            input_row.max_distance=int(row_dict["max_distance"])
+            input_row.max_distance=float(row_dict["max_distance"])
 
             results.append(input_row)
         return results
@@ -54,8 +54,10 @@ class CsvHelper(object):
             output_row=OutputRow()
             output_row.imagefile=row_dict["inputimagefile"]
             output_row.outputimagefile=row_dict["outputimagefile"]
-            output_row.thresholdfactor=row_dict["thresholdfactor"]
-            output_row.actualthreshold=row_dict["threshold"]
+            output_row.thresholdfactor=float(row_dict["thresholdfactor"])
+            output_row.actualthreshold=float(row_dict["threshold"])
+            output_row.elapsed_time=float(row_dict["time"])
+            output_row.nearest_neighbour_distance_statistic=float(row_dict["nearest_neighbour"])
             results.append(output_row)
         return results
         

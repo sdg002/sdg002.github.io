@@ -30,7 +30,7 @@ class InputRow(object):
         """
         The salt pepper ration in the input image 
         """
-        return self.__salt_pepper
+        return float(self.__salt_pepper)
 
     @salt_pepper.setter
     def salt_pepper(self,value):
@@ -40,7 +40,7 @@ class InputRow(object):
     @property
     def line_count(self):
         """Count of expected lines in the input image """
-        return self.__line_count
+        return int(self.__line_count)
 
     @line_count.setter
     def line_count(self,value):
@@ -50,7 +50,7 @@ class InputRow(object):
     @property
     def total_pixels(self):
         """The count of all pixels in the image."""
-        return self.__total_pixels
+        return int(self.__total_pixels)
 
     @total_pixels.setter
     def total_pixels(self, value):
@@ -59,7 +59,7 @@ class InputRow(object):
     @property
     def black_pixels(self):
         """The count of black pixels in the image."""
-        return self.__black_pixels
+        return int(self.__black_pixels)
 
     @black_pixels.setter
     def black_pixels(self, value):
@@ -68,7 +68,8 @@ class InputRow(object):
     @property
     def max_distance(self):
         """The maximum distance between consecutive points in the expected line in this test image."""
-        return self.__max_distance
+        return float(self.__max_distance)
+
     @max_distance.setter
     def max_distance(self, value):
         self.__max_distance = value

@@ -76,9 +76,11 @@ def generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepp
 
 
 def main():
-    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.99],max_distances=[2,3,5], sub_folder="very_small_dataset_2lines", lines_count=2)
-    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_2lines", lines_count=2)
-    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_1line", lines_count=1)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.99],max_distances=[2,3,5], sub_folder="very_small_dataset_2_lines", lines_count=2)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_2_lines", lines_count=2)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.95, 0.97,0.99],max_distances=[2,3,5], sub_folder="small_dataset_1_line", lines_count=1)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.9, 0.92, 0.95, 0.97,0.99],max_distances=[2,3,5,7,10], sub_folder="large_dataset_1_line", lines_count=1)
+    generate_small_noisy_images_with_salt_pepper_rations_max_distances(salt_pepper_ratios=[ 0.9, 0.92, 0.95, 0.97,0.99],max_distances=[2,3,5,7,10], sub_folder="large_dataset_2_lines", lines_count=2)
 
 if __name__ == "__main__":
     main()

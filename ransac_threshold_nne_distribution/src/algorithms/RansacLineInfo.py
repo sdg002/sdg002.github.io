@@ -24,3 +24,23 @@ class RansacLineInfo(object):
     def scikit_model(self):
         """The scikit model"""
         return self._model
+
+    @property
+    def nearest_neighbour_distance_statistic(self):
+        """The nearest neighbour distance statistic in the input image that was used for producing this result."""
+        return self.__nearest_neighbour_distance_statistic
+
+    @nearest_neighbour_distance_statistic.setter
+    def nearest_neighbour_distance_statistic(self, value):
+        self.__nearest_neighbour_distance_statistic = value
+
+
+    @property
+    def ransac_threshold(self):
+        """The ransac threshold that was used for producing this result"""
+        return self._ransac_hreshold
+
+    @ransac_threshold.setter
+    def ransac_threshold(self, value):
+        self._ransac_hreshold = value
+    

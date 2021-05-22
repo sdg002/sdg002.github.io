@@ -1,8 +1,8 @@
 import unittest
-from SequentialRansac import SequentialRansac
+from algorithms.SequentialRansac import SequentialRansac
 import os
 import skimage.io
-from RansacLineInfo import  RansacLineInfo
+from algorithms.RansacLineInfo import  RansacLineInfo
 from typing import List
 
 class Test_SequentialRansac(unittest.TestCase):
@@ -51,6 +51,13 @@ class Test_SequentialRansac(unittest.TestCase):
         self.assertAlmostEquals(max(all_y_horizontal_line),51,delta=2.0,msg="All inliers along the horizontal  line should have a constant value of Y=51")
         self.assertAlmostEquals(max(all_x_horizontal_line),200,delta=2.0,msg="The max of the inliers along the horizontal line should have a max X of 200")
         self.assertAlmostEquals(min(all_x_horizontal_line),1,delta=2.0,msg="The min of the inliers along the horizontal line should have a max X of 1")
+
+        self.assertAlmostEqual(horizontal_line.nearest_neighbour_distance_statistic,1.0,places=1)
+        self.assertAlmostEqual(horizontal_line.ransac_threshold,0.25,places=1)
+
+        self.assertAlmostEqual(vertical_line.nearest_neighbour_distance_statistic,1.0,places=1)
+        self.assertAlmostEqual(vertical_line.ransac_threshold,0.25,places=1)
+
         
 if __name__ == '__main__':
     unittest.main()

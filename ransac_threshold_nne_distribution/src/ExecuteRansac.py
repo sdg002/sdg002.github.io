@@ -28,7 +28,6 @@ def run_ransac_on_single_image(inputfilepath:str,outputfolder:str,max_lines_to_f
     start=time.time()
     seq=SequentialRansac(path=inputfilepath,max_lines_to_find=max_lines_to_find,ransac_threshold_factor=threshold_factor)
     line_results:List[RansacLineInfo]=seq.run_sequential_ransac()  
-    actual_ransac_threshold=0 #TODO return the calculated Treshold as an additional parameter in the run_sequential_ransac() method
     superimposed_image=Util.superimpose_all_ransac_lines(seq.image_array,line_results)
     elapsed_time=(time.time() - start)
 
@@ -40,7 +39,7 @@ def run_ransac_on_single_image(inputfilepath:str,outputfolder:str,max_lines_to_f
     skimage.io.imsave(absolute_result_filename,superimposed_image)
     print("Results saved to file %s" % absolute_result_filename)
     print("Time elapsed=%f seconds" % (elapsed_time))
-    return result_filename,actual_ransac_threshold
+    return result_filename,line_results[0].ransac_threshold,line_results[0].nearest_neighbour_distance_statistic,elapsed_time
     
 '''
 Creates a new folder at the sibling level of the parent of the CSV file
@@ -77,12 +76,14 @@ def execute_ransac_on_files(csvfile:str,threshold_factors:List[float]):
         for threshold_factor in threshold_factors:
             print(f'image={input_datarow.imagefile}, no of expected lines={input_datarow.line_count}, threshold factor={threshold_factor}')
             absolute_input_file=os.path.join(input_image_folder,input_datarow.imagefile)
-            (result_filename,actual_threshold)=run_ransac_on_single_image(inputfilepath=absolute_input_file,outputfolder=new_directory_for_results,max_lines_to_find=input_datarow.line_count, threshold_factor=threshold_factor)
+            (result_filename,actual_threshold,nne_statistic,elapsed_time)=run_ransac_on_single_image(inputfilepath=absolute_input_file,outputfolder=new_directory_for_results,max_lines_to_find=input_datarow.line_count, threshold_factor=threshold_factor)
             result=OutputRow()
             result.imagefile=input_datarow.imagefile
             result.thresholdfactor=threshold_factor
             result.outputimagefile=result_filename
-            result.actualthreshold=actual_threshold
+            result.actualthreshold=round(actual_threshold,2)
+            result.elapsed_time=round(elapsed_time,2)
+            result.nearest_neighbour_distance_statistic=round(nne_statistic,2)
             ransac_results.append(result)
             pass
     print(f"Completed processing {len(input_datarows)} image files.")
@@ -115,7 +116,7 @@ def main():
         return
     print(f"You selected {ichoice}")
     print(f"{Util.display_leaf_folders_from_path(path=matching_files[ichoice],count=3)}")
-    execute_ransac_on_files(csvfile=matching_files[ichoice],threshold_factors=[0.5, 0.1])
+    execute_ransac_on_files(csvfile=matching_files[ichoice],threshold_factors=[ 0.1, 0.5, 1.0])
 
 if __name__ == "__main__":
     main()

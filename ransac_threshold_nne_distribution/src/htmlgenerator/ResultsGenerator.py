@@ -57,7 +57,7 @@ class ResultsGenerator(object):
         self.__append_html(frag)
 
     def print_salt_pepper(self,salt_pepper):
-        frag=f"<h3 class='saltpepper'>Salt pepper ratio={salt_pepper}</h3>"
+        frag=("<h3 class='saltpepper'>Salt pepper ratio=%.2f</h3>" % (salt_pepper))
         self.__append_html(frag)
         pass
 
@@ -66,28 +66,30 @@ class ResultsGenerator(object):
         self.__append_html(frag)
         pass
 
-    def render_image(self,input_image_file:str,caption:str):
+    def render_image(self,image_absolute_path:str,caption:str):
         frag=""
         frag=frag+"<figure>"
-        frag=frag+f"<img src='{input_image_file}' class='input'/>"
+        frag=frag+f"<img src='{image_absolute_path}' class='input'/>"
         frag=frag+"<figcaption>"
         frag=frag+caption
         frag=frag+"</figcaption>"
         frag=frag+"</figure>"
         self.__append_html(frag)
     
-    def generate_caption_for_input_image(self,mean_nnd:float):
+    def generate_caption_for_input_image(self,mean_nnd:float,max_distance:float):
         frag=""
         frag=frag+"Input image<br />"
         frag=frag+f"Mean nearest neighbour distance={mean_nnd}<br />"
+        frag=frag+f"Distance between consecutive points on the line={max_distance}<br />"
         frag=frag+"<br />"
         return frag
 
-    def generate_caption_for_result_image(self,ransac_threshold_factor:float,ransac_threshold:float):
+    def generate_caption_for_result_image(self,ransac_threshold_factor:float,ransac_threshold:float,time:float):
         frag=""
         frag=frag+"Result image<br />"
         frag=frag+f"Ransac threshold factor={ransac_threshold_factor}<br />"
         frag=frag+f"Actual Ransac threshold={ransac_threshold}<br />"
+        frag=frag+f"Time taken(s)={time}<br />"
         return frag
 
     def print_line(self):
@@ -118,18 +120,22 @@ class ResultsGenerator(object):
                 self.print_salt_pepper(salt_pepper)
                 self.print_maxdistance(max_distance=input_row.max_distance)
 
-                input_image_caption=self.generate_caption_for_input_image(mean_nnd=2.11)
-                input_image_absolute_filename=self.get_absolutepath_inputimage(input_row.imagefile)
-                self.render_image(input_image_absolute_filename,input_image_caption)
-                
                 matching_result_rows=self.viewmodel.get_results_from_inputrow(input_row)
-                print(f"\t\tProcessing input image:{input_row.imagefile}...result files={len(matching_result_rows)}...max_distance={input_row.max_distance}")
-                for result_file in matching_result_rows:
-                    print(f"\t\t\t{result_file.outputimagefile}...tfac={result_file.thresholdfactor}...threshold={result_file.actualthreshold}")
-                    result_image_absolute_filename=self.get_absolutepath_resultimage(result_file.outputimagefile)
+                matching_result_rows.sort(key=lambda x:x.thresholdfactor)
 
-                    result_image_caption=self.generate_caption_for_result_image(ransac_threshold_factor=0.333, ransac_threshold=1.1)
-                    self.render_image(result_image_absolute_filename,result_image_caption)  
+                nn_statistic_from_first_result=matching_result_rows[0].nearest_neighbour_distance_statistic
+                input_image_caption=self.generate_caption_for_input_image(mean_nnd=nn_statistic_from_first_result, max_distance=input_row.max_distance)
+                input_image_absolute_filename=self.get_absolutepath_inputimage(input_row.imagefile)
+                self.render_image(image_absolute_path=input_image_absolute_filename,caption=input_image_caption)
+                
+                
+                print(f"\t\tProcessing input image:{input_row.imagefile}...result files={len(matching_result_rows)}...max_distance={input_row.max_distance}")
+                for result_row in matching_result_rows:
+                    print(f"\t\t\t{result_row.outputimagefile}...tfac={result_row.thresholdfactor}...threshold={result_row.actualthreshold}")
+                    result_image_absolute_filename=self.get_absolutepath_resultimage(result_row.outputimagefile)
+
+                    result_image_caption=self.generate_caption_for_result_image(ransac_threshold_factor=result_row.thresholdfactor, ransac_threshold=result_row.actualthreshold,time=result_row.elapsed_time)
+                    self.render_image(image_absolute_path=result_image_absolute_filename, caption=result_image_caption)  
                 self.print_endresultsblock()
                 self.print_line()
         self.close_body()

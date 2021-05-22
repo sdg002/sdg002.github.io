@@ -122,7 +122,11 @@ class SequentialRansac(object):
                 break
             print("\tFound RANSAC line with %d inliers, line number %d" % (len(inlier_points),index))
             starting_points=inliers_removed_from_starting
-            results.append(RansacLineInfo(inlier_points,model))        
-        
+
+            ransac_result=RansacLineInfo(inlier_points,model)
+            ransac_result.nearest_neighbour_distance_statistic=nearest_neighbour_estimate
+            ransac_result.ransac_threshold=ransac_threshold
+            results.append(ransac_result)
+
         return results
 

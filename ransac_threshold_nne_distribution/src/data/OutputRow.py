@@ -41,6 +41,23 @@ class OutputRow(object):
     def thresholdfactor(self, value):
         self.__thresholdfactor = value
 
+    @property
+    def elapsed_time(self):
+        """The time it took for the algorithm to produce this result ."""
+        return self.__elapsed_time
 
+    @elapsed_time.setter
+    def elapsed_time(self, value):
+        self.__elapsed_time = value
+
+    @property
+    def nearest_neighbour_distance_statistic(self):
+        """The nearest_neighbour_distance_statistic property."""
+        return self._nearest_neighbour_distance_statistic
+    
+    @nearest_neighbour_distance_statistic.setter
+    def nearest_neighbour_distance_statistic(self, value):
+        self._nearest_neighbour_distance_statistic = value
+    
     def __repr__(self):
         return f'input imagefile={self.imagefile}, outputimagefile={self.outputimagefile} , threshold factor={self.thresholdfactor}, actual threshold ={self.actualthreshold}'
