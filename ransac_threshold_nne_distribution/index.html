@@ -137,12 +137,12 @@
     <hr />
 
     <h2>
-        How to calculate the the nearest neighbour distance?
+        How to calculate the the nearest neighbour distance using scikit-learn?
     </h2>
     <p>
-        scikit-learn provides the excellent class <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KDTree.html">KDTree</a>
+        scikit-learn provides the excellent class <a href="https://scikit-learn.org/stable/auto_examples/linear_model/plot_ransac.html">KDTree</a>
     </p>
-        <pre>
+    <pre>
 import numpy as np
 rng = np.random.RandomState(0)
 X = rng.random_sample((10, 3))  # 10 points in 3 dimensions
@@ -151,21 +151,90 @@ dist, ind = tree.query(X[:1], k=3)
 print(ind)  # indices of 3 closest neighbors
 
 print(dist)  # distances to 3 closest neighbors
-        </pre>
-
-
+    </pre>
     <hr />
+    <h2>How to implement RANSAC algorithm using scikit-learn?</h2>
+    <p>
+        There are 2 classes that can be used. I have used the implementation from <strong>scikit-image</strong> for this article
+    </p>
+    <ol>
+        <li>
+            scikit-learn provides the  class  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KDTree.html">RANSACRegressor</a>
+        </li>
+        <li>
+            scikit-image provides the  class  <a href="https://scikit-image.org/docs/0.13.x/auto_examples/transform/plot_ransac.html">ransac</a>. Sample snippet from the web site is reproduced below. <br />
+            <img src="images/sphx_glr_plot_ransac_001.png" alt="Line fitting demo"/>
+        </li>
+    </ol>
+    <pre>
+import numpy as np
+from matplotlib import pyplot as plt
+
+from skimage.measure import LineModelND, ransac
+
+
+np.random.seed(seed=1)
+
+# generate coordinates of line
+x = np.arange(-200, 200)
+y = 0.2 * x + 20
+data = np.column_stack([x, y])
+
+# add faulty data
+faulty = np.array(30 * [(180., -100)])
+faulty += 5 * np.random.normal(size=faulty.shape)
+data[:faulty.shape[0]] = faulty
+
+# add gaussian noise to coordinates
+noise = np.random.normal(size=data.shape)
+data += 0.5 * noise
+data[::2] += 5 * noise[::2]
+data[::4] += 20 * noise[::4]
+
+# fit line using all data
+model = LineModelND()
+model.estimate(data)
+
+# robustly fit line only using inlier data with RANSAC algorithm
+model_robust, inliers = ransac(data, LineModelND, min_samples=2,
+                               residual_threshold=1, max_trials=1000)
+outliers = inliers == False
+
+# generate coordinates of estimated models
+line_x = np.arange(-250, 250)
+line_y = model.predict_y(line_x)
+line_y_robust = model_robust.predict_y(line_x)
+
+fig, ax = plt.subplots()
+ax.plot(data[inliers, 0], data[inliers, 1], '.b', alpha=0.6,
+        label='Inlier data')
+ax.plot(data[outliers, 0], data[outliers, 1], '.r', alpha=0.6,
+        label='Outlier data')
+ax.plot(line_x, line_y, '-k', label='Line model from all data')
+ax.plot(line_x, line_y_robust, '-b', label='Robust line model')
+ax.legend(loc='lower left')
+plt.show()
+    </pre>
     
+    <hr />    
     <h2>
         Going deeper into the implementation
     </h2>
     <p>
+        <strong>Step 1 - Generate noisy images with various salt pepper ratios</strong><br />
+        to be done<br />
+        <strong>Step 2 - Running the RANSAC algorithm</strong><br />
+        
+    </p>
+    <p>
+        <u>Remove the following when done</u>
         talk about generating salt-pepper images with various degrees of noise and lines with various max distance<br />
         show pic of salt pepper here <br />
         talk about running RANSAC algorithm , hwo to generate the threshold and talk about the factor<br />
         talk about comparing the results side by side<br />
         show pic of side by side comparison <br />
     </p>
+    <hr />    
     <h2>
         Results - When image contains a one line
     </h2>
@@ -175,6 +244,7 @@ print(dist)  # distances to 3 closest neighbors
         <img src="images/workinprogress.png" />
     </p>
 
+    <hr />    
     <h2>
         Results - When image contains two lines
     </h2>
