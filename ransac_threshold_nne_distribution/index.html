@@ -217,23 +217,37 @@ plt.show()
     </pre>
     
     <hr />    
-    <h2>
-        Going deeper into the implementation
-    </h2>
+    <h2>Going deeper into the implementation</h2>
+    <h4>Step 1 - Generate noisy images with various salt pepper ratios</h4>
     <p>
-        <strong>Step 1 - Generate noisy images with various salt pepper ratios</strong><br />
-        to be done<br />
-        <strong>Step 2 - Running the RANSAC algorithm</strong><br />
-        
+    To determine the robustness of an algorithm it is vital that we test our code against various degrees of salt and pepper noise. 
+    For this article, I have selected the salt-pepper ratios 0.90, 0.92, 0.95, 0.97 and 0.99.
     </p>
+    <img src="images/examples_of_salt_pepper_ratios.png" alt="Examples of salt pepper ratios"/>
     <p>
-        <u>Remove the following when done</u>
-        talk about generating salt-pepper images with various degrees of noise and lines with various max distance<br />
-        show pic of salt pepper here <br />
-        talk about running RANSAC algorithm , hwo to generate the threshold and talk about the factor<br />
-        talk about comparing the results side by side<br />
-        show pic of side by side comparison <br />
+    Every image will have a dotted line.
+    This dotted line will be the target that we expect the RANSAC algorithm to discover.
+    To further increase the complexity of the challenge we will test lines drawn with various degrees of sparseness.
+    The further apart the points, the more sparse the line and greater the challenge.
+    For this article, I have selected the values 2,5,7 and 10
     </p>
+    <img src="images/examples_of_max_distance_between_points.png" alt="Examples of max distance"/><br />
+    The file <strong>SaltPepperNoise.py</strong> is responsible for generating the noisy images.
+    <h4>Step 2 - Running the RANSAC algorithm</h4>
+    <p>The file <strong>ExecuteRansac.py</strong> is responsible for crunching the input images produced in the previous step.
+    In this step we use the <strong>median Nearest Neighbour distance</strong> to arrive at the RANSAC threshold. 
+    For every input image we will experiment with different RANSAC threshold parameters. The RANSAC threshold parameter is arrived at by 
+    multiplying a <strong>threshold factor</strong> with the <strong>median Nearest Neighbour distance</strong>. 
+    The RANSAC line is superimposed over the original image.<br />
+    </p>
+    <img src="images/overview_noisy_pic_result_pic.png" alt="Noisy image to image with RANSAC line superimposed"/>
+    <h4>Step 3 - Displaying the results</h4>
+    <p>Finally, we want to render the overall results in a manner which lets us arrive at meaningful conclusions. 
+    The script  <strong>PlotResultsSideBySide.py</strong> will crunch the input images and result 
+    images produced by the above steps into a single HTML file. Example below:
+    </p>
+    <img src="images/demo_of_html_results.PNG" alt="Demo of HTML results"/>
+
     <hr />    
     <h2>
         Results - When image contains a one line
