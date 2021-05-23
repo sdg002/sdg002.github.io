@@ -32,6 +32,7 @@
         In this article I have explored the possiblity of using the Nearest Neighbour Distance statistic 
         as a means of arriving at the RANSAC threshold distance parameter
     </p>
+    <u>Show an image here, noisy line on the left, RANSAC line on the right</u>
     <h2>
         What problem does the RANSAC algorithm solve?
     </h2>
@@ -84,9 +85,18 @@
         <br />
         <img src="images/find_the_optimum_ransac_threshold_distance.png" alt="Determine threshold distance"/>
         <br />
-        Too large and RANSAC will accept potentialoutliers. 
-        Too small and RANSAC might not find anything at all.
+        
+        
     </p>
+    <ul>
+        <li>
+            If the <strong>threshold</strong> is too large then the RANSAC algorithm will produce a line which has encompassed potential outliers. 
+        </li>
+
+        <li>
+            If the <strong>threshold</strong> is too small then the RANSAC algorithm might not find anything at all.
+        </li>
+    </ul>
     <hr />
 
     <h2>
@@ -144,6 +154,17 @@ print(dist)  # distances to 3 closest neighbors
 
 
     <hr />
+    
+    <h2>
+        Going deeper into the implementation
+    </h2>
+    <p>
+        talk about generating salt-pepper images with various degrees of noise and lines with various max distance<br />
+        show pic of salt pepper here <br />
+        talk about running RANSAC algorithm , hwo to generate the threshold and talk about the factor<br />
+        talk about comparing the results side by side<br />
+        show pic of side by side comparison <br />
+    </p>
     <h2>
         Results - When image contains a one line
     </h2>
@@ -166,20 +187,65 @@ print(dist)  # distances to 3 closest neighbors
         Accompanying source code
     </h2>
     <p>
-        Show folder structure
-        <br />
-        explain the purpose of the Python files
+        The accompanying code is divided into <strong>runnable top level files</strong> and <strong>reusable classes in inner folders</strong>:
+    </p>
+    <strong>Top level files</strong>
+    <ol>
+        <li><b>SaltPepper.py</b>-Generates noisy images with a dimensions 100X150 using the specified random salt pepper noise, one dotted line with the specified distance between consecutive points </li>
+    </ol>
+
+    <strong>Sub-folders</strong>
+    <ol>
+        <li>algorithm</li>
+        <li>data</li>
+        <li>history</li>
+        <li>htmlgenerator</li>
+        <li>tests</li>
+    </ol>
+
+    <h2>
+        How to generate noisy images?
+    </h2>
+    <p>
+        explain which file, what to run<br />
+        explain the folder structure of the results
+    </p>
+    <h2>
+        How to run the RANSAC algorithm?
+    </h2>
+    <p>
+        Explain <strong>ExecuteRansac</strong>
     </p>
 
     <h2>
-        Generating noisy images
+        How to display the results?
     </h2>
     <p>
-        explain which file, what to run
+        Explain <strong>PlotResultsSideBySide</strong>
+        <u>Show a tiny pic of the overall HTML presentation</u>
     </p>
 
 
+    <h2>Putting it all together</h2>
+    <p>
+        Summarize the steps in the right sequence.<br />
+        Show pictures of folders getting created<br />  
+        Show pictures of prompts<br />
+        Show pictures of results folder getting generated <br />
+        Repeat thumbnail of HTML<br />
 
+
+    </p>
+
+    <h2>Github</h2>
+    <p>
+        Link to github comes here
+    </p>
+
+    <h2>References</h2>
+    <p>
+        Provide links to important videos, e.g. RANSAC on youtube, wikipedia and some of my articles
+    </p>
 
 </body>
 
