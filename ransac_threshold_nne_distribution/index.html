@@ -82,12 +82,8 @@
         What problem are we attempting to address in this article?
     </h2>
     <p>
-        How do we determine the optimum RANSAC threshold parameter 'd'? 
-        <br />
-        <img src="images/find_the_optimum_ransac_threshold_distance.png" alt="Determine threshold distance"/>
-        <br />
-        
-        
+        <img src="images/find_the_optimum_ransac_threshold_distance.png" alt="Determine threshold distance"/><br />
+        The accuracy of the RANSAC algorithm is heavily influenced by the threshold parameter 'd'.
     </p>
     <ul>
         <li>
@@ -98,13 +94,16 @@
             If the <strong>threshold</strong> is too small then the RANSAC algorithm might not find anything at all.
         </li>
     </ul>
+    <p>
+        In this article, I am exploring whether the density of points can be used used as a heuristic to determine the RANSAC threshold parameter 'd'? 
+    </p>
     <hr />
 
     <h2>
         What is the the intuition behind Nearest Neighbour Distance?
     </h2>
+    <h4>What is Nearest Neighbour Distance (NNE)?</h4>
     <p>
-        <strong>What is Nearest Neighbour Distance (NNE)?</strong><br />
         Consider the points displayed in this image. By definition, every point has 1 one point which is closest. You could have multiple points which are equidistant and hence multiple nearest neighbours. But for this discussion we will pick the closest neighbour.
         <br />
         <img src="images/nne_introduction.png" alt="NNE introduction"/>
@@ -124,10 +123,9 @@
         </li>
     </ol>
     <img src="images/definition_average_nne.png" alt="Definition of average NNE"/>
+
+    <h4>What was the inspiration for using NNE distance?</h4>
     <p>
-        <br />
-        <strong>What was the inspiration for using NNE distance?</strong>
-        <br />
         The NNE statistic gives us an idea of how close or spread out the data points are.
         The RANSAC threshold distance parameter must have some correlation with the mean or median NNE.
         
