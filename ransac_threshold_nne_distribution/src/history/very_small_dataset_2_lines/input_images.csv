@@ -1,0 +1,4 @@
+imagefile,salt_pepper,max_distance,line_count,total_pixels,black_pixels
+NoisyImage-LINECOUNT-2-SP-0.990-MAXD-2.0.png,0.99,2.0,2,15000,430
+NoisyImage-LINECOUNT-2-SP-0.990-MAXD-3.0.png,0.99,3.0,2,15000,304
+NoisyImage-LINECOUNT-2-SP-0.990-MAXD-5.0.png,0.99,5.0,2,15000,273
