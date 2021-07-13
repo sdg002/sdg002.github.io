@@ -1,0 +1,14 @@
+﻿DEFINE TABLE mycalendar = CALENDAR(DATE(2010,1,1), DATE(2010,1,10))
+EVALUATE
+(
+	//DATESBETWEEN(mycalendar[Date] , DATE(2010,1,1) , DATE(2010,1,2)) 
+	
+	//DATESBETWEEN('mycalendar'[Date] , DATE(2010,1,1) , DATE(2010,1,2)) //did not work
+
+	DATESBETWEEN('Date'[Date] , DATE(2019,1,1) , DATE(2019,1,12)) //This works
+
+	//DATESYTD(mycalendar[Date]) //this works
+	//mycalendar //this works
+	//SELECTCOLUMNS(mycalendar, "MyDateColumn",[Date]) //this works
+)
+

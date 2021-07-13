@@ -1,0 +1,167 @@
+﻿/*
+
+EVALUATE
+(
+	TOPN(3,MyCalendar)
+)
+
+*/
+
+
+EVALUATE
+(
+	//DATESYTD(MyCalendar[Date])
+	TOPN(3,DATESYTD(MyCalendar[Date]))
+	
+)
+
+EVALUATE
+{
+	COUNTROWS(DATESYTD(MyCalendar[Date]))
+}
+
+
+EVALUATE
+(
+	//ENDOFMONTH(MyCalendar[Date])
+	ENDOFMONTH(TOPN(-3,DATESYTD(MyCalendar[Date])) )
+	//TOPN(3,DATESYTD(MyCalendar[Date]))
+	
+)
+
+
+//FIRSTDATE returns the first date from all the rows in the calendar table
+EVALUATE
+(
+	FIRSTDATE(MyCalendar[Date])
+	
+)
+
+
+//LASTDATE returns the first date from all the rows in the calendar table
+EVALUATE
+(
+	LASTDATE(MyCalendar[Date])	
+)		
+
+
+
+/*
+How to create a datatable
+EVALUATE
+(
+	DATATABLE(
+		"COL1", STRING, 
+		"COL2",STRING,
+		{
+			{"ROW1","VALUE1"},
+			{"ROW2","VALUE2"},
+			{"ROW3","VALUE3"}
+		}
+	)
+)
+*/
+
+
+
+
+
+/*
+//This works, but you cannot use the DATE function. No constants allowed in DATATABLE
+//DATE(2022,3,15) will not work
+EVALUATE
+(
+	DATATABLE(
+		"MyDate",DATETIME, 
+		{
+			{"2021-03-16"},
+			{"2021-03-17"}
+		}
+	)
+)
+*/
+
+
+
+
+/*
+This works, Note! 
+DEFINE TABLE MyDateTable=	DATATABLE(
+		"MyDateColumn",DATETIME, 
+		{
+			{"2021-03-16"},
+			{"2021-03-17"}
+		}
+	)
+
+EVALUATE
+(
+	MyDateTable
+)
+
+
+*/
+
+
+
+/*
+//STARTOFMONTH returns the earliest date from all the dates in the date table
+//ENDOFMONTH returns the last date from all the dates in the date table
+//DEFINE TABLE MyDateTable=	DATATABLE(
+//		"DateColumn",DATE, 
+//		{
+//			{"2021-03-15"},
+//			{"2021-03-16"},
+//			{"2021-03-17"},
+//			{"2021-03-25"},
+//			{"2021-04-11"},
+//			{"2022-05-11"}
+//		}
+//	)
+//	
+DEFINE TABLE MyDateTable= CALENDAR (DATE (2011, 1, 1), DATE (2011, 12, 13))	
+
+EVALUATE
+(
+	//STARTOFMONTH(MyDateTable[Date])
+	//ENDOFMONTH(MyDateTable[Date]),	
+	//STARTOFYEAR(MyDateTable[Date]) 
+	//PARALLELPERIOD(MyDateTable[Date],1,month) //Bizarre
+	//DATESINPERIOD(MyDateTable[Date],DATE(2011,2,28),4,day) //does not work!
+	//NEXTDAY(MyDateTable[Date])
+	
+	//SELECTCOLUMNS(MyDateTable ,"NewColumn",MyDateTable[Date], "EndOfMonth", EOMONTH(MyDateTable[Date],1)) //Works! Gives me 28 Feb, which is +1 month
+	//SELECTCOLUMNS(MyDateTable ,"NewColumn",MyDateTable[Date], "EndOfMonth", EOMONTH(MyDateTable[Date],0))  //Works! Gives me last date of current month, 0
+	
+	//SELECTCOLUMNS(MyDateTable ,"NewColumn",MyDateTable[Date], "Edate", EDATE(MyDateTable[Date],1))  //Works! Increments to +1 month, retaining current day
+	SELECTCOLUMNS(MyDateTable ,"NewColumn",MyDateTable[Date], "WeekNum", WEEKNUM(MyDateTable[Date]), "WeekDay",WEEKDAY(MyDateTable[Date]) )
+)
+
+//You were here - The DATE/TIME functions work well
+//However, the Date-Time inteligence functions need more research
+
+
+*/
+
+
+
+
+EVALUATE
+(
+	//MyDateTable
+	STARTOFMONTH(MyCalendar[Date])
+	//ENDOFMONTH()
+)
+
+
+
+/*
+//Appears to work, increments every row by N years, N cannot be greater than 10
+EVALUATE
+(
+	//ENDOFQUARTER(MyCalendar[Date])
+	//PREVIOUSYEAR(MyCalendar[Date])
+	//NEXTDAY
+	PARALLELPERIOD(MyCalendar[Date],1,year)
+)
+*/

@@ -1,0 +1,11 @@
+﻿EVALUATE
+(
+	DATESMTD('Date'[Date]) //Produces all days from 1 June to 30 June
+)
+
+EVALUATE
+(
+	DATESMTD(MyCalendar[Date]) //Produces all days from 1 June to 30 June
+)
+
+

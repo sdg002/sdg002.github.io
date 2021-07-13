@@ -1,0 +1,75 @@
+﻿/*
+You will need to do some work with 
+	NEXTMONTH
+	PREVIOUSMONTH
+*/
+
+
+
+EVALUATE
+{
+	STARTOFMONTH('Date'[Date]) //1 July 2017
+}
+
+
+EVALUATE
+{
+	ENDOFMONTH('Date'[Date])  //30 June 2021
+}
+
+//Empty!
+EVALUATE
+(
+NEXTMONTH('Date'[Date])
+)
+
+//Empty!
+EVALUATE
+{
+NEXTMONTH('Date'[Date])
+}
+
+
+EVALUATE
+(
+NEXTMONTH(MyCalendar[Date])  //Empty!
+)
+
+
+EVALUATE
+(
+PREVIOUSMONTH(MyCalendar[Date])  //Empty!
+)
+
+
+EVALUATE
+(
+PREVIOUSDAY(MyCalendar[Date])  //Empty!
+)
+
+//DEFINE TABLE mycalendar = CALENDAR(DATE(2010,1,1), DATE(2010,1,10))
+
+EVALUATE
+(
+
+	
+	//mycalendar //this works
+	//FIRSTDATE(mycalendar[Date])  //1st Jan 2010
+	//LASTDATE(mycalendar[Date])  //10th Jan 2010
+	
+	//STARTOFYEAR(mycalendar[Date])//10th Jan 2010
+	//ENDOFYEAR(mycalendar[Date])//10th Jan 2010
+	//NEXTDAY(mycalendar[Date])  did not produce anything
+	
+	//NEXTDAY('Date'[Date]) //did not produce anything
+	//PREVIOUSDAY('Date'[Date]) //did not produce anything
+	
+	NEXTMONTH('Date'[Date])
+)
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+﻿EVALUATE
+(
+	DATEADD ('Date'[Date] ,3,YEAR)
+)
+
+
+EVALUATE
+(
+	ENDOFMONTH('Date'[Date] ) //Returns 30 th June  2021
+	//Create a DAX measure to produce this value for all financial years
+)
+
+
+//Returns the last day of the 
+EVALUATE
+(
+	//ENDOFYEAR('Date'[Date] ) //Returns 30 th June  2021
+	//ENDOFYEAR('Date'[Date] , "0000-11-30") //Returns 30 th June  2021
+	ENDOFYEAR('Date'[Date] , "0000-03-30") //Returns 30 th June  2021
+	
+)
+
+
+
+EVALUATE
+(
+	ENDOFQUARTER('Date'[Date] )
+)
+
+
+DEFINE TABLE mycalendar = CALENDAR(DATE(2010,1,1), DATE(2010,1,10))
+EVALUATE
+(
+
+	
+	//mycalendar //this works
+	//FIRSTDATE(mycalendar[Date])  //1st Jan 2010
+	//LASTDATE(mycalendar[Date])  //10th Jan 2010
+	
+	//STARTOFYEAR(mycalendar[Date])//10th Jan 2010
+	//ENDOFYEAR(mycalendar[Date])//10th Jan 2010
+	
+	STARTOFMONTH(mycalendar[Date])  //1st Jan 2010
+	//ENDOFMONTH(mycalendar[Date])  //10th Jan 2010
+)
+
+
+
+
+

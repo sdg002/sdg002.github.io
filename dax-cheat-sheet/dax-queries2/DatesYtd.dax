@@ -1,0 +1,30 @@
+﻿
+
+
+/*
+How does it work?
+-----------------
+You define the "Year end date" and then this function gives all dates in the date table
+
+*/
+EVALUATE
+(
+	//DATESYTD('Date'[Date],"25/04")  //dates from 26 April 2021 to last day of previous month
+	//DATESYTD('Date'[Date],"25/10")    //dates from 26 Oct   2020 to last day of previous month
+	DATESYTD('Date'[Date])				//dates from 1 Jan to last day of previous month
+		
+)
+
+
+
+/*
+DATESYTD will only give you dates which are in the calendar table
+
+DEFINE TABLE mycalendar = CALENDAR(DATE(2010,1,1), DATE(2010,1,10))
+EVALUATE
+(
+	DATESYTD(mycalendar[Date])
+)
+
+
+*/

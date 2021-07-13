@@ -13,7 +13,11 @@
         img.examples {
             /*width:200px;height:200px;border-width:1px;border-style:solid;*/
         }
+        hr {
+            height: 20px;
+        }
     </style>
+    <script src="../auto-refresh.js"></script>
 </head>
 
 
@@ -151,30 +155,40 @@ return percentageRevenue
         See this link 
         https://www.sqlbi.com/articles/displaying-nth-element-in-dax/
 
-        </p>
-    <!-- -->
-    <hr style="height:1em;" />
-    <h2>My ideas 1</h2>
-    <p>
-
-        DROP THIS IDEA- YOU CAN ONLY PIVOT IN POWER QUERY  BAB PIVOT table<br />
-        Monthly/Quarterly break down of sales across all years<br />
-        Show the significance of ALL , by showing a table of Manuf-%sales of Combined sales. Have a slicer of Manuf
-        Show the significance of ALL , by showing a table of Manuf-Segment-Sales. Have a slicer of Segment. Add a column to show % of total sales
-
     </p>
-    <hr />
-    <h1>Ideas 1</h1>
-    <h4>DROP THIS IDEA- YOU CAN ONLY PIVOT IN POWER QUERY How to PIVOT - manufacturer and segments</h4>
-    <p>Simple scenario. Manuf along vertical direction. Segments along Horizontal direction. Use a Table visual for sorting - not matrix</p>
-    <h4>Show the unit sales of Segment1 and Segment2 for every manufacture</h4>
+    <!-- -->
+    <hr style="margin-top: 23px" />
+    <h1>Ideas on June 6</h1>
+    <h4>Year slicer, Show % of total sales per segment</h4>
     <ol>
-        <li>This could be done using a hard coded measure approach. 1 measure per segment</li>
-        <li>
-            Have a list of Segments. Have a measure on Manufacturer. A slicer which shows the list of segments. A matrix table and custom measure based on Age bands demo.
-            The Rows of the matrix could be Country-City hierarchy or any hierarchy
-        </li>
+        <li>SELECTEDVALUE to get Year from slicer</li>
     </ol>
+    <h4>Do the same for multiple years, but using a stacked column chart</h4>
+    <ol>
+        <li>Create a dynamic title by concatenating the Years</li>
+        <li>See video from Curbal (https://www.youtube.com/watch?v=_k_Qxb6pyCc)</li>
+        <li>Try using HASONEVALUE to change the title dynamically</li>
+    </ol>
+    <hr style="margin-top: 23px" />
+    <h1>Ideas on June 13</h1>
+    <h4>Change the Title which demonstrates ALL to %Total revenues or something similar</h4>
+    <h4>Year wise Revenue per manufacturer (Manuf along Y axis, Years along X axis)</h4>
+    <h4>Think about Manuf sentiments (best and worst)</h4>
+    <hr/>
+    <h1>Restructure ideas-June</h1>
+    <p>
+        <ol>
+            <li>Do not show a large picture</li>
+            <li>Show a wireframe of the Visual</li>
+            <li>Use arrows in the wireframe to show how DAX expressions are falling in</li>
+        </ol>
+    </p>
+    <hr/>
+    <h1>Ideas on June 13- Advanced</h1>
+    <h4>Manuf-Year wise sentiments/sales/revenues - Can we drill into a detailed page from a Matrix report</h4>
+    <h4>Similar scenario - Can we show a Tooltip page</h4>
+    <hr style="margin-top: 23px" />
+    <h1>Ideas 1</h1>
     <h4>Year wise break down for every manufacturer</h4>
     <ol>
         <li>
