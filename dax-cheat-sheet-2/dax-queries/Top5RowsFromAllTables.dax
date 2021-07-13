@@ -1,0 +1,31 @@
+﻿EVALUATE
+(
+	TOPN(5, 'Sales Territory')
+)
+
+EVALUATE
+(
+	TOPN(5, 'Customer')
+)
+
+EVALUATE
+(
+	TOPN(5, Sales)
+)
+
+EVALUATE
+(
+	TOPN(5, 'Reseller')
+)
+
+EVALUATE
+(
+	TOPN(5, 'Sales Order')
+)
+
+
+EVALUATE
+(
+	TOPN(5, 'Date')
+)
+

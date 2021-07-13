@@ -261,4 +261,5 @@ __pycache__/
 *.pyc
 /Redis/personal
 
-/dax-cheat-sheet/dax-queries2/*.queryBuilder
+/dax-cheat-sheet/**/*.queryBuilder
+/dax-cheat-sheet-2/**/*.queryBuilder
