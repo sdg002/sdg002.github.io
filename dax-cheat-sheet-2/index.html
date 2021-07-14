@@ -65,5 +65,59 @@
     <h4>Date</h4>
     <img src="images/TopN-Date.GIF" alt="Top N"/>
 
+
+    <hr />
+    <h1>Date tables in Power BI</h1>
+    <p>
+        To understand the workings of the <strong>Date and Time intelligence</strong> DAX functions we will begin with creating a custom Date table.
+    </p>
+    <h4>What is a Date table and why do we need one?</h4>
+    <p>A date table is like any other table in Power BI but with some mandatory requirements as prescribed by <a href="https://docs.microsoft.com/en-us/power-bi/guidance/model-date-tables">Power BI here</a></p>
+    <ul>
+        <li>It must have a column of data type date (or date/time) - known as the date column.</li>
+        <li>The date column must contain unique values.</li>
+        <li>The date column must not contain BLANKs.</li>
+        <li>The date column must not have any missing dates.</li>
+        <li>The date column must span full years. A year isn't necessarily a calendar year (January-December).</li>
+        <li>The date table must be marked as a date table.</li>
+    </ul>
+    
+    <h4>How to create a  date table using DAX?</h4>
+    <p>
+        There are two Power BI functions which are useful for creating date tables. 
+        These  are <a href="https://docs.microsoft.com/en-us/dax/calendar-function-dax">CALENDAR</a> and <a href="https://docs.microsoft.com/en-us/dax/calendarauto-function-dax">CALENDARAUTO</a>
+        I have taken inspiration from this <a href="https://www.youtube.com/watch?v=-li7sxUxEqA&amp;t=317s">wonderful tutorial</a> 
+        to create a custom date table and named it as <strong>MyCalendar</strong>.
+    </p>
+    <pre>
+MyCalendar = 
+
+VAR myExtendedCalendar = ADDCOLUMNS(
+            CALENDAR(DATE(2017,2,1),DATE(2021,10,31)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "DayNumber", DAY([Date]),
+            "Month", FORMAT([Date],"mmmm"),
+            "DayOfWeek", FORMAT([Date],"ddd"),
+            "DayOfWeekNumber", FORMAT([Date],"w"),
+            "QuarterNumber", QUARTER([Date]),
+            "Quarter", FORMAT([Date],"\QQ")
+            )
+return myExtendedCalendar
+    </pre>
+    <h4>Structure of MyCalendar table</h4>
+    <img src="images/MyCalendar-model.png" alt="MyCalendar"/>
+    <br />
+    <img src="images/MyCalendar-dataview.png" alt="MyCalendar"/>
+    
+    <h4>Setting the sort properties for the Text columns</h4>
+    <p>We are nearly there. But, there is one essential step to be carried out. 
+    The textual columns like Month, DayOfWeek and Quarter need to be aware of the sort order. 
+    Consider the Month column. When this column is selected as the Columns in a Matrix visual, the sort order by default would be alphabetical, i.e. Dec comes before January. This is not right.
+    We want the order Jan, Feb, March, April ,.. Dec. To achieve this we need to specify MonthNumber as the sort column for the Month column       
+    </p>
+    <img src="images/MyCalendar-month-sort.png" alt="MyCalendar"/>
+    <br />
+    <img src="images/MyCalendar-quarter-sort.PNG" alt="MyCalendar"/>
 </body>
 </html>
