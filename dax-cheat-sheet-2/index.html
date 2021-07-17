@@ -67,9 +67,10 @@
 
 
     <hr />
-    <h1>Date tables in Power BI</h1>
+    <h1>Custom date tables in Power BI</h1>
     <p>
         To understand the workings of the <strong>Date and Time intelligence</strong> DAX functions we will begin with creating a custom Date table.
+        The AdventureWorks model also comes with a date table <strong>Date</strong>. 
     </p>
     <h4>What is a Date table and why do we need one?</h4>
     <p>A date table is like any other table in Power BI but with some mandatory requirements as prescribed by <a href="https://docs.microsoft.com/en-us/power-bi/guidance/model-date-tables">Power BI here</a></p>
@@ -93,18 +94,30 @@
 MyCalendar = 
 
 VAR myExtendedCalendar = ADDCOLUMNS(
-            CALENDAR(DATE(2017,2,1),DATE(2021,10,31)), 
+            CALENDAR(DATE(2017,7,1),DATE(2021,6,30)), 
             "Year", YEAR([Date]),
             "MonthNumber", MONTH([Date]),
             "DayNumber", DAY([Date]),
             "Month", FORMAT([Date],"mmmm"),
             "DayOfWeek", FORMAT([Date],"ddd"),
-            "DayOfWeekNumber", FORMAT([Date],"w"),
+            "DayOfWeekNumber", WEEKDAY([Date]),
             "QuarterNumber", QUARTER([Date]),
-            "Quarter", FORMAT([Date],"\QQ")
+            "Quarter", FORMAT([Date],"\QQ"),
+            "WeekNumber",WEEKNUM([Date])
             )
-return myExtendedCalendar
-    </pre>
+//Add the Financial year columns        
+VAR myExtendedCalendarWithFinancialColuns = ADDCOLUMNS(
+            myExtendedCalendar, 
+            "FinancialYear",IF( [MonthNumber]>=7, [Year]+1, [Year] ),
+            "FinancialQuarterNumber",IF( [MonthNumber]>=7, [QuarterNumber]-2, [QuarterNumber]+2 )
+            )
+//Add the Financial Quarter columns            
+VAR myExtendedCalenderWithQuarterDisplayColumn = ADDCOLUMNS(
+            myExtendedCalendarWithFinancialColuns, 
+            "FinancialQuarter",CONCATENATE("Q",[FinancialQuarterNumber])
+            )
+
+return myExtendedCalenderWithQuarterDisplayColumn    </pre>
     <h4>Structure of MyCalendar table</h4>
     <img src="images/MyCalendar-model.png" alt="MyCalendar"/>
     <br />
@@ -119,5 +132,27 @@ return myExtendedCalendar
     <img src="images/MyCalendar-month-sort.png" alt="MyCalendar"/>
     <br />
     <img src="images/MyCalendar-quarter-sort.PNG" alt="MyCalendar"/>
+    <hr />
+
+    <h1>Count the number of Sundays in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>STARTOFYEAR, ENDOFYEAR</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>STARTOFYEAR, ENDOFYEAR</h1>
+    <p>to be done</p>
+    <hr />
+
+    <h1>DATESYTD</h1>
+    <p>to be done</p>
+    <hr />
+
 </body>
 </html>

@@ -12,3 +12,123 @@ EVALUATE
 	//SELECTCOLUMNS(mycalendar, "MyDateColumn",[Date]) //this works
 )
 
+/////////////////////////////////////////////////////////////////
+//The following works
+DEFINE 
+	VAR  first = FIRSTDATE('Date'[Date])
+	VAR  last = LASTDATE('Date'[Date])
+
+EVALUATE
+{
+	first, last
+}
+
+/////////////////////////////////////////////////////////////////
+
+//The following works
+DEFINE 
+	VAR  first =   FIRSTDATE('Date'[Date])
+	VAR  last =    LASTDATE('Date'[Date])
+	VAR  between = DATESBETWEEN('Date'[Date], first,last)
+
+EVALUATE {first}
+EVALUATE {last}
+EVALUATE {COUNTROWS(between)}
+
+
+
+
+
+/////////////////////////////////////////////////////////////////
+
+//This works
+DEFINE 
+	VAR  first =   DATE(2018,1,1)
+	VAR  last =    DATE(2018,12,31)
+	VAR  between = DATESBETWEEN('Date'[Date], first,last)
+	VAR filteredtable = FILTER('Date', 'Date'[Date] in between)
+EVALUATE
+(
+	filteredtable
+)
+
+/////////////////////////////////////////////////////////////////
+//The following works - you have to be careful . Adventure works date table uses FISCAL YEAR
+
+DEFINE 
+	VAR  first =   DATE(2018,1,1)
+	VAR  last =    DATE(2018,12,31)
+	//VAR  between = DATESBETWEEN('Date'[Date], first,last)
+	//VAR filteredDates = FILTER('Date', 'Date'[Date] in between)
+EVALUATE
+{
+	
+	CALCULATE(
+		SUMX(Sales,Sales[Sales Amount]),
+		
+		FILTER(Sales, RELATED('Date'[Fiscal Year]) =="FY2020")
+		//23,860 for FY2018
+		//34,070 for FY2018
+		//51,878 fOr FY2020
+		//
+		
+		//FILTER(Sales, RELATED('Date'[Date]) >= first && RELATED('Date'[Date]) <= last) 
+		//24,468 for 2020
+		//30,516 for 2018
+		
+		//FILTER(Sales, Sales[ResellerKey] == 684) //THIS WORKS
+		//FILTER(Sales, Sales[OrderDateKey] == "20200614") //did not work
+		//filtereddates  //This produDEFINE 
+		)
+}
+
+/////////////////////////////////////////////////////////////////
+
+DEFINE 
+	VAR  first =   DATE(2020,6,1)
+	VAR  last =    DATE(2019,6,31)
+	VAR  between = DATESBETWEEN('Date'[Date], first,last)
+	VAR filteredDates = FILTER('Date', 'Date'[Date] in between)
+
+EVALUATE
+{
+	
+	CALCULATE(
+		SUMX(Sales,Sales[Sales Amount]),		
+		FILTER(Sales, RELATED('Date'[Fiscal Year]) == "FY2020" ) //This matches UI
+		//23,860 in FY2018
+		//34,070 in FY2019
+		//51,878 in FY2020
+		
+		//FILTER(Sales, RELATED('Date'[Date]) >= first && RELATED('Date'[Date]) <= last) //this works
+		//FILTER(Sales, Sales[ResellerKey] == 684) //THIS WORKS
+		//FILTER(Sales, Sales[OrderDateKey] == "20200614") //did not work
+		//filtereddates  //This produces a value, but does not match Power BI , should be 23860 for 2018
+		//FILTER(Sales, Sales[OrderDateKey] IN filteredDates[DateKey])// error
+		)
+	
+		//SUMX(Sales,Sales[Sales Amount])
+
+}
+
+//////////////////////////////////////////////////
+//This works
+EVALUATE
+(
+	//Sales
+	FILTER(Sales,  Sales[OrderDateKey] >= 20200612 && Sales[OrderDateKey]  <= 20200614) //THIS WORKS
+	//FILTER(Sales, (Sales[OrderDateKey] in {20200613,20200614}))  //This works
+	//FILTER(Sales, (Sales[OrderDateKey] in {20200613,20200614})) //This works
+	//FILTER(Sales, (Sales[OrderDateKey] == 20200614)) //This works
+	//FILTER(Sales, (Sales[ResellerKey] == 258))  //This works
+)
+
+
+/////////////////////////////////////////////////////////////////
+
+DEFINE 
+	VAR  first =   DATE(2020,1,1)
+	VAR  last =    DATE(2020,12,31)
+	VAR  between = DATESBETWEEN('Date'[Date], first,last)
+	VAR filteredDates = FILTER('Date', 'Date'[Date] in between)
+
