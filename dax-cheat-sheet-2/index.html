@@ -135,23 +135,106 @@ return myExtendedCalenderWithQuarterDisplayColumn    </pre>
     <hr />
 
     <h1>Count the number of Sundays in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
-    <p>to be done</p>
+    <p>to be done - refer sheet Friday 13</p>
     <hr />
 
     <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
-    <p>to be done</p>
+    <p>to be done - refer sheet Friday 13</p>
     <hr />
 
-    <h1>STARTOFYEAR, ENDOFYEAR</h1>
-    <p>to be done</p>
+    <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED)</h1>
+    <h4>Achieving this without a measure</h4>
+    <p>Drag and drop - Total Sales</p>
+    <h4>Achieving this with a measure and custom date table MyCalendar </h4>
+    <p>to be done - refer measure TotalSalesInPeriod2</p>
     <hr />
 
+
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
-    <p>to be done</p>
+    <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
     <hr />
+
 
     <h1>DATESYTD</h1>
-    <p>to be done</p>
+    <p>to be done <br />
+        refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
+        Stress on the importance of <strong>year_end_date</strong> in <strong>DATESYTD</strong><br />
+        Stress on the cumulative nature of the date produced by this DAX<br />
+    </p>
+    <hr />
+
+    <h1>NEXTDAY,PREVIOUSDAY</h1>
+    <p>
+        Refer sheet NEXTDAY/PREV<br />
+        Stress on it gives you the next day or previous day<br />
+    </p>
+    <hr />
+
+    <h1>Daily spike in Sales (PREVIOUSDAY)</h1>
+    <p>
+        Refer sheet NEXTDAY/PREVDAY<br />
+        Refer measure DailyGrowthInSales<br />
+    </p>
+    <hr />
+
+    <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
+    <p>
+        Month to month<br />
+        Need to write a Measure to compare between this month and previous month<br />
+        One column chart <br />
+        Select any 1 year via filter <br />
+        Months along X-axis<br />
+        Plot the measure in the Values <br />
+    </p>
+    <hr />
+
+    <h1>Side by side comparison of current month's sales with that of previous month</h1>
+    <p>
+        Two measures - <strong>CurrentMonthSales</strong> and <strong>PreviousMonthSales</strong><br />
+        One column chart <br />
+        Select any 1 year via filter <br />
+        Months along X-axis<br />
+        Plot the 2 measures in Values <br />
+    </p>
+    <hr />
+
+    <h1>Side by side comparison of current period's sales with the same period in previous year (DATEADD)</h1>
+    <p>
+        Two measures - <strong>CurrentPeriodSales</strong> and <strong>LastYearPeriodSales</strong><br />
+        One matrix grid<br />
+        Year+month along rows <br />
+        <strong>CurrentPeriodSales</strong> in first values<br />
+        <strong>LastYearPeriodSales</strong> in second values<br />
+        <strong>Repeat the above with a chart</strong>
+        One column chart <br />
+        Select any 1 year via filter <br />
+        Months along X-axis<br />
+        Plot the 2 measures in Values <br />
+    </p>
+    <hr />
+
+    <h1>Cumulative sales in a month (DATESMTD)</h1>
+    <p>
+        Slicer to select a Year <br />
+        Slicer to select a Month <br />
+        Column chart which has Dates along X axis <br />
+        One measure which shows count of days using DATESMTD for the current X value <br />
+        One measure which uses DATESMTD to produce all dates till the current X value and compute cumulative sales<br />
+        Refer sheet DATESMTD1 <br />
+    </p>
+
+    <hr />
+    <h1>Cumulative daily sales in any slice of time (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
+    <p>
+        Refer measure <strong>CumulativeSales</strong><br />
+        Refer sheet <strong>Dates in any period</strong><br />
+    </p>
+
+    <h1>Cumulative monthly sales in a selected financial year (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
+    <p>
+        Refer measure <strong>CumulativeSales</strong><br />
+        Refer sheet <strong>Dates in any period</strong><br />
+    </p>
     <hr />
 
 </body>
