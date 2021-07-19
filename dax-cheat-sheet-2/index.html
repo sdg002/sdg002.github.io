@@ -153,10 +153,36 @@ VAR datesWithSundays=FILTER(daysInBetween, WEEKDAY(MyCalendar[Date])==1)
 VAR countOfSundays = COUNTROWS(datesWithSundays)
 return countOfSundays
     </pre>
+    <p>
+        For both the examples presented above we have used the single measure <code>NumberOfSundays</code>.
+        The measure is agnostic of the length of the time period.
+        The ROW filter in each of the visuals has all the information about the rows from the <code>MyCalendar[Date]</code> table.
+        We use the expression <code>FIRSTDATE</code> and <code>LASTDATE</code> to find the bounds of the time period in each cell.
+        The <code>DATESBETWEEN</code> expression gives us a table of all <code>MyCalendar</code> within these bounds.
+        The count of Sundays is extracted by using the <code>FILTER</code> expression.
+    </p>
     <hr />
 
     <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
-    <p>to be done - refer sheet Friday 13</p>
+    <p>In this example, we count the occurences of all days which are Friday and are the 13 th day of the month. 
+    The DAX measure is semantically identical to the one we wrote for counting the Sundays in any time period </p>
+    <h4>Matrix visual</h4>
+    <img src="images/CountFriday13th.PNG" alt="Friday the 13 th" />
+    <h4>DAX measure</h4>
+    <pre>
+NumberOfFriday13th = 
+VAR first = FIRSTDATE(MyCalendar[Date])
+VAR last = LASTDATE(MyCalendar[Date])
+VAR between = DATESBETWEEN(MyCalendar[Date],first, last)
+VAR days = COUNTROWS
+    (
+        FILTER(
+            between, 
+            WEEKDAY(MyCalendar[Date])==6 && DAY(MyCalendar[Date])==13
+            ) 
+    )
+return days
+    </pre>
     <hr />
 
     <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED)</h1>
