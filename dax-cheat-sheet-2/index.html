@@ -28,19 +28,19 @@
     <h1>Overview</h1>
     <p>
         This is a continuation of my previous article <strong>DAX Chear sheet - Part 1</strong>.
-        In this article, I have delved into the <strong>Time intelligence functions</strong> of DAX. 
+        In this article, I have delved into the <strong>Time intelligence functions</strong> of DAX.
         Microsoft's documentation can be found <a href="https://docs.microsoft.com/en-us/dax/time-intelligence-functions-dax">here</a>.
-        
+
     </p>
 
     <hr />
     <h1>Sample Data</h1>
     <p>
-    I will be using the <strong>Adventure Works DW 2020</strong> sample model which can be downloaded <a href="https://docs.microsoft.com/en-us/power-bi/guidance/dax-sample-model">from Microsoft's site</a>.
-    I have placed a copy of the PBIX in my Github repo, the link to which is at the end of this article.
+        I will be using the <strong>Adventure Works DW 2020</strong> sample model which can be downloaded <a href="https://docs.microsoft.com/en-us/power-bi/guidance/dax-sample-model">from Microsoft's site</a>.
+        I have placed a copy of the PBIX in my Github repo, the link to which is at the end of this article.
     </p>
     <h4>Database Schema</h4>
-    <img src="images/AdventureWorksModel.png"/>
+    <img src="images/AdventureWorksModel.png" />
 
     <h4>Data</h4>
     <p>
@@ -48,29 +48,29 @@
     </p>
 
     <h4>Customer</h4>
-    <img src="images/TopN-Customer.GIF" alt="Top N"/>
-    
+    <img src="images/TopN-Customer.GIF" alt="Top N" />
+
     <h4>SalesTerritory</h4>
-    <img src="images/TopN-SalesTerritory.GIF" alt="Top N"/>
+    <img src="images/TopN-SalesTerritory.GIF" alt="Top N" />
 
     <h4>Reseller</h4>
-    <img src="images/TopN-Reseller.GIF" alt="Top N"/>
+    <img src="images/TopN-Reseller.GIF" alt="Top N" />
 
     <h4>Sales Order</h4>
-    <img src="images/TopN-SalesOrder.GIF" alt="Top N"/>
+    <img src="images/TopN-SalesOrder.GIF" alt="Top N" />
 
     <h4>Sales</h4>
-    <img src="images/TopN-Sales.GIF" alt="Top N"/>
+    <img src="images/TopN-Sales.GIF" alt="Top N" />
 
     <h4>Date</h4>
-    <img src="images/TopN-Date.GIF" alt="Top N"/>
+    <img src="images/TopN-Date.GIF" alt="Top N" />
 
 
     <hr />
     <h1>Custom date tables in Power BI</h1>
     <p>
         To understand the workings of the <strong>Date and Time intelligence</strong> DAX functions we will begin with creating a custom Date table.
-        The AdventureWorks model also comes with a date table <strong>Date</strong>. 
+        The AdventureWorks model also comes with a date table <strong>Date</strong>.
     </p>
     <h4>What is a Date table and why do we need one?</h4>
     <p>A date table is like any other table in Power BI but with some mandatory requirements as prescribed by <a href="https://docs.microsoft.com/en-us/power-bi/guidance/model-date-tables">Power BI here</a></p>
@@ -82,12 +82,12 @@
         <li>The date column must span full years. A year isn't necessarily a calendar year (January-December).</li>
         <li>The date table must be marked as a date table.</li>
     </ul>
-    
+
     <h4>How to create a  date table using DAX?</h4>
     <p>
-        There are two Power BI functions which are useful for creating date tables. 
+        There are two Power BI functions which are useful for creating date tables.
         These  are <a href="https://docs.microsoft.com/en-us/dax/calendar-function-dax">CALENDAR</a> and <a href="https://docs.microsoft.com/en-us/dax/calendarauto-function-dax">CALENDARAUTO</a>
-        I have taken inspiration from this <a href="https://www.youtube.com/watch?v=-li7sxUxEqA&amp;t=317s">wonderful tutorial</a> 
+        I have taken inspiration from this <a href="https://www.youtube.com/watch?v=-li7sxUxEqA&amp;t=317s">wonderful tutorial</a>
         to create a custom date table and named it as <strong>MyCalendar</strong>.
     </p>
     <pre>
@@ -119,23 +119,40 @@ VAR myExtendedCalenderWithQuarterDisplayColumn = ADDCOLUMNS(
 
 return myExtendedCalenderWithQuarterDisplayColumn    </pre>
     <h4>Structure of MyCalendar table</h4>
-    <img src="images/MyCalendar-model.png" alt="MyCalendar"/>
+    <img src="images/MyCalendar-model.png" alt="MyCalendar" />
     <br />
-    <img src="images/MyCalendar-dataview.png" alt="MyCalendar"/>
-    
+    <img src="images/MyCalendar-dataview.png" alt="MyCalendar" />
+
     <h4>Setting the sort properties for the Text columns</h4>
-    <p>We are nearly there. But, there is one essential step to be carried out. 
-    The textual columns like Month, DayOfWeek and Quarter need to be aware of the sort order. 
-    Consider the Month column. When this column is selected as the Columns in a Matrix visual, the sort order by default would be alphabetical, i.e. Dec comes before January. This is not right.
-    We want the order Jan, Feb, March, April ,.. Dec. To achieve this we need to specify MonthNumber as the sort column for the Month column       
+    <p>
+        We are nearly there. But, there is one essential step to be carried out.
+        The textual columns like Month, DayOfWeek and Quarter need to be aware of the sort order.
+        Consider the Month column. When this column is selected as the Columns in a Matrix visual, the sort order by default would be alphabetical, i.e. Dec comes before January. This is not right.
+        We want the order Jan, Feb, March, April ,.. Dec. To achieve this we need to specify MonthNumber as the sort column for the Month column
     </p>
-    <img src="images/MyCalendar-month-sort.png" alt="MyCalendar"/>
+    <img src="images/MyCalendar-month-sort.png" alt="MyCalendar" />
     <br />
-    <img src="images/MyCalendar-quarter-sort.PNG" alt="MyCalendar"/>
+    <img src="images/MyCalendar-quarter-sort.PNG" alt="MyCalendar" />
     <hr />
 
     <h1>Count the number of Sundays in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
-    <p>to be done - refer sheet Friday 13</p>
+    <p>
+        Given any slice of time, how do we find the number of Sundays in that period? In the following examples, a Matrix visual has been used with
+        the Rows divided into hierarhical time periods
+    </p>
+    <h4>Matrix visual</h4>
+    <img src="images/CountSundaysYearMonth.png" alt="Count sundays in year/month" />
+    <img src="images/CountSundaysYearQuarter.png" alt="Count sundays in year/quarter" />
+    <h4>DAX measure</h4>
+    <pre>
+NumberOfSundays = 
+VAR first = FIRSTDATE(MyCalendar[Date])
+VAR last = LASTDATE(MyCalendar[Date])
+VAR daysInBetween = DATESBETWEEN(MyCalendar[Date] , first, last)
+VAR datesWithSundays=FILTER(daysInBetween, WEEKDAY(MyCalendar[Date])==1) 
+VAR countOfSundays = COUNTROWS(datesWithSundays)
+return countOfSundays
+    </pre>
     <hr />
 
     <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
@@ -156,7 +173,8 @@ return myExtendedCalenderWithQuarterDisplayColumn    </pre>
 
 
     <h1>DATESYTD</h1>
-    <p>to be done <br />
+    <p>
+        to be done <br />
         refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
         Stress on the importance of <strong>year_end_date</strong> in <strong>DATESYTD</strong><br />
         Stress on the cumulative nature of the date produced by this DAX<br />
