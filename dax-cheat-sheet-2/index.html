@@ -191,11 +191,62 @@ return days
     <img src="images/CountFriday13th_Slicer.PNG"/>
     <hr />
 
-    <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED)</h1>
-    <h4>Achieving this without a measure</h4>
-    <p>Drag and drop - Total Sales</p>
-    <h4>Achieving this with a measure and custom date table MyCalendar </h4>
-    <p>to be done - refer measure TotalSalesInPeriod2</p>
+    <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED, FILTER)</h1>
+    <p>We will achieve this using 3 different approaches</p>
+    <ol>
+        <li>Out of box drag n drop(no measure)</li>
+        <li>A measure which queries using the Adventure Works Date table</li>
+        <li>A measure which queries using the custom MyCalendar table</li>
+    </ol>
+    <img src="images/TotalSales-3-approaches.PNG" alt="Total sales"/>
+    <h4>Out of box drag n drop(no measure)</h4>
+    <p>This being a fairly simple calculation, we can drag and drop the <strong>Sales Amount</strong> column of the <strong>Total Sales</strong></p>
+    and then selecting the <strong>Sum</strong> option from the context menu
+    <h4>A measure which queries using the Adventure Works Date table </h4>
+    <p>The <strong>FIRSTDATE</strong> and <strong>LASTDATE</strong> expressions on the <strong>out of box Date table</strong> 
+        gives us the bounds of the time period in the current context. The <strong>DATESBETWEEN</strong> gives us all the dates from the date table and we use this to provide a filter in the <strong>CALCULATE</strong> expression</p>
+    <pre>
+    TotalSalesInPeriodUsingAdWorksDate = 
+    
+    var first = FIRSTDATE('Date'[Date])
+    var last =  LASTDATE('Date'[Date])
+
+    VAR between = DATESBETWEEN('Date'[Date], first , last)
+    VAR filteredDates = FILTER('Date', 'Date'[Date] in between)
+    VAR totalSales  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        filteredDates
+    )
+    return totalSales
+
+    </pre>
+    <h4>A measure which queries using the custom MyCalendar table</h4>
+    <p>The Matrix visual is using the <strong>MyCalendar date </strong> table to render the hierarchy. 
+    Therefore, in this measure we use the <strong>FIRSTDATE</strong> and <strong>LASTDATE</strong> to get the bounds. 
+    The <strong>CALCULATE</strong> expression is modifying its context by filtering on the 
+        <strong>Adventure Works date table</strong></p>
+    <pre>
+    TotalSalesInPeriodUsingMyCalendar = 
+    
+    var first = FIRSTDATE(MyCalendar[Date])
+    var last =  LASTDATE(MyCalendar[Date])
+
+    /*
+    In this measure, we are assuming that there is no direct relationship between MyCalendar and Sales
+    Hence the need for explicit filtering
+    */
+    VAR totalSales  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        FILTER(
+            Sales,
+            RELATED('Date'[Date]) >= first && RELATED('Date'[Date]) <= last
+            )
+    )
+    return totalSales
+
+    </pre>
     <hr />
 
 
