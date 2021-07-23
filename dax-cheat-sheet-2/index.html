@@ -249,7 +249,55 @@ return days
     </pre>
     <hr />
 
+    <h1>Cumulative sales in a month (DATESMTD, CALCULATE, FILTER, SUMX)</h1>
+    <p>The DAX expression <strong>DATESMTD</strong> will produce a new table with all dates from the start of the month upto the current day of the context.
+    How is this useful? You can produce a report of running totals (month to date) for any given month. We will proceed cautiously here. 
+        Before we jump to calculating the sales we will attempt to get the cumulative dates for any given day in a month. 
+        Once this is obtained it is fairly easy to do the next step , i.e. calculate the cumulative sales.
+    </p>
+    <h4>DAX expression to produce a count of days in current month to date</h4>
+    <p>Using the following DAX measure, we display the running total of days from start to current date. E.g. On 4 th February the cumulative count would be 4 (1st Feb, 2nd, 3rd, 4th). 
+    Likewise for 5th February, the total would be 5.        
+    </p>
+    <pre>
+DatesMtdDemo1 = 
+VAR datesInThisMonth = DATESMTD(MyCalendar[Date])
+return COUNTROWS(datesInThisMonth)
+    </pre>
+    <img src="images/DatesMtd-CumulativeDaysInMonth.png" alt="DATESMTD"/>
 
+    <h4>Cumulative sales in a month - the hard way</h4>
+    <p>In the following DAX measure we use the <strong>DATESMTD</strong> to get all the date values from the start of month till current day in the month.
+    The <strong>Date[Date]</strong> column is filtered using the cumulative list of days.
+    The cumulative value of <strong>Sales[Sales Amount]</strong> is then calculated by using the list of days.
+    </p>
+    <pre>
+    DatesMtdDemo2 = 
+        VAR datesInThisMonth = DATESMTD(MyCalendar[Date])
+        VAR filteredDates = FILTER('Date', 'Date'[Date] in datesInThisMonth)
+        VAR totalSales  = CALCULATE
+        ( 
+            SUMX(Sales, Sales[Sales Amount]),
+            filteredDates
+        )
+        return totalSales
+    </pre>
+    <p>In the following illustration we do a side by side comparison of the cumulative sales on the last day of the month on the left side and the total sales in that month on the right</p>
+    <img src="images/DatesMtd-CumulativeSalesInMonth.png" alt="DATESMTD"/>
+
+    <hr />
+    <h1>Cumulative sales in a month - the easier way (TOTALMTD)</h1>
+    <p>The following DAX measure expects a current day of month in the current context. </p>
+    <pre>
+    TotalMonthToDate = TOTALMTD(SUMX(Sales, [Sales Amount]),'Date'[Date])
+    </pre>
+    How can we be sure that <strong>TOTALMTD</strong> produces the same value as that obtained by the customer measure <strong>DatesMtdDemo2</strong> that we wrote in the previous section?
+    Let us do a side by side comparison
+    <br />
+    <img src="images/TotalMtd.PNG" alt="TOTALMTD"/>
+
+
+    <hr />
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
     <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
     <hr />
@@ -314,17 +362,6 @@ return days
     </p>
     <hr />
 
-    <h1>Cumulative sales in a month (DATESMTD)</h1>
-    <p>
-        Slicer to select a Year <br />
-        Slicer to select a Month <br />
-        Column chart which has Dates along X axis <br />
-        One measure which shows count of days using DATESMTD for the current X value <br />
-        One measure which uses DATESMTD to produce all dates till the current X value and compute cumulative sales<br />
-        Refer sheet DATESMTD1 <br />
-    </p>
-
-    <hr />
     <h1>Cumulative daily sales in any slice of time (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
     <p>
         Refer measure <strong>CumulativeSales</strong><br />
