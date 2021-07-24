@@ -340,10 +340,42 @@ return COUNTROWS(datesInThisMonth)
 
     <img src="images/CumulativeSalesInAnyPeriod.PNG" alt="Cumulative sales in any period"/>
     <hr />
+
+    <h1>Side by side comparison of current period's sales with the same period in previous year (DATEADD,FIRSTDATE,LASTDATE)</h1>
+    <p>Consider a scenario where we want to compare the sales in a period in the year 2020 and the same period in the year 2019. 
+    The <strong>DATEADD</strong> function makes this possible.
+    </p>
+
+    <h4>DAX measure to calculate the sales in the same period of last year</h4>
+    <pre>
+    TotalSalesInLastYearPeriodUsingMyCalendar = 
+    VAR lastYearSamePeriod= DATEADD(MyCalendar[Date],-1 , YEAR)  
+    VAR firstDateInPeriod=  FIRSTDATE(lastYearSamePeriod)
+    VAR lastDateInPeriod=  LASTDATE(lastYearSamePeriod)
+
+    VAR totalSales  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        FILTER(
+            Sales,
+            RELATED('Date'[Date]) >= firstDateInPeriod && RELATED('Date'[Date]) <= lastDateInPeriod
+            )
+    )
+    return totalSales
+
+    </pre>
+    <h4>Matrix visual</h4>
+    <img src="images/DateAdd-SalesInSamePeriodLastYear.PNG" alt="Same period last year"/>
+    <h4>Clustered columns chart visual</h4>
+    <img src="images/DateAdd-SideBySide-Histogram.PNG" alt="Same period last year"/>
+    
+    <hr />
+
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
     <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
     <hr />
 
+    <!-- blah-->
 
     <h1>DATESYTD</h1>
     <p>
@@ -390,27 +422,17 @@ return COUNTROWS(datesInThisMonth)
     </p>
     <hr />
 
-    <h1>Side by side comparison of current period's sales with the same period in previous year (PARALLELPERIOD)</h1>
-    <p>
-        Two measures - <strong>CurrentPeriodSales</strong> and <strong>LastYearPeriodSales</strong><br />
-        One matrix grid<br />
-        Year+month along rows <br />
-        <strong>CurrentPeriodSales</strong> in first values<br />
-        <strong>LastYearPeriodSales</strong> in second values<br />
-        <strong>Repeat the above with a chart</strong>
-        One column chart <br />
-        Select any 1 year via filter <br />
-        Months along X-axis<br />
-        Plot the 2 measures in Values <br />
-    </p>
-    <hr />
-
     <h1>Cumulative monthly sales in a selected financial year (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
     <p>
         Refer measure <strong>CumulativeSales</strong><br />
         Refer sheet <strong>Dates in any period</strong><br />
     </p>
     <hr />
+
+    <h1>Difference between PARALLELPERIOD and DATEADD</h1>
+    <p>
+        TO BE DONE
+    </p>
 
 </body>
 </html>
