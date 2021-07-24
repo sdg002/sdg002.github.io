@@ -301,6 +301,45 @@ return COUNTROWS(datesInThisMonth)
 
 
     <hr />
+    <h1>Cumulative daily sales in any slice of time (FIRSTDATE,LASTDATE,ALLSELECTED,RELATED)</h1>
+    <h4>Objective</h4>
+    <ol>
+        <li>
+            We want to analyze the cumulative growth in Sales in any time interval on the <strong>MyCalendar</strong> table.
+        </li>
+        <li>
+            A <strong>Slicer</strong> visual to select the time interval
+        </li>
+        <li>
+            A custom measure <strong>CumulativeSalesInAnyPeriod</strong> which does the calculation
+        </li>
+        <li>
+            A Stacked column chart with the X-axis showing the <strong>Date</strong> column of the <strong>MyCalendar</strong> table and the Values set to <strong>CumulativeSalesInAnyPeriod</strong>
+        </li>
+    </ol>
+    <h4>Custom DAX measure</h4>
+    <pre>
+    CumulativeSalesInAnyPeriod = 
+    VAR currentDate = SELECTEDVALUE(MyCalendar[Date])
+
+    VAR first = FIRSTDATE(ALLSELECTED(MyCalendar[Date]))
+    VAR last = LASTDATE(ALLSELECTED(MyCalendar[Date]))
+
+
+    VAR totalSales  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        FILTER(
+            Sales,
+            RELATED('Date'[Date]) >= first && RELATED('Date'[Date]) <= currentDate
+            )
+    )
+    return totalSales
+
+    </pre>
+
+    <img src="images/CumulativeSalesInAnyPeriod.PNG" alt="Cumulative sales in any period"/>
+    <hr />
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
     <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
     <hr />
@@ -330,6 +369,7 @@ return COUNTROWS(datesInThisMonth)
     <hr />
 
     <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
+    <h1>Side by side comparison of current month's sales with that of previous month (PARALLELPERIOD)</h1>
     <p>
         Month to month<br />
         Need to write a Measure to compare between this month and previous month<br />
@@ -340,7 +380,7 @@ return COUNTROWS(datesInThisMonth)
     </p>
     <hr />
 
-    <h1>Side by side comparison of current month's sales with that of previous month</h1>
+    <h1>Side by side comparison of current month's sales with that of previous month (PARALLELPERIOD)</h1>
     <p>
         Two measures - <strong>CurrentMonthSales</strong> and <strong>PreviousMonthSales</strong><br />
         One column chart <br />
@@ -350,7 +390,7 @@ return COUNTROWS(datesInThisMonth)
     </p>
     <hr />
 
-    <h1>Side by side comparison of current period's sales with the same period in previous year (DATEADD)</h1>
+    <h1>Side by side comparison of current period's sales with the same period in previous year (PARALLELPERIOD)</h1>
     <p>
         Two measures - <strong>CurrentPeriodSales</strong> and <strong>LastYearPeriodSales</strong><br />
         One matrix grid<br />
@@ -364,12 +404,6 @@ return COUNTROWS(datesInThisMonth)
         Plot the 2 measures in Values <br />
     </p>
     <hr />
-
-    <h1>Cumulative daily sales in any slice of time (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
-    <p>
-        Refer measure <strong>CumulativeSales</strong><br />
-        Refer sheet <strong>Dates in any period</strong><br />
-    </p>
 
     <h1>Cumulative monthly sales in a selected financial year (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
     <p>
