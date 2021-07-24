@@ -199,10 +199,11 @@ return days
         <li>A measure which queries using the custom MyCalendar table</li>
     </ol>
     <img src="images/TotalSales-3-approaches.PNG" alt="Total sales"/>
-    <h4>Out of box drag n drop(no measure)</h4>
+    <h4>Option-1 Out of box drag n drop(no measure)</h4>
     <p>This being a fairly simple calculation, we can drag and drop the <strong>Sales Amount</strong> column of the <strong>Total Sales</strong></p>
     and then selecting the <strong>Sum</strong> option from the context menu
-    <h4>A measure which queries using the Adventure Works Date table </h4>
+
+    <h4>Option-2 A measure which queries using the Adventure Works Date table </h4>
     <p>The <strong>FIRSTDATE</strong> and <strong>LASTDATE</strong> expressions on the <strong>out of box Date table</strong> 
         gives us the bounds of the time period in the current context. The <strong>DATESBETWEEN</strong> gives us all the dates from the date table and we use this to provide a filter in the <strong>CALCULATE</strong> expression</p>
     <pre>
@@ -221,7 +222,8 @@ return days
     return totalSales
 
     </pre>
-    <h4>A measure which queries using the custom MyCalendar table</h4>
+
+    <h4>Option-3 A measure which queries using the custom MyCalendar table</h4>
     <p>The Matrix visual is using the <strong>MyCalendar date </strong> table to render the hierarchy. 
     Therefore, in this measure we use the <strong>FIRSTDATE</strong> and <strong>LASTDATE</strong> to get the bounds. 
     The <strong>CALCULATE</strong> expression is modifying its context by filtering on the 
@@ -257,7 +259,7 @@ return days
     </p>
     <h4>DAX expression to produce a count of days in current month to date</h4>
     <p>Using the following DAX measure, we display the running total of days from start to current date. E.g. On 4 th February the cumulative count would be 4 (1st Feb, 2nd, 3rd, 4th). 
-    Likewise for 5th February, the total would be 5.        
+    Likewise for 5th February, the total would be 5. <strong>Why do we need the running total of the days? </strong>This will be useful in the next step.       
     </p>
     <pre>
 DatesMtdDemo1 = 
@@ -267,7 +269,7 @@ return COUNTROWS(datesInThisMonth)
     <img src="images/DatesMtd-CumulativeDaysInMonth.png" alt="DATESMTD"/>
 
     <h4>Cumulative sales in a month - the hard way</h4>
-    <p>In the following DAX measure we use the <strong>DATESMTD</strong> to get all the date values from the start of month till current day in the month.
+    <p>In the previou step we obtained the cumulative count of days in a month. We will use this informatin to FILTER the Sales. In the following DAX measure we use the <strong>DATESMTD</strong> to get all the date values from the start of month till current day in the month.
     The <strong>Date[Date]</strong> column is filtered using the cumulative list of days.
     The cumulative value of <strong>Sales[Sales Amount]</strong> is then calculated by using the list of days.
     </p>
@@ -282,7 +284,8 @@ return COUNTROWS(datesInThisMonth)
         )
         return totalSales
     </pre>
-    <p>In the following illustration we do a side by side comparison of the cumulative sales on the last day of the month on the left side and the total sales in that month on the right</p>
+    <p>In the following illustration we do a side by side comparison of the cumulative sales on the last day of the month on the left side and the total sales in that month on the right. Notice that the cumulative total on <strong>Feb 28 th</strong> (left side) is equal to the overall monthly total on <strong>Feb</strong> (right side).
+    </p>
     <img src="images/DatesMtd-CumulativeSalesInMonth.png" alt="DATESMTD"/>
 
     <hr />
