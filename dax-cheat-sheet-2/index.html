@@ -30,8 +30,28 @@
         This is a continuation of my previous article <strong>DAX Chear sheet - Part 1</strong>.
         In this article, I have delved into the <strong>Time intelligence functions</strong> of DAX.
         Microsoft's documentation can be found <a href="https://docs.microsoft.com/en-us/dax/time-intelligence-functions-dax">here</a>.
-
+        In this article I have covered the following DAX expressions:
     </p>
+    <ol>
+        <li>CALENDAR</li>
+        <li>YEAR</li>
+        <li>MONTH</li>
+        <li>DAY</li>
+        <li>QUARTER</li>
+        <li>WEEKNUM</li>
+        <li>WEEKDAY</li>
+        <li>FIRSTDATE</li>
+        <li>LASTDATE</li>
+        <li>DATESBETWEEN</li>
+        <li>DATESMTD</li>
+        <li>TOTALMTD</li>
+        <li>ALLSELECTED</li>
+        <li>DATEADD</li>
+        <li>RELATED</li>
+        <li>???</li>
+        <li>???</li>
+        <li>???</li>
+    </ol>
 
     <hr />
     <h1>Sample Data</h1>
@@ -136,6 +156,7 @@ return myExtendedCalenderWithQuarterDisplayColumn    </pre>
     <hr />
 
     <h1>Count the number of Sundays in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
+    <h4>Objective</h4>
     <p>
         Given any slice of time, how do we find the number of Sundays in that period? In the following examples, a Matrix visual has been used with
         the Rows divided into hierarhical time periods
@@ -164,6 +185,7 @@ return countOfSundays
     <hr />
 
     <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
+    <h4>Objective</h4>
     <p>In this example, we count the occurences of all days which are Friday and are the 13 th day of the month. 
     The DAX measure is semantically identical to the one we wrote for counting the Sundays in any time period </p>
     <h4>Matrix visual</h4>
@@ -192,11 +214,13 @@ return days
     <hr />
 
     <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED, FILTER)</h1>
-    <p>We will achieve this using 3 different approaches</p>
+    <h4>Objective</h4>
+
+    <p>Given any any slice of time - calculate the total sales in this period. We will achieve this using 3 different approaches</p>
     <ol>
         <li>Out of box drag n drop(no measure)</li>
-        <li>A measure which queries using the Adventure Works Date table</li>
-        <li>A measure which queries using the custom MyCalendar table</li>
+        <li>A measure which queries using the out of box <strong>Adventure Works</strong> Date table</li>
+        <li>A measure which queries using the custom <strong>MyCalendar</strong> table</li>
     </ol>
     <img src="images/TotalSales-3-approaches.PNG" alt="Total sales"/>
     <h4>Option-1 Out of box drag n drop(no measure)</h4>
@@ -252,12 +276,15 @@ return days
     <hr />
 
     <h1>Cumulative sales in a month (DATESMTD, CALCULATE, FILTER, SUMX)</h1>
-    <p>The DAX expression <strong>DATESMTD</strong> will produce a new table with all dates from the start of the month upto the current day of the context.
+    <h4>Objective</h4>
+    <p>We want to analyze progressive growh of sales from the first day of the specified month right up to the last day in that month. 
+        <strong>Example</strong>: The cumulative sales for June 3rd would be the sum of sales on June 1st and June 2nd. There are couple of ways to achieve this
+        The DAX expression <strong>DATESMTD</strong> will produce a new table with all dates from the start of the month upto the current day of the context.
     How is this useful? You can produce a report of running totals (month to date) for any given month. We will proceed cautiously here. 
         Before we jump to calculating the sales we will attempt to get the cumulative dates for any given day in a month. 
         Once this is obtained it is fairly easy to do the next step , i.e. calculate the cumulative sales.
     </p>
-    <h4>DAX expression to produce a count of days in current month to date</h4>
+    <h4>Step 1-DAX expression to produce a count of days in current month to date</h4>
     <p>Using the following DAX measure, we display the running total of days from start to current date. E.g. On 4 th February the cumulative count would be 4 (1st Feb, 2nd, 3rd, 4th). 
     Likewise for 5th February, the total would be 5. <strong>Why do we need the running total of the days? </strong>This will be useful in the next step.       
     </p>
@@ -268,7 +295,7 @@ return COUNTROWS(datesInThisMonth)
     </pre>
     <img src="images/DatesMtd-CumulativeDaysInMonth.png" alt="DATESMTD"/>
 
-    <h4>Cumulative sales in a month - the hard way</h4>
+    <h4>Step 2-Cumulative sales in a month - the hard way</h4>
     <p>In the previou step we obtained the cumulative count of days in a month. We will use this informatin to FILTER the Sales. In the following DAX measure we use the <strong>DATESMTD</strong> to get all the date values from the start of month till current day in the month.
     The <strong>Date[Date]</strong> column is filtered using the cumulative list of days.
     The cumulative value of <strong>Sales[Sales Amount]</strong> is then calculated by using the list of days.
@@ -290,6 +317,9 @@ return COUNTROWS(datesInThisMonth)
 
     <hr />
     <h1>Cumulative sales in a month - the easier way (TOTALMTD)</h1>
+    <h4>Objective</h4>
+    <p>Our objective remains the same as stated in the previous section. But, there is a simpler way to achieve this objective. </p>
+    <h4>DAX measure</h4>
     <p>The following DAX measure expects a current day of month in the current context. </p>
     <pre>
     TotalMonthToDate = TOTALMTD(SUMX(Sales, [Sales Amount]),'Date'[Date])
@@ -308,10 +338,10 @@ return COUNTROWS(datesInThisMonth)
             We want to analyze the cumulative growth in Sales in any time interval on the <strong>MyCalendar</strong> table.
         </li>
         <li>
-            A <strong>Slicer</strong> visual to select the time interval
+            A <strong>Slicer</strong> visual to select the time interval. This gives us the start and end dates of the time period being analysed.
         </li>
         <li>
-            A custom measure <strong>CumulativeSalesInAnyPeriod</strong> which does the calculation
+            A custom measure <strong>CumulativeSalesInAnyPeriod</strong> which calculates the cumulative sales for each day of the specified time period.
         </li>
         <li>
             A Stacked column chart with the X-axis showing the <strong>Date</strong> column of the <strong>MyCalendar</strong> table and the Values set to <strong>CumulativeSalesInAnyPeriod</strong>
@@ -371,20 +401,14 @@ return COUNTROWS(datesInThisMonth)
     
     <hr />
 
-    <h1>STARTOFYEAR, ENDOFYEAR</h1>
-    <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
+]    <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
+    <ol>
+        <li>A visual to select the Financial year (Single selection only)</li>
+        <li>Column chart to show Months along X axis</li>
+        <li>The custom measure is selected on the Values</li>
+    </ol>
     <hr />
 
-    <!-- blah-->
-
-    <h1>DATESYTD</h1>
-    <p>
-        to be done <br />
-        refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
-        Stress on the importance of <strong>year_end_date</strong> in <strong>DATESYTD</strong><br />
-        Stress on the cumulative nature of the date produced by this DAX<br />
-    </p>
-    <hr />
 
     <h1>NEXTDAY,PREVIOUSDAY</h1>
     <p>
@@ -400,39 +424,36 @@ return COUNTROWS(datesInThisMonth)
     </p>
     <hr />
 
-    <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
-    <h1>Side by side comparison of current month's sales with that of previous month (PARALLELPERIOD)</h1>
+    <h1>STARTOFYEAR, ENDOFYEAR</h1>
+    <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
+    <hr />
+
+    <!-- blah-->
+
+    <h1>DATESYTD</h1>
     <p>
-        Month to month<br />
-        Need to write a Measure to compare between this month and previous month<br />
-        One column chart <br />
-        Select any 1 year via filter <br />
-        Months along X-axis<br />
-        Plot the measure in the Values <br />
+        to be done <br />
+        refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
+        Stress on the importance of <strong>year_end_date</strong> in <strong>DATESYTD</strong><br />
+        Stress on the cumulative nature of the date produced by this DAX<br />
     </p>
     <hr />
 
-    <h1>Side by side comparison of current month's sales with that of previous month (PARALLELPERIOD)</h1>
-    <p>
-        Two measures - <strong>CurrentMonthSales</strong> and <strong>PreviousMonthSales</strong><br />
-        One column chart <br />
-        Select any 1 year via filter <br />
-        Months along X-axis<br />
-        Plot the 2 measures in Values <br />
-    </p>
-    <hr />
 
-    <h1>Cumulative monthly sales in a selected financial year (FIRSTDATE,LASTDATE,SELECTEDVALUE,RELATED, DATESBETWEEN)</h1>
-    <p>
-        Refer measure <strong>CumulativeSales</strong><br />
-        Refer sheet <strong>Dates in any period</strong><br />
-    </p>
-    <hr />
 
     <h1>Difference between PARALLELPERIOD and DATEADD</h1>
     <p>
         TO BE DONE
     </p>
 
+    <h1>10 day moving average of sales </h1>
+    <p>
+        For every day go back 10 days<br /> 
+        Calculate the average for the 10 day period <br />
+        Column chart <br />
+        Slicer <br />
+        Days on X axis <br />
+        Custom measure on Values <br />
+    </p>
 </body>
 </html>
