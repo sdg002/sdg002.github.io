@@ -1,0 +1,41 @@
+﻿DEFINE TABLE newCalendr = ADDCOLUMNS(
+            CALENDAR(DATE(2017,7,1),DATE(2021,6,30)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "DayNumber", DAY([Date]),
+            "Month", FORMAT([Date],"mmmm"),
+            "DayOfWeek", FORMAT([Date],"ddd"),
+            "DayOfWeekNumber", WEEKDAY([Date]),
+            "QuarterNumber", QUARTER([Date]),
+            "Quarter", FORMAT([Date],"\QQ"),
+            "WeekNumber",WEEKNUM([Date])
+            )
+
+EVALUATE
+(
+	SUMMARIZE
+	(
+		newCalendr,
+		newCalendr[Year], 
+		newCalendr[MonthNumber], 
+		"CountRows", COUNT(newCalendr[Date]),
+		"First", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		"Previous", FORMAT(PREVIOUSDAY(newCalendr[Date]), "Medium Date"),
+		"Next", 	FORMAT(NEXTDAY    (newCalendr[Date]), "Medium Date")
+	)
+)
+
+/*
+EVALUATE
+(
+	//newCalendr
+	//PREVIOUSDAY(newCalendr[Date])
+	SELECTCOLUMNS(
+		newCalendr,
+		"old date",[Date],
+		"previous", PREVIOUSDAY(newCalendr[Date]),
+		"next", NEXTDAY(newCalendr[Date])
+		)
+)
+
+*/
