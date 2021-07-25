@@ -401,12 +401,35 @@ return COUNTROWS(datesInThisMonth)
     
     <hr />
 
-]    <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
-    <ol>
-        <li>A visual to select the Financial year (Single selection only)</li>
-        <li>Column chart to show Months along X axis</li>
-        <li>The custom measure is selected on the Values</li>
-    </ol>
+    <h1>Monthly spike in sales (PREVIOUSMONTH)</h1>
+    <h4>Objective</h4>
+    <p>We want to compare the month on month growth/fall in sales. Given a selected year, we want to plot a histogram where for every month we want to
+        see the difference in Sales in that month w.r.t previous month
+    </p>
+    <h4>DAX measure</h4>
+    <pre>
+    MonthOnMonthChangeInSales = 
+    VAR totalSalesInCurrentMonth = AdventureWorksMeasures[TotalSalesInPeriodUsingMyCalendar]
+
+    //Calculate previous month sales
+    VAR firstDateInCurrentContext = FIRSTDATE(MyCalendar[Date])
+    VAR datesInPreviousMonth = PREVIOUSMONTH(firstDateInCurrentContext) 
+
+    VAR firstDateInPreviousMonth = FIRSTDATE(datesInPreviousMonth)
+    VAR lastDateInPreviousMonth = LASTDATE(datesInPreviousMonth)
+    VAR totalSalesInPreviousMonth  = CALCULATE
+        ( 
+            SUMX(Sales, Sales[Sales Amount]),
+            FILTER(
+                Sales,
+                RELATED('Date'[Date]) >= firstDateInPreviousMonth && RELATED('Date'[Date]) <= lastDateInPreviousMonth
+                )
+        )
+    return totalSalesInCurrentMonth-totalSalesInPreviousMonth
+
+    </pre>
+    <h4>Clustered column chart</h4>
+    <img src="images/MonthOnMonth.PNG" alt="Month on month"/>
     <hr />
 
 
