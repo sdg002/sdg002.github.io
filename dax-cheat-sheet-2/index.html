@@ -434,9 +434,44 @@ return COUNTROWS(datesInThisMonth)
 
 
     <h1>NEXTDAY,PREVIOUSDAY</h1>
-    <p>
-        Refer sheet NEXTDAY/PREV<br />
-        Stress on it gives you the next day or previous day<br />
+    <p>This is best understood via the following query written in DAX Studio. 
+       In this query we are summarizing first by Year, followed by Month and then
+        displaying the result of PREVIOUSDAY/NEXTDAY.
+    </p>
+    <h4>DAX Studio query</h4>
+    <pre>
+    DEFINE TABLE newCalendr = ADDCOLUMNS(
+                CALENDAR(DATE(2017,7,1),DATE(2021,6,30)), 
+                "Year", YEAR([Date]),
+                "MonthNumber", MONTH([Date]),
+                "DayNumber", DAY([Date]),
+                "Month", FORMAT([Date],"mmmm"),
+                "DayOfWeek", FORMAT([Date],"ddd"),
+                "DayOfWeekNumber", WEEKDAY([Date]),
+                "QuarterNumber", QUARTER([Date]),
+                "Quarter", FORMAT([Date],"\QQ"),
+                "WeekNumber",WEEKNUM([Date])
+                )
+
+    EVALUATE
+    (
+	    SUMMARIZE
+	    (
+		    newCalendr,
+		    newCalendr[Year], 
+		    newCalendr[MonthNumber], 
+		    "CountOfDays", COUNT(newCalendr[Date]),
+		    "First", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		    "Previous", FORMAT(PREVIOUSDAY(newCalendr[Date]), "Medium Date"),
+		    "Next", 	FORMAT(NEXTDAY    (newCalendr[Date]), "Medium Date")
+	    )
+    )
+    </pre>
+    <img src="images/PREVIOUSDAY-NEXTDAY.PNG" alt="PREVIOUSDAY,NEXTDAY"/>
+    <h4>Deviation from Microsoft's documentation</h4>
+    <p>I observed a slight difference in behaviour of the NEXTDAY function as per Microsof's documentation <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax#example">here</a>.
+        As of writing this article, MS documentation says <i>Returns a table that contains a column of all dates from the next day, based on the first date specified in the dates column in the current context</i>.
+        It should be <i>...based on the last date specified in the dates column in the current context</i>
     </p>
     <hr />
 
