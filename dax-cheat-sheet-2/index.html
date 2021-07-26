@@ -434,8 +434,9 @@ return COUNTROWS(datesInThisMonth)
 
 
     <h1>NEXTDAY,PREVIOUSDAY</h1>
-    <p>This is best understood via the following query written in DAX Studio. 
-       In this query we are summarizing first by Year, followed by Month and then
+    <p>
+        Microsoft documentation can be found <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/previousday-function-dax">here</a>.
+        This is best understood via the following query written in DAX Studio.  In this query we are summarizing first by <strong>Year</strong>, followed by <strong>Month</strong> and then
         displaying the result of PREVIOUSDAY/NEXTDAY.
     </p>
     <h4>DAX Studio query</h4>
@@ -470,23 +471,44 @@ return COUNTROWS(datesInThisMonth)
     <img src="images/PREVIOUSDAY-NEXTDAY.PNG" alt="PREVIOUSDAY,NEXTDAY"/>
     <h4>Deviation from Microsoft's documentation</h4>
     <p>I observed a slight difference in behaviour of the NEXTDAY function as per Microsof's documentation <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax#example">here</a>.
-        As of writing this article, MS documentation says <i>Returns a table that contains a column of all dates from the next day, based on the first date specified in the dates column in the current context</i>.
-        It should be <i>...based on the last date specified in the dates column in the current context</i>
+        As of writing this article, MS documentation says <br />
+        <i>Returns a table that contains a column of all dates from the next day, based on the first date specified in the dates column in the current context</i>.
+        In my opinion, it should be <br />
+        <i>...based on the last date specified in the dates column in the current context</i>.
     </p>
     <hr />
 
     <h1>Daily spike in Sales (PREVIOUSDAY)</h1>
-    <p>
-        Refer sheet NEXTDAY/PREVDAY<br />
-        Refer measure DailyGrowthInSales<br />
-    </p>
+    <h4>Objective</h4>
+    <p>Given any slice of time (e.g a Month) plot the daily change in Sales. Example: If this were plotted on a column chart, then 
+    the bar for June 5th should indicate the difference between the sales on June 5th and June 4th.</p>
+    <h4>Custom measure</h4>
+    <pre>
+    DailySpikeInSales = 
+    var firstDateInSelectedDates = FIRSTDATE(MyCalendar[Date])
+    VAR yesterday = PREVIOUSDAY(firstDateInSelectedDates)
+    VAR totalSalesToday = AdventureWorksMeasures[TotalSalesInPeriodUsingMyCalendar]
+
+    VAR totalSalesYesterday  = CALCULATE
+        ( 
+            SUMX(Sales, Sales[Sales Amount]),
+            FILTER(
+                Sales,
+                RELATED('Date'[Date]) >= yesterday && RELATED('Date'[Date]) <= yesterday
+                )
+        )
+
+
+    return totalSalesToday - totalSalesYesterday
+    </pre>
+    <h4>Visual</h4>
+    <img src="images/DailySpikeInSales.PNG" alt="daily spike in sales"/>
     <hr />
 
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
     <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
     <hr />
 
-    <!-- blah-->
 
     <h1>DATESYTD</h1>
     <p>
