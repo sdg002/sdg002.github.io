@@ -435,7 +435,7 @@ return COUNTROWS(datesInThisMonth)
 
     <h1>NEXTDAY,PREVIOUSDAY</h1>
     <p>
-        Microsoft documentation can be found <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/previousday-function-dax">here</a>.
+        Microsoft documentation for <strong>NEXTDAY</strong> and <strong>PREVIOUSDAY</strong> can be found <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/previousday-function-dax">here</a>.
         This is best understood via the following query written in DAX Studio.  In this query we are summarizing first by <strong>Year</strong>, followed by <strong>Month</strong> and then
         displaying the result of PREVIOUSDAY/NEXTDAY.
     </p>
@@ -506,7 +506,83 @@ return COUNTROWS(datesInThisMonth)
     <hr />
 
     <h1>STARTOFYEAR, ENDOFYEAR</h1>
+    <p>
+        Microsoft documentation for STARTOFYEAR and ENDOFYEAR can be found <a href="https://docs.microsoft.com/en-us/dax/startofyear-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/endofyear-function-dax">here</a>. 
+        This is best understood via the following queries written in DAX Studio.
+        Both STARTOFYEAR and ENDOFYEAR have a second parameter which defaults to 31st December. This is the financial year end. 
+
+    </p>
     <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
+
+    <h4>DAX studio query with default year end</h4>
+    <p>We examine the behaviour when we do not specify any default year end (i.e. 31st December)</p>
+    <pre>
+    DEFINE TABLE newCalendr = ADDCOLUMNS(
+            CALENDAR(DATE(2017,2,15),DATE(2018,5,15)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "DayNumber", DAY([Date]),
+            "Month", FORMAT([Date],"mmmm")
+            )
+
+
+    EVALUATE
+    (
+	    SUMMARIZE
+	    (
+		    newCalendr,
+		    newCalendr[Year], 
+		    newCalendr[MonthNumber], 
+		    "Count of days in current month", COUNT(newCalendr[Date]),
+		    "---", "  ",
+		    "First date in current period", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		    "--", "  ",
+		    "StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date]), "Medium Date"),
+		    "EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date]), "Medium Date")
+	    )
+    )
+
+    </pre>
+    <h4>Results with with default year end</h4>
+    <img src="images/StartOfYear-EndOfYear-Default.PNG" alt="STARTOFYEAR/ENDOFYEAR"/>
+
+    <h4>DAX expression when using a custom year end</h4>
+    <pre>
+    DEFINE TABLE newCalendr = ADDCOLUMNS(
+            CALENDAR(DATE(2017,2,15),DATE(2018,5,15)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "DayNumber", DAY([Date]),
+            "Month", FORMAT([Date],"mmmm")
+            )
+
+    EVALUATE
+    (
+	    SUMMARIZE
+	    (
+		    newCalendr,
+		    newCalendr[Year], 
+		    newCalendr[MonthNumber], 
+		    "Count of days in current month", COUNT(newCalendr[Date]),
+		    "---", "  ",
+		    "First date in current period", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		    "--", "  ",
+		    "StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date],"0000-3-15"), "Medium Date"),
+		    "EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date],"0000-3-15" ), "Medium Date")
+	    )
+    )
+    </pre>
+    <h4>Results with with custom year end</h4>
+    <p>We are now specifying a custom year end (15th March). The 'year end' defines the end of the fiscal year. 
+    How does the behaviour change?
+    </p>
+    <img src="images/StartOfYear-EndOfYear-CustomYearEnd.PNG" alt="STARTOFYEAR ENDOFYEAR"/>
+    <h4>Caveats</h4>
+    <p>
+        The DAX expressions presented above demonstrate the susceptibility of <strong>STARTOFYEAR</strong> and <strong>ENDOFYEAR</strong> formulas to the 'year end' parameter.
+        If there is a need for a custom year end for compliance with financial accounting standards, then any calculation involving <strong>STARTOFYEAR</strong> and <strong>ENDOFYEAR</strong> must have the 'year end' parameter.
+        This makes me feel that it is safer to define the financial period through a custom date table, as in the example <strong>MyCalendar[FinancialYear]</strong> and also in the <strong>Date[Fiscal Year]</strong> table of Adventure Works
+    </p>
     <hr />
 
 
