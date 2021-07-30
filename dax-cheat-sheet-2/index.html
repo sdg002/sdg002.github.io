@@ -48,7 +48,10 @@
         <li>ALLSELECTED</li>
         <li>DATEADD</li>
         <li>RELATED</li>
-        <li>???</li>
+        <li>STARTOFMONTH</li>
+        <li>ENDOFMONTH</li>
+        <li>STARTOFYEAR</li>
+        <li>ENDOFYEAR</li>
         <li>???</li>
         <li>???</li>
     </ol>
@@ -432,7 +435,9 @@ return COUNTROWS(datesInThisMonth)
     <img src="images/MonthOnMonth.PNG" alt="Month on month"/>
     <hr />
 
-
+    <h1>STARTOFMONTH,ENDOFMONTH (to be done)</h1>
+    <p>Use DAX studio , a calendar table with a few dates</p>
+    <hr />
     <h1>NEXTDAY,PREVIOUSDAY</h1>
     <p>
         Microsoft documentation for <strong>NEXTDAY</strong> and <strong>PREVIOUSDAY</strong> can be found <a href="https://docs.microsoft.com/en-us/dax/nextday-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/previousday-function-dax">here</a>.
@@ -602,14 +607,69 @@ return COUNTROWS(datesInThisMonth)
         TO BE DONE
     </p>
 
-    <h1>10 day moving average of sales </h1>
-    <p>
-        For every day go back 10 days<br /> 
-        Calculate the average for the 10 day period <br />
-        Column chart <br />
-        Slicer <br />
-        Days on X axis <br />
-        Custom measure on Values <br />
+    <hr />
+    <h1>10 day moving range (min-max) of daily sales </h1>
+    <h4>Objective</h4>
+    <p>We want to do a moving window anaylsis within a specified period of time. 
+    For every day within this period, look back N days and compute some statistic over this N day time frame.
+    The statistic could be the average daily sales - commonly known as the "moving average" or "rolling mean". 
+    Likewise, we could also compute the "moving range", i.e. the difference between the highest and lowest daily sales over the N day time frame.
+
     </p>
+    <h4>Custom DAX measure</h4>
+    <pre>
+        10 Day MinMax = 
+        var slidingWindow=-10
+        VAR currentDate = FIRSTDATE(MyCalendar[Date])
+        var tenDaysAgo = DATEADD(currentDate,slidingWindow, DAY)
+
+        VAR salesInSlidingWindow=FILTER(
+                        Sales,
+                        RELATED('Date'[Date]) >= tenDaysAgo && RELATED('Date'[Date]) <= currentDate
+                        )
+        //We want the daily sales, hence group by date
+        VAR summaryOfDailySales = SUMMARIZE(
+                        salesInSlidingWindow, [OrderDateKey], 
+                        "TotalDailySales", SUMX(Sales, Sales[Sales Amount]))
+        
+        
+
+        VAR maxSalesInSlidingWindow = MAXX(summaryOfDailySales, [TotalDailySales])
+        VAR minSalesInSlidingWindow = MINX(summaryOfDailySales, [TotalDailySales])
+        return maxSalesInSlidingWindow - minSalesInSlidingWindow
+
+
+    </pre>
+    <h4>Results</h4>
+    <img src="images/10DayMinMax.PNG" alt="Moving time window"/>
+
+    <hr />
+    <h1>10 day moving average of daily sales </h1>
+    <h4>Objective</h4>
+    <p>Taking inspiration from the '10 day moving range' , we will attempt to do a '10 day moving average'. 
+        The principles are identical</p>
+    <h4>Custom DAX measure</h4>
+    <pre>
+    10 Day Average = 
+    var slidingWindow=-10
+    VAR currentDate = FIRSTDATE(MyCalendar[Date])
+    var tenDaysAgo = DATEADD(currentDate,slidingWindow, DAY)
+
+    VAR totalSalesInSlidingWindow  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        FILTER(
+            Sales,
+            RELATED('Date'[Date]) >= tenDaysAgo && RELATED('Date'[Date]) <= currentDate
+            )
+    )
+
+    VAR averageSalesInSlidingWindow = ABS(totalSalesInSlidingWindow/slidingWindow)
+    return averageSalesInSlidingWindow
+    </pre>
+
+    <h4>Results</h4>
+    <img src="images/10DayAverage.PNG" alt="Moving time window"/>
+
 </body>
 </html>

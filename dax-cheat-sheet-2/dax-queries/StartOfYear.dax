@@ -3,12 +3,7 @@
             "Year", YEAR([Date]),
             "MonthNumber", MONTH([Date]),
             "DayNumber", DAY([Date]),
-            "Month", FORMAT([Date],"mmmm"),
-            "DayOfWeek", FORMAT([Date],"ddd"),
-            "DayOfWeekNumber", WEEKDAY([Date]),
-            "QuarterNumber", QUARTER([Date]),
-            "Quarter", FORMAT([Date],"\QQ"),
-            "WeekNumber",WEEKNUM([Date])
+            "Month", FORMAT([Date],"mmmm")
             )
 
 //Produces the first date in the date table
@@ -51,11 +46,12 @@ EVALUATE
 		"Count of days in current month", COUNT(newCalendr[Date]),
 		"---", "  ",
 		"First date in current period", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		"Last  date in current period", FORMAT(LASTDATE(newCalendr[Date]), "Medium Date"),
 		"--", "  ",
-		"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date]), "Medium Date"),
-		//"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date],"0000-3-15"), "Medium Date"),
-		//"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date],"0000-3-15" ), "Medium Date")
-		"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date]), "Medium Date")
+		//"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date]), "Medium Date"),
+		"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date],"0000-3-15"), "Medium Date"),
+		"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date],"0000-3-15" ), "Medium Date")
+		//"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date]), "Medium Date")
 	)
 )
 
