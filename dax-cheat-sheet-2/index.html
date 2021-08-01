@@ -53,8 +53,10 @@
         <li>STARTOFYEAR</li>
         <li>ENDOFYEAR</li>
         <li>PARALLELPERIOD</li>
+        <li>NEXTDAY</li>
+        <li>PREVIOUSDAY</li>
     </ol>
-
+    <p>I have used a mix of <strong>Power BI</strong> and <strong>DAX Studio</strong> to demonstrate the custom DAX measures</p>
     <hr />
     <h1>Sample Data</h1>
     <p>
@@ -86,13 +88,14 @@
 
     <h4>Date</h4>
     <img src="images/TopN-Date.GIF" alt="Top N" />
-
+    
+    <p>Most of  the custom DAX measures presented below are written around <strong>Sales[Sales Amount]</strong> columns. I have also added a new date table <strong>MyCalendar</strong></p>
 
     <hr />
     <h1>Custom date tables in Power BI</h1>
     <p>
         To understand the workings of the <strong>Date and Time intelligence</strong> DAX functions we will begin with creating a custom Date table.
-        The AdventureWorks model also comes with a date table <strong>Date</strong>.
+        The AdventureWorks model also comes with a date table. This is the table named <strong>Date</strong> and is linked to the <strong>Sales</strong> table via the column <strong>DateKey</strong>.
     </p>
     <h4>What is a Date table and why do we need one?</h4>
     <p>A date table is like any other table in Power BI but with some mandatory requirements as prescribed by <a href="https://docs.microsoft.com/en-us/power-bi/guidance/model-date-tables">Power BI here</a></p>
@@ -105,6 +108,9 @@
         <li>The date table must be marked as a date table.</li>
     </ul>
 
+    <h4>Why not use the Date table that already comes along with AdventureWorks</h4>
+    <p>2 reasons. We want to explore this learning opportunity to create a fairly sophisticated date table. 
+        And, by not relying on the relationships we can learn how to marry a general purpose Date table to report on any date based data time (Sales Amount in this example)</p>
     <h4>How to create a  date table using DAX?</h4>
     <p>
         There are two Power BI functions which are useful for creating date tables.
@@ -148,19 +154,20 @@ return myExtendedCalenderWithQuarterDisplayColumn    </pre>
     <h4>Setting the sort properties for the Text columns</h4>
     <p>
         We are nearly there. But, there is one essential step to be carried out.
-        The textual columns like Month, DayOfWeek and Quarter need to be aware of the sort order.
+        The textual columns like <strong>Month</strong>, <strong>DayOfWeek</strong> and <strong>Quarter</strong> need to be aware of the sort order. 
         Consider the Month column. When this column is selected as the Columns in a Matrix visual, the sort order by default would be alphabetical, i.e. Dec comes before January. This is not right.
-        We want the order Jan, Feb, March, April ,.. Dec. To achieve this we need to specify MonthNumber as the sort column for the Month column
+        We want the order Jan, Feb, March, April ,.. Dec. To achieve this we need to specify <strong>MonthNumber</strong> as the sort column for the Month column
     </p>
     <img src="images/MyCalendar-month-sort.png" alt="MyCalendar" />
     <br />
     <img src="images/MyCalendar-quarter-sort.PNG" alt="MyCalendar" />
+    <p>We have completed our ground work. We are now ready to begin our exploration to unerstand the underlying behaviour of the DAX expressions</p>
     <hr />
 
     <h1>Count the number of Sundays in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
     <h4>Objective</h4>
     <p>
-        Given any slice of time, how do we find the number of Sundays in that period? In the following examples, a Matrix visual has been used with
+        This is a toy scenario. Given any slice of time, how do we find the number of Sundays in that period? In the following examples, a Matrix visual has been used with
         the Rows divided into hierarhical time periods
     </p>
     <h4>Matrix visual</h4>
@@ -188,7 +195,7 @@ return countOfSundays
 
     <h1>Count the number of Friday 13th occurrences in any time period(FIRSTDATE, LASTDATE,DATESBETWEEN)</h1>
     <h4>Objective</h4>
-    <p>In this example, we count the occurences of all days which are Friday and are the 13 th day of the month. 
+    <p>This is a toy scenario. In this example, we count the occurences of all days which are <strong>Friday</strong> and are the <strong>13 th day</strong> of the month. 
     The DAX measure is semantically identical to the one we wrote for counting the Sundays in any time period </p>
     <h4>Matrix visual</h4>
     <img src="images/CountFriday13th.PNG" alt="Friday the 13 th" />
@@ -210,20 +217,20 @@ return days
 
     <h4>Using a Slicer to select the time period</h4>
     <p>
-        The same DAX measure can now be used to display the count of "Friday the 13th" for any arbitarily selected time period
+        The same DAX measure can now be used to display the count of "Friday the 13th" for any arbitrarily selected time period
     </p>
-    <img src="images/CountFriday13th_Slicer.PNG"/>
+    <img src="images/CountFriday13th_Slicer.PNG" alt="Count Friday 13th"/>
     <hr />
 
     <h1>Total sales in any period (FIRSTDATE, LASTDATE,RELATED, FILTER)</h1>
     <h4>Objective</h4>
 
     <p>Given any any slice of time - calculate the total sales in this period. We will achieve this using 3 different approaches</p>
-    <ol>
-        <li>Out of box drag n drop(no measure)</li>
-        <li>A measure which queries using the out of box <strong>Adventure Works</strong> Date table</li>
-        <li>A measure which queries using the custom <strong>MyCalendar</strong> table</li>
-    </ol>
+    <ul>
+        <li><strong>Option 1</strong> - Out of box drag n drop(no measure)</li>
+        <li><strong>Option 2</strong> - A measure which queries using the out of box <strong>Adventure Works</strong> Date table</li>
+        <li><strong>Option 3</strong> - A measure which queries using the custom <strong>MyCalendar</strong> table</li>
+    </ul>
     <img src="images/TotalSales-3-approaches.PNG" alt="Total sales"/>
     <h4>Option-1 Out of box drag n drop(no measure)</h4>
     <p>This being a fairly simple calculation, we can drag and drop the <strong>Sales Amount</strong> column of the <strong>Total Sales</strong></p>
@@ -275,6 +282,37 @@ return days
     return totalSales
 
     </pre>
+    <hr />
+
+    <h1>Sales in any period as a percentage of Total Sales in that financial Year(FIRSTDATE, LASTDATE,RELATED, FILTER)</h1>
+    <h4>Objective</h4>
+    <p>Display the sales in any time period as a percentage of the total annual sales in that financial year. The financial year will be selected using a Slicer on the <strong>MyCalendar[Fiancial Year]</strong> column</p>
+    <h4>DAX measure</h4>
+    <pre>
+% OfAnnualSalesInPeriod = 
+
+    //Step 1 - Calculate total sales in selected financial year
+    VAR finYear = SELECTEDVALUE(MyCalendar[FinancialYear])
+    VAR allDatesInFinancialYear = FILTER(ALL(MyCalendar), MyCalendar[FinancialYear] == finYear)
+
+    VAR firstDayOfCurrentFinancialYear = CALCULATE( FIRSTDATE(MyCalendar[Date]),allDatesInFinancialYear)
+    VAR lastDayOfCurrentFinancialYear = CALCULATE( LASTDATE(MyCalendar[Date]),allDatesInFinancialYear)
+
+    VAR totalSalesInYear  = CALCULATE
+    ( 
+        SUMX(Sales, Sales[Sales Amount]),
+        FILTER(
+            Sales,
+            RELATED('Date'[Date]) >= firstDayOfCurrentFinancialYear && RELATED('Date'[Date]) <= lastDayOfCurrentFinancialYear
+            )
+    )
+    //Step 2 - Calculate total sales in the current financial period 
+    VAR totalSalesInCurrentPeriod = AdventureWorksMeasures[TotalSalesInPeriodUsingMyCalendar]
+    VAR roundedValue=ROUND(totalSalesInCurrentPeriod/totalSalesInYear*100.0,2)
+    return FORMAT(roundedValue, "General Number") //This is needed to remove the currency symbol because "Sales Amount" has a Currency format
+    </pre>
+    <h4>Results</h4>
+    <img src="images/PercentageOfAnnualSalesInAnyPeriod.PNG" alt="Percentage of annual sales in any period"/>
     <hr />
 
     <h1>Cumulative sales in a month (DATESMTD, CALCULATE, FILTER, SUMX)</h1>
@@ -436,6 +474,7 @@ return COUNTROWS(datesInThisMonth)
 
     <h1>STARTOFMONTH,ENDOFMONTH (to be done)</h1>
     <p>Use DAX studio , a calendar table with a few dates</p>
+    <p>You could show how to calculate daily sales as a percentage of MONTHly sales</p>
     <hr />
     <h1>NEXTDAY,PREVIOUSDAY</h1>
     <p>
@@ -443,6 +482,7 @@ return COUNTROWS(datesInThisMonth)
         This is best understood via the following query written in DAX Studio.  In this query we are summarizing first by <strong>Year</strong>, followed by <strong>Month</strong> and then
         displaying the result of PREVIOUSDAY/NEXTDAY.
     </p>
+    <hr />
     <h4>DAX Studio query</h4>
     <pre>
     DEFINE TABLE newCalendr = ADDCOLUMNS(
@@ -516,7 +556,6 @@ return COUNTROWS(datesInThisMonth)
         Both STARTOFYEAR and ENDOFYEAR have a second parameter which defaults to 31st December. This is the financial year end. 
 
     </p>
-    <p>to be done. stress on the importance of year_end_date. Refer measures StartOfYear and StartOfYear1 in sheets "Duplicate of Year along columns"</p>
 
     <h4>DAX studio query with default year end</h4>
     <p>We examine the behaviour when we do not specify any default year end (i.e. 31st December)</p>
@@ -590,7 +629,7 @@ return COUNTROWS(datesInThisMonth)
     <hr />
 
 
-    <h1>DATESYTD</h1>
+    <h1>DATESYTD (to be done)</h1>
     <p>
         to be done <br />
         refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
@@ -601,7 +640,7 @@ return COUNTROWS(datesInThisMonth)
 
 
 
-    <h1>Difference between PARALLELPERIOD and DATEADD (YOU WERE HERE)</h1>
+    <h1>Difference between PARALLELPERIOD and DATEADD</h1>
     <p>
         The functions <strong>PARALLELPERIOD</strong> and <strong>DATEADD</strong> appear to be deceptively similar. However, there are important differences.
         Microsoft documentation for PARALLELPERIOD and DATEADD can be found <a href="https://docs.microsoft.com/en-us/dax/parallelperiod-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/dateadd-function-dax">here</a> respectively.
@@ -657,7 +696,7 @@ The PARALLELPERIOD function is similar to the DATEADD function except that PARAL
     <img src="images/ParallelPeriod-Difference.PNG" alt="PARALLELPERIOD and DATEADD"/>
     <hr />
 
-    <h1>10 day moving range (min-max) of daily sales </h1>
+    <h1>10 day moving range (min-max) of daily sales (FIRSTDATE, DATEADD,RELATED,FILTER, SUMMARIZE, MAXX, MINX)</h1>
     <h4>Objective</h4>
     <p>We want to do a moving window anaylsis within a specified period of time. 
     For every day within this period, look back N days and compute some statistic over this N day time frame.
@@ -693,7 +732,7 @@ The PARALLELPERIOD function is similar to the DATEADD function except that PARAL
     <img src="images/10DayMinMax.PNG" alt="Moving time window"/>
 
     <hr />
-    <h1>10 day moving average of daily sales </h1>
+    <h1>10 day moving average of daily sales (FIRSTDATE, DATEADD,RELATED,FILTER, SUMX) </h1>
     <h4>Objective</h4>
     <p>Taking inspiration from the '10 day moving range' , we will attempt to do a '10 day moving average'. 
         The principles are identical</p>
