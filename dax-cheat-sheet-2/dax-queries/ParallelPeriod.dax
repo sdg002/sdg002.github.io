@@ -1,0 +1,54 @@
+﻿DEFINE TABLE newCalendr = ADDCOLUMNS(
+            CALENDAR(DATE(2017,1,1),DATE(2017,2,25)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "Month", FORMAT([Date],"mmmm"),
+            "DayNumber", DAY([Date]),
+            "WeekNumber",WEEKNUM([Date])
+            )
+
+
+
+VAR interval=1
+
+EVALUATE
+(
+	SUMMARIZE
+	(
+		newCalendr,
+		newCalendr[Year], 
+		newCalendr[WeekNumber], 
+		"---", "  ",
+		"First date in current week", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		"Last  date in current week", FORMAT(LASTDATE(newCalendr[Date]), "Medium Date"),
+		"--", "  ",
+		"DateAdd-First", FORMAT(FIRSTDATE(DATEADD(newCalendr[Date],interval,month)),"Medium Date"),
+		"DateAdd-Last", FORMAT(LASTDATE(DATEADD(newCalendr[Date],interval,month)),"Medium Date"),
+		"----", "  ",
+		"ParallelPeriod-First", FORMAT(FIRSTDATE(PARALLELPERIOD(newCalendr[Date],interval,month)),"Medium Date"),
+		"ParallelPeriod-Last", 	FORMAT(LASTDATE(PARALLELPERIOD(newCalendr[Date],interval,month)),"Medium Date")
+		
+	)
+)
+
+
+/*
+EVALUATE
+(
+PARALLELPERIOD(newCalendr[Date],interval,month)
+)
+
+EVALUATE
+(
+DATEADD(newCalendr[Date],interval,month)
+)
+*/
+
+
+/*
+		//"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date]), "Medium Date"),
+		"StartOfYear", FORMAT( STARTOFYEAR(newCalendr[Date],"0000-3-15"), "Medium Date"),
+		"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date],"0000-3-15" ), "Medium Date")
+		//"EndOfYear", 	FORMAT(ENDOFYEAR(newCalendr[Date]), "Medium Date")
+
+*/

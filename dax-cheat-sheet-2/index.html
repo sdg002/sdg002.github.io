@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title>DAX Cheat sheet - Part 2</title>
+    <title>DAX Cheat sheet with examples - Part 2</title>
     <style>
         body {
             font-family: Arial
@@ -27,10 +27,10 @@
 
     <h1>Overview</h1>
     <p>
-        This is a continuation of my previous article <strong>DAX Chear sheet - Part 1</strong>.
-        In this article, I have delved into the <strong>Time intelligence functions</strong> of DAX.
+        This is a continuation of my previous article <strong><a href="https://medium.com/@saurabh.dasgupta1/dax-cheat-sheet-part-1-7e5dbc277e41">DAX Chear sheet - Part 1</a></strong>.
+        In this article, I have delved into some of the important <strong>Time intelligence functions</strong> of DAX.
         Microsoft's documentation can be found <a href="https://docs.microsoft.com/en-us/dax/time-intelligence-functions-dax">here</a>.
-        In this article I have covered the following DAX expressions:
+        I have covered the following DAX expressions:
     </p>
     <ol>
         <li>CALENDAR</li>
@@ -52,8 +52,7 @@
         <li>ENDOFMONTH</li>
         <li>STARTOFYEAR</li>
         <li>ENDOFYEAR</li>
-        <li>???</li>
-        <li>???</li>
+        <li>PARALLELPERIOD</li>
     </ol>
 
     <hr />
@@ -63,7 +62,7 @@
         I have placed a copy of the PBIX in my Github repo, the link to which is at the end of this article.
     </p>
     <h4>Database Schema</h4>
-    <img src="images/AdventureWorksModel.png" />
+    <img src="images/AdventureWorksModel.png" alt="Data model"/>
 
     <h4>Data</h4>
     <p>
@@ -602,12 +601,62 @@ return COUNTROWS(datesInThisMonth)
 
 
 
-    <h1>Difference between PARALLELPERIOD and DATEADD</h1>
+    <h1>Difference between PARALLELPERIOD and DATEADD (YOU WERE HERE)</h1>
     <p>
-        TO BE DONE
+        The functions <strong>PARALLELPERIOD</strong> and <strong>DATEADD</strong> appear to be deceptively similar. However, there are important differences.
+        Microsoft documentation for PARALLELPERIOD and DATEADD can be found <a href="https://docs.microsoft.com/en-us/dax/parallelperiod-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/dateadd-function-dax">here</a> respectively.
+        Notice the fine print in the documentation of PARALLELPERIOD:
     </p>
+    <i>
+The PARALLELPERIOD function is similar to the DATEADD function except that PARALLELPERIOD always returns full periods at the given granularity level instead of the partial periods that DATEADD returns. For example, if you have a selection of dates that starts at June 10 and finishes at June 21 of the same year, and you want to shift that selection forward by one month then the PARALLELPERIOD function will return all dates from the next month (July 1 to July 31); however, if DATEADD is used instead, then the result will include only dates from July 10 to July 21
+    </i>
+    <p>Let us write some custom DAX queries to understand the differences.
+        In the following DAX, we create a CALENDAR table with just the months of Jan and Feb (upto 25th) in the year 2017. 
+        We summarize the results by the WEEKNUM and display the outcome of FIRSTDATE/LASTDATE on PARALLELPERIOD and DATEADD.
+        We are incrementing PARALLELPERIOD/DATEADD by a 1 month interval.
 
+    </p>
+    <h4>DAX Studio</h4>
+    <pre>
+    DEFINE TABLE newCalendr = ADDCOLUMNS(
+                CALENDAR(DATE(2017,1,1),DATE(2017,2,25)), 
+                "Year", YEAR([Date]),
+                "MonthNumber", MONTH([Date]),
+                "Month", FORMAT([Date],"mmmm"),
+                "DayNumber", DAY([Date]),
+                "WeekNumber",WEEKNUM([Date])
+                )
+
+
+
+    VAR interval=1
+
+    EVALUATE
+    (
+	    SUMMARIZE
+	    (
+		    newCalendr,
+		    newCalendr[Year], 
+		    newCalendr[WeekNumber], 
+		    "Count of days in current month", COUNT(newCalendr[Date]),
+		    "---", "  ",
+		    "First date in current period", FORMAT(FIRSTDATE(newCalendr[Date]), "Medium Date"),
+		    "Last  date in current period", FORMAT(LASTDATE(newCalendr[Date]), "Medium Date"),
+		    "--", "  ",
+		    "DateAdd-First", FORMAT(FIRSTDATE(DATEADD(newCalendr[Date],interval,month)),"Medium Date"),
+		    "DateAdd-Last", FORMAT(LASTDATE(DATEADD(newCalendr[Date],interval,month)),"Medium Date"),
+		    "----", "  ",
+		    "ParallelPeriod-Start", FORMAT(FIRSTDATE(PARALLELPERIOD(newCalendr[Date],interval,month)),"Medium Date"),
+		    "ParallelPeriod-End", 	FORMAT(LASTDATE(PARALLELPERIOD(newCalendr[Date],interval,month)),"Medium Date")
+		
+	    )
+    )
+
+    </pre>
+    <h4>Results</h4>
+    <img src="images/ParallelPeriod-Difference.PNG" alt="PARALLELPERIOD and DATEADD"/>
     <hr />
+
     <h1>10 day moving range (min-max) of daily sales </h1>
     <h4>Objective</h4>
     <p>We want to do a moving window anaylsis within a specified period of time. 
