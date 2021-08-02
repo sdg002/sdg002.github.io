@@ -1,0 +1,12 @@
+﻿EVALUATE
+(
+	SUMMARIZE
+	(
+		MyCalendar,
+		MyCalendar[FinancialYear], 
+		MyCalendar[FinancialMonth], 
+		"---", "  ",
+		"Start of month", FORMAT(STARTOFMONTH(MyCalendar[Date]), "Medium Date"),
+		"End of month", FORMAT(ENDOFMONTH(MyCalendar[Date]), "Medium Date")
+	)
+)

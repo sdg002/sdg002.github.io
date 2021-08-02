@@ -472,9 +472,63 @@ return COUNTROWS(datesInThisMonth)
     <img src="images/MonthOnMonth.PNG" alt="Month on month"/>
     <hr />
 
-    <h1>STARTOFMONTH,ENDOFMONTH (to be done)</h1>
-    <p>Use DAX studio , a calendar table with a few dates</p>
-    <p>You could show how to calculate daily sales as a percentage of MONTHly sales</p>
+    <h1>STARTOFMONTH,ENDOFMONTH </h1>
+    <p>
+        Microsoft's documentation for STARTOFMONTH and ENDOFMONTH can be found <a href="https://docs.microsoft.com/en-us/dax/startofmonth-function-dax">here</a> and <a href="https://docs.microsoft.com/en-us/dax/endofmonth-function-dax">here</a>.
+        To understand how these functions work, lets us write out a DAX query on the <strong>MyCalendar</strong> table and display the outcome for each month.
+    </p>
+    <h4>DAX Studio query</h4>
+    <pre>
+EVALUATE
+(
+	SUMMARIZE
+	(
+		MyCalendar,
+		MyCalendar[FinancialYear], 
+		MyCalendar[FinancialMonth], 
+		"---", "  ",
+		"Start of month", FORMAT(STARTOFMONTH(MyCalendar[Date]), "Medium Date"),
+		"End of month", FORMAT(ENDOFMONTH(MyCalendar[Date]), "Medium Date")
+	)
+)
+    </pre>
+    <h4>DAX Studio results</h4>
+    <img src="images/StartOfMonth-EndOfMonth-DaxStudio.PNG" alt="StartOfMonth, EndOfMonth"/>
+    <hr />
+
+    <h1>Daily sales as a percentage of total monthly sales (STARTOFMONTH, ENDOFMONTH)</h1>
+    <h4>Objective</h4>
+    <p>We want to plot the daily sales as a percentage of total sales in that month for any specified time slice</p>
+    <h4>DAX measure</h4>
+    <pre>
+    % of Monthly Sales = 
+
+    VAR firstDateInPeriod = FIRSTDATE(MyCalendar[Date])
+    VAR lastDateInPeriod = LASTDATE(MyCalendar[Date])
+    VAR monthStart=STARTOFMONTH(MyCalendar[Date])
+    VAR monthEnd=ENDOFMONTH(MyCalendar[Date])
+
+        VAR totalSalesInMonth  = CALCULATE
+        ( 
+            SUMX(Sales, Sales[Sales Amount]),
+            FILTER(
+                Sales,
+                RELATED('Date'[Date]) >= monthStart && RELATED('Date'[Date]) <= monthEnd
+                )
+        )
+        VAR totalSalesToday=CALCULATE
+        ( 
+            SUMX(Sales, Sales[Sales Amount]),
+            FILTER(
+                Sales,
+                RELATED('Date'[Date]) >= firstDateInPeriod && RELATED('Date'[Date]) <= lastDateInPeriod
+                )
+        )
+        VAR percentage= (totalSalesToday/totalSalesInMonth)*100
+        return ROUND(percentage,2)
+    </pre>
+    <h4>Visual</h4>
+    <img src="images/PercentageOfMonthlySalesOnCurrentDay.PNG"/>
     <hr />
     <h1>NEXTDAY,PREVIOUSDAY</h1>
     <p>
