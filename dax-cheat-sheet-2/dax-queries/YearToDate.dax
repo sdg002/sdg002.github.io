@@ -1,0 +1,15 @@
+﻿EVALUATE
+(
+	SUMMARIZE
+	(
+		MyCalendar,
+		MyCalendar[FinancialYear], 
+		MyCalendar[FinancialMonth], 
+		MyCalendar[Date], 
+		"---", "  ",
+		"DATESYTD - first date",  	FIRSTDATE(DATESYTD(MyCalendar[Date],"0000-06-30")),
+		"DATESYTD - last date",  	LASTDATE(DATESYTD(MyCalendar[Date],"0000-06-30")),
+		"Count of rows in DATESYTD", COUNTROWS(DATESYTD(MyCalendar[Date],"0000-06-30"))
+		
+	)
+)

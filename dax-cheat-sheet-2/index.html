@@ -685,11 +685,30 @@ EVALUATE
 
     <h1>DATESYTD (to be done)</h1>
     <p>
-        to be done <br />
-        refer sheet DATESYTD2 and the measure DatesYtdMinMaxMyCalendar2<br />
-        Stress on the importance of <strong>year_end_date</strong> in <strong>DATESYTD</strong><br />
-        Stress on the cumulative nature of the date produced by this DAX<br />
+        The function <a href="https://docs.microsoft.com/en-us/dax/datesytd-function-dax">DATESYTD</a> works in a similar fashion to DATESMTD.
+        The function produces a table of dates with dates starting from the first day of the year till the current date in the context. 
+        The behaviour of this function is sensitive to the "<strong>year_end_date</strong>" parameter. By default this is set to 31st December. When is DATESYTD useful?
+        Consider a scenario where you want to display the cumulative sales from the start of the year right up to current date. (Refer the section on DATESMTD)
     </p>
+    <h4>DAX Studio query</h4>
+    <pre>
+        EVALUATE
+        (
+	        SUMMARIZE
+	        (
+		        MyCalendar,
+		        MyCalendar[FinancialYear], 
+		        MyCalendar[FinancialMonth], 
+		        MyCalendar[Date], 
+		        "---", "  ",
+		        "DATESYTD - first date",  	FIRSTDATE(DATESYTD(MyCalendar[Date],"0000-06-30")),
+		        "DATESYTD - last date",  	LASTDATE(DATESYTD(MyCalendar[Date],"0000-06-30")),
+		        "Count of rows in DATESYTD", COUNTROWS(DATESYTD(MyCalendar[Date],"0000-06-30"))
+		
+	        )
+        )
+    </pre>
+    <img src="images/DatesYtd.PNG" alt="DATESYTD"/>
     <hr />
 
 
