@@ -61,7 +61,7 @@
     <h1>Sample Data</h1>
     <p>
         I will be using the <strong>Adventure Works DW 2020</strong> sample model which can be downloaded <a href="https://docs.microsoft.com/en-us/power-bi/guidance/dax-sample-model">from Microsoft's site</a>.
-        I have placed a copy of the PBIX in my Github repo, the link to which is at the end of this article.
+        I have placed a copy of the PBIX in my Github repo, the link to which is <a href="https://sdg002.github.io/dax-cheat-sheet-2/model/Adventure Works DW 2020.pbix">here</a>.
     </p>
     <h4>Database Schema</h4>
     <img src="images/AdventureWorksModel.png" alt="Data model"/>
@@ -108,7 +108,7 @@
         <li>The date table must be marked as a date table.</li>
     </ul>
 
-    <h4>Why not use the Date table that already comes along with AdventureWorks</h4>
+    <h4>Why not use the Date table that already comes along with AdventureWorks?</h4>
     <p>2 reasons. We want to explore this learning opportunity to create a fairly sophisticated date table. 
         And, by not relying on the relationships we can learn how to marry a general purpose Date table to report on any date based data time (Sales Amount in this example)</p>
     <h4>How to create a  date table using DAX?</h4>
@@ -683,12 +683,13 @@ EVALUATE
     <hr />
 
 
-    <h1>DATESYTD (to be done)</h1>
+    <h1>DATESYTD</h1>
     <p>
         The function <a href="https://docs.microsoft.com/en-us/dax/datesytd-function-dax">DATESYTD</a> works in a similar fashion to DATESMTD.
         The function produces a table of dates with dates starting from the first day of the year till the current date in the context. 
         The behaviour of this function is sensitive to the "<strong>year_end_date</strong>" parameter. By default this is set to 31st December. When is DATESYTD useful?
-        Consider a scenario where you want to display the cumulative sales from the start of the year right up to current date. (Refer the section on DATESMTD)
+        Consider a scenario where you want to display the cumulative sales from the start of the year right up to current date. (Refer the section on DATESMTD). 
+        Let us write out the following DAX query to better understand the behaviour of this function.
     </p>
     <h4>DAX Studio query</h4>
     <pre>
