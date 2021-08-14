@@ -1,3 +1,4 @@
 from .Point import Point
+from .LineModel import LineModel
 
-__all__=["Point"]
+__all__=["Point","LineModel"]
