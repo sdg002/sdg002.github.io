@@ -134,7 +134,7 @@ class Test_LineModel(unittest.TestCase):
         start_y=5
         end_x=10
         end_y=5
-        model=create_line_from_2points(start_x,start_y,end_x,end_y)
+        model=LineModel.create_line_from_2points(start_x,start_y,end_x,end_y)
         #equation ax+by+c=0
         #slope=-a/b
         #yinter=-c/b
