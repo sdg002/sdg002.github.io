@@ -1,6 +1,9 @@
 import unittest
-from src import Point
-from src import LineModel
+#from src import Point
+#from src import LineModel
+
+from src.Point import Point
+from src.LineModel import LineModel
 import math
 
 class Test_LineModel(unittest.TestCase):

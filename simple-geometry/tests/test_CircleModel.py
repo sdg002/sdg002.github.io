@@ -1,6 +1,9 @@
 import unittest
-from src import CircleModel
-from src import Point
+# from src import CircleModel
+# from src import Point
+from src.Point import Point
+from src.CircleModel import CircleModel
+
 
 from typing import List, Set, Dict, Tuple, Optional
 import math

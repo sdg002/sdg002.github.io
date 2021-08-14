@@ -1,4 +1,6 @@
 from .Point import Point
+#from Point import Point  #worked when used "src" as the final directory in PYTHONPATH
+#import Point did not work!
 import math
 from typing import List, Set, Dict, Tuple, Optional
 import numpy as np

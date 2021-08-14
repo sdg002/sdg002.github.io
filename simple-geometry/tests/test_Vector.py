@@ -1,7 +1,10 @@
 import unittest
-from src import Point
-from src import LineModel
-from src import Vector
+# from src import Point
+# from src import LineModel
+# from src import Vector
+from src.Point import Point
+from src.LineModel import LineModel
+from src.Vector import Vector
 
 class Test_test_Vector(unittest.TestCase):
     def test_create_vector(self):

@@ -1,11 +1,18 @@
 import unittest
-from src import Util
+#from src import Util
+#from src.Util import Util did not work
+#from src.Util import 
 import numpy as np
 import os
 import skimage
 import skimage.io
 from src import Point
 from src import Vector
+
+from src.Point import Point
+from src.LineModel import LineModel
+from src.Vector import Vector
+from src.Util import Util
 
 
 class Test_test_Util(unittest.TestCase):
