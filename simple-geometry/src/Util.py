@@ -8,13 +8,15 @@ import random
 from src.Point import Point
 from src.LineModel import LineModel
 from src.Vector import Vector
-
+import datetime
 
 class Util(object):
+    WHITE_COLOR:int=255
+    BLACK_COLOR:int=0
+
     """Placeholder for static and utility functions """
-    def __init__(self, arg):
+    def __init__(self):
         super(Util, self).__init__()
-        self.arg = arg
         
     
     #
@@ -119,8 +121,8 @@ class Util(object):
     @classmethod
     def generate_plottable_points_from_projection_of_points(cls,line:LineModel,points:List[Point]):
         projected_points=LineModel.compute_projection_of_points(line,points)
-        first_point,second_point=get_terminal_points_from_coliner_points(projected_points)
-        plottable_points=generate_plottable_points_between_twopoints(first_point,second_point)
+        first_point,second_point=Util.get_terminal_points_from_coliner_points(projected_points)
+        plottable_points=Util.generate_plottable_points_between_twopoints(first_point,second_point)
         return plottable_points
 
     #def rearrange_coliner_points_sequentially(points:List[Point]):
@@ -149,7 +151,7 @@ class Util(object):
     #Generates a list of points between the specified start and end points
     #
     @classmethod
-    def generate_plottable_points_between_twopoints(cls,point1:[Point], point2:[Point]):
+    def generate_plottable_points_between_twopoints(cls,point1:List[Point], point2:List[Point]):
         vec=Vector.create_vector_from_2points(point1,point2)
         distance_between_point1_2=Point.euclidean_distance(point1,point2)
         max_distance_between2points=1
@@ -184,6 +186,26 @@ class Util(object):
                 continue
 
         return lst_results
+
+    '''
+    Generates a monochrome image with specified width and height.
+    Noise is generated as per the ration salt_pepper. 
+    salt=white pixel and pepper=black pixel
+    '''
+    @classmethod
+    def generate_noisy_image(cls,width:int, height:int,salt_pepper:float):
+        np.random.seed(datetime.datetime.now().second)
+        image = np.zeros([height,width,1],dtype=np.uint8)
+        for y in range(0,height):
+            for x in range(0,width):
+                r=np.random.random()
+                if (r > salt_pepper):
+                    image[y][x][0]=0
+                else:
+                    image[y][x][0]=Util.WHITE_COLOR
+
+        return image
+
 
 class _pairofpoints(object):
     def __init__(self,point1:Point, point2:Point):

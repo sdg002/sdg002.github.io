@@ -105,5 +105,32 @@ class Test_test_Util(unittest.TestCase):
             dot_product=Vector.dot_product(new_unit,unit)
             self.assertAlmostEquals(dot_product,1.0,delta=0.1)
 
+    def test_create_noisy_image_and_verify_that_width_height_match_expected(self):
+        expected_width=100
+        expected_height=200
+        actual_image:np.ndarray=Util.generate_noisy_image(width=expected_width, height=expected_height, salt_pepper=0.5)
+
+        actual_width=actual_image.shape[1]
+        actual_height=actual_image.shape[0]
+
+        #Asserts
+        self.assertEquals(len(actual_image.shape),3)
+        self.assertEquals(actual_width, expected_width)
+        self.assertEquals(actual_height, expected_height)
+
+    def test_create_noisy_image_verify_that_count_of_black_pixels_matches_expected_saltpepper_ration(self):
+        expected_width=500
+        expected_height=500
+        expected_saltpepper=0.5
+        actual_image:np.ndarray=Util.generate_noisy_image(width=expected_width, height=expected_height, salt_pepper=expected_saltpepper)
+        all_white_indices=np.where(actual_image == Util.WHITE_COLOR)
+        count_of_white=len(all_white_indices[0])
+
+        all_black_indices=np.where(actual_image == Util.BLACK_COLOR)
+        count_of_black=len(all_black_indices[0])
+        actual_saltpepper=count_of_white/(count_of_black+count_of_white)
+        self.assertEqual(expected_height*expected_width, (count_of_white+count_of_black),msg="The total count of white+black should be total pixels in the picture")
+        self.assertAlmostEquals(actual_saltpepper, expected_saltpepper,delta=0.1,msg="The salt peper ratios should match approximately")
+
 if __name__ == '__main__':
     unittest.main()
