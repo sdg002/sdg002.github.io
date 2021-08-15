@@ -6,7 +6,7 @@ import math
 from skimage import io
 import simplegeometry as sg
 
-class GenericCurveGenerator(object):
+class   GenericCurveGenerator(object):
     """Generic class that abtracts the drawing of a noisy curve on a canvas of given width and height"""
     def __init__ (self,width,height):
         self._width=width
@@ -86,7 +86,7 @@ class GenericCurveGenerator(object):
         #width,height,saltpepper_noise
         img = np.zeros([self.height,self.width,1],dtype=np.uint8)
         img.fill(self._img_back_color)
-        image_noisy=skimage.util.random_noise(img,mode="s&p",seed=None, clip=True,salt_vs_pepper=self.saltpepper)
+        image_noisy=sg.Util.generate_noisy_image(width=self.width, height=self.height, salt_pepper=self.saltpepper)
         return image_noisy
 
     #

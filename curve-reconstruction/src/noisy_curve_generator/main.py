@@ -15,8 +15,8 @@ from GenericCurveGenerator import GenericCurveGenerator
 img_back_color=255
 img_width=500
 img_height=200
-salt_pepper_noise=0.90 #.95
-max_distance_between_2_points= 20#15
+salt_pepper_noise= 0.99 #0.95 #0.8 #0.90 #.95
+max_distance_between_2_points= 10 #20#15
 #20 is a good upper limit with sp=0.95
 #10 is a good lower limit, anything less then it becomes crowded
 
@@ -30,7 +30,7 @@ def create_new_absolute_filename(prefix):
 
 def generate_sine():
     generator=GenericCurveGenerator(width=img_width,height=img_height)
-    generator.saltpepper=0.90
+    generator.saltpepper=salt_pepper_noise
     generator.curvetype="sine"
     generator.max_consecutive_distance=20
     prefix=generator.generate_filename_prefix()
@@ -86,9 +86,9 @@ def generate_circle():
 
 def generate_diagonallines():
     generator=GenericCurveGenerator(width=img_width,height=img_height)
-    generator.saltpepper=0.95
+    generator.saltpepper=salt_pepper_noise
     generator.curvetype="diagonallines"
-    generator.max_consecutive_distance=15
+    generator.max_consecutive_distance=max_distance_between_2_points
     prefix=generator.generate_filename_prefix()
     generator.output_file=create_new_absolute_filename(prefix)
     generator.generate_curve()
