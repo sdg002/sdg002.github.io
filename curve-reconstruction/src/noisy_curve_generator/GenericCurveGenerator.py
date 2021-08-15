@@ -11,10 +11,10 @@ class   GenericCurveGenerator(object):
     def __init__ (self,width,height):
         self._width=width
         self._height=height
-        self._saltpepper=0.9
+        self._saltpepper=0
         self._img_back_color=255
         self._output_file=None
-        self._max_distance_consecutive_points=10
+        self._max_distance_consecutive_points=0
         self.__curvetype=None
         pass
 

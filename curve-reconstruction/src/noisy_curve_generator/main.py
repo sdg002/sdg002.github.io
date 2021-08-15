@@ -16,7 +16,7 @@ img_back_color=255
 img_width=500
 img_height=200
 salt_pepper_noise= 0.99 #0.95 #0.8 #0.90 #.95
-max_distance_between_2_points= 10 #20#15
+max_distance_between_2_points= 8#10 #20#15
 #20 is a good upper limit with sp=0.95
 #10 is a good lower limit, anything less then it becomes crowded
 
