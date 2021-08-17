@@ -21,7 +21,8 @@ max_distance_between_2_points= 8#10 #20#15
 #10 is a good lower limit, anything less then it becomes crowded
 
 def create_new_absolute_filename(prefix):
-    folder_script=os.path.dirname(__file__)
+    fullpathtoscript=os.path.realpath(__file__)
+    folder_script=os.path.dirname(fullpathtoscript)
     folder_results=os.path.join(folder_script,"./out/")
     count_of_files=len(os.listdir(folder_results))
     new_filename=("%s.%d.png" % (prefix,count_of_files))
@@ -91,6 +92,8 @@ def generate_diagonallines():
     generator.max_consecutive_distance=max_distance_between_2_points
     prefix=generator.generate_filename_prefix()
     generator.output_file=create_new_absolute_filename(prefix)
+    print(generator.output_file)
+    print(333)
     generator.generate_curve()
 
 
