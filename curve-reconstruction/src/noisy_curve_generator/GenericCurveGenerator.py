@@ -137,7 +137,7 @@ class   GenericCurveGenerator(object):
             new_point=sg.Point(pointA.X+ t*unit_vector.X, pointA.Y+t*unit_vector.Y)
             results.append(new_point)
             t+=dynamic_gap
-            print("dynamic gap=%f" % (dynamic_gap))
+            #print("dynamic gap=%f" % (dynamic_gap))
         return results
     
     def __generate_diagonallines(self,image_array):
@@ -240,7 +240,7 @@ class   GenericCurveGenerator(object):
 
             distance_from_lastpoint= ((x_new-x_last)**2 + (y_new-y_last)**2)**0.5
             if (distance_from_lastpoint < max_distance) and (distance_from_lastpoint >= min_distance):
-                pt_new=Point(x_new,y_new)
+                pt_new= sg.Point(x_new,y_new)
                 pts_new.append(pt_new)
                 x_last=x_new
                 y_last=y_new
