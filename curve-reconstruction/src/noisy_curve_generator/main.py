@@ -51,18 +51,18 @@ def generate_cosine():
 
 def generate_cubic():
     generator=GenericCurveGenerator(width=img_width,height=img_height)
-    generator.saltpepper=0.90
+    generator.saltpepper=salt_pepper_noise
     generator.curvetype="cubic"
-    generator.max_consecutive_distance=15
+    generator.max_consecutive_distance=max_distance_between_2_points
     prefix=generator.generate_filename_prefix()
     generator.output_file=create_new_absolute_filename(prefix)
     generator.generate_curve()
 
 def generate_parabola():
     generator=GenericCurveGenerator(width=img_width,height=img_height)
-    generator.saltpepper=0.80
+    generator.saltpepper=salt_pepper_noise
     generator.curvetype="parabola"
-    generator.max_consecutive_distance=10
+    generator.max_consecutive_distance=max_distance_between_2_points
     prefix=generator.generate_filename_prefix()
     generator.output_file=create_new_absolute_filename(prefix)
     generator.generate_curve()
@@ -98,13 +98,10 @@ def generate_diagonallines():
 
 
 
-#generate_spiral()
-#generate_cubic()
-#generate_sine()
-#generate_cosine()
-#generate_parabola()
 pass
 if (__name__ =="__main__"):
+    generate_cubic()
+    generate_parabola()
     generate_circle()
     generate_spiral()
     generate_sine()
