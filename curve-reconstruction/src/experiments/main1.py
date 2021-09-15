@@ -1,3 +1,4 @@
+import sys
 from typing import List
 import numpy as np
 import os
@@ -6,6 +7,7 @@ import skimage.io
 from skimage.measure import CircleModel, ransac
 from CircleFinder import CircleFinder
 from RansacCircleInfo import RansacCircleInfo
+import simplegeometry as sg
 
 
 max_distance=2 #8,4 #use NNE as an estimate
@@ -16,7 +18,7 @@ max_circles=10 #how many models to find
 '''
 def superimpose_points(points:List[tuple],width:float, height:float):
     new_image=np.full([height,width,3],255,dtype='int')
-    colors=[(0,255,0),(255,255,0),(0,0,255)]
+    colors=[(0,255,0),(255,255,0),(0,0,255)]  #todo change to Red,Green,Blue
     for point_index in range(0,len(points)):
         point=points[point_index]
         color=colors[point_index % len(colors)]
@@ -53,6 +55,60 @@ def read_black_pixels(imagefilename:str):
     np_data_points=np.column_stack((indices[1],cartesian_y)) 
     return np_data_points, width,height
 
+def plot_circles(inputfilepath:str,circles:List[RansacCircleInfo]):
+    fullpathtoscript=os.path.realpath(__file__)
+    folder_script=os.path.dirname(fullpathtoscript)
+    
+    print(f"Superimposing circles on base image: {inputfilepath}")
+    for result_index in range(0,len(circles)):
+        circle=circles[result_index]
+        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
+        np_blank_image.fill(1)
+        new_filename=f"result-{result_index}.png"
+        absolute_path=os.path.join(folder_script,"out/",new_filename)
+        print(f"Got a circle {circle}, saving to file {absolute_path}")
+        points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.inlier_points ))
+        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,255,0)
+        skimage.io.imsave(absolute_path,np_newimage)
+    pass
+
+def plot_circles_with_projections(inputfilepath:str,circles:List[RansacCircleInfo]):
+    fullpathtoscript=os.path.realpath(__file__)
+    folder_script=os.path.dirname(fullpathtoscript)
+    
+    print(f"Superimposing circles on base image: {inputfilepath}")
+    for result_index in range(0,len(circles)):
+        circle=circles[result_index]
+        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
+        np_blank_image.fill(1)
+        new_filename=f"result-projected-{result_index}.png"
+        absolute_path=os.path.join(folder_script,"out/",new_filename)
+        print(f"Got a circle {circle}, saving to file {absolute_path}")
+        points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.projected_inliers ))
+        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
+        skimage.io.imsave(absolute_path,np_newimage)
+    pass
+
+#what was I thinking?
+'''
+result0 and result1 appear to have captured the circles on the cubic curve
+You have the cirlces
+Now get the lines
+Eliminate the portions of the circles which have lesser density
+How to estimate density? N * median gap
+Project points on Cirlce
+Try joining the lines and circles in a MC fashion, find the best candidate, longest candidate
+
+
+Next steps
+----------
+    You have done the  NNE to determine the RANSAC threshold
+    You did the sequencing
+    Now do the elimination
+
+    
+'''
+
 def find_circles(inputfilename:str):
     fullpathtoscript=os.path.realpath(__file__)
     folder_script=os.path.dirname(fullpathtoscript)
@@ -64,10 +120,11 @@ def find_circles(inputfilename:str):
     
     circle_results:List[RansacCircleInfo]=[]
 
-    finder=CircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circles,ransac_threshold=max_distance )
+    finder=CircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circles )
     circle_results:List[RansacCircleInfo]
     circle_results = finder.find()
-
+    #plot_circles(inputfilepath=absolute_path,circles=circle_results)
+    plot_circles_with_projections(inputfilepath=absolute_path,circles=circle_results)
     print(f"Total no of circles found={len(circle_results)}")
 
     #

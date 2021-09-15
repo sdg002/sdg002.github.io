@@ -2,19 +2,31 @@ import numpy as np
 from RansacCircleInfo import RansacCircleInfo
 from skimage.measure import CircleModel, ransac
 from typing import List
-
+from sklearn.neighbors import KDTree
+import statistics
 
 class CircleFinder(object):
     """Sequentially finds circles from the given points"""
-    def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int, ransac_threshold:float):
+    def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int):
         self.__width=width
         self.__height=height
         self.__all_black_points=pixels
         self.__max_models_to_find=max_models
         self.__min_inliers_allowed=3 # A circle is selected only if it has these many inliers
         self.__min_samples=3 #RANSAC parameter - The minimum number of data points to fit a model to
-        self.__ransac_threshold_distance =ransac_threshold #Chnage name of variable
-        
+        self.__mean_nne_threshold_factor=0.5 #This will be multiplied by the mean nearest neighbour distance
+
+    '''
+    Use the mean nearest neighbour distance to arrive at the RANSAC threshold
+    '''  
+    def determine_ransac_threshold(self,points:np.ndarray)->float:
+        tree = KDTree(points)
+        nearest_dist, nearest_ind = tree.query(points, k=2)  # k=2 nearest neighbors where k1 = identity
+        mean_distances_current_iterations=list(nearest_dist[0:,1:].flatten())
+        mean=statistics.mean(mean_distances_current_iterations)
+        return mean * self.__mean_nne_threshold_factor
+        pass
+
     def find(self)->List[RansacCircleInfo]:
         circle_results:List[RansacCircleInfo]=[]
         starting_points=self.__all_black_points
@@ -22,14 +34,15 @@ class CircleFinder(object):
             if (len(starting_points) <= self.__min_samples):
                 print("No more points available. Terminating search for RANSAC")
                 break
-            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_circle(starting_points,max_distance=self.__ransac_threshold_distance)
+            ransac_threshold=self.determine_ransac_threshold(starting_points)
+            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_circle(starting_points,max_distance=ransac_threshold)
             if (len(inlier_points) < self.__min_inliers_allowed):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
             starting_points=inliers_removed_from_starting
             rascal_model=RansacCircleInfo(inlier_points,model)
             circle_results.append(rascal_model)
-            print(f"Found a RANSAC circle with center {rascal_model.center} and radius={rascal_model.radius}")
+            print(f"Found a RANSAC circle with center {rascal_model.center} and radius={rascal_model.radius}, inliers={len(starting_points)} , ransac_threshold={ransac_threshold}")
         return circle_results
     
     def __extract_first_ransac_circle(self,data_points, max_distance:int):

@@ -54,7 +54,7 @@ class Util(object):
     def superimpose_points_on_image(cls,arr_image_input:np.ndarray, points,red:int,green:int,blue:int):
         width=arr_image_input.shape[1]
         height=arr_image_input.shape[0]
-        arr_new=np.zeros([height,width,3])
+        arr_new=np.zeros(shape=[height,width,3], dtype='int')
         #We want to capture the original image
         for x in range(0,width):
             for y in range(0,height):

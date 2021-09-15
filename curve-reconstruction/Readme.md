@@ -30,5 +30,31 @@ Installed miniconda because it has a smaller disk foot print
 ## Where does Anaconda install the packages?
 %USERPROFILE%\miniconda3
 
+# What next?
+- Generate noisy images for the aforementioned
+- Gnerate a data file for every image, for future processing (what did you do before?)
 
 
+# Think of an easier way to generate images with multiple curves
+## Existing flow
+```
+    generator=GenericCurveGenerator(width=img_width,height=img_height)
+    generator.saltpepper=salt_pepper_noise
+    generator.curvetype="spiral"
+    generator.max_consecutive_distance=max_distance_between_2_points
+    prefix=generator.generate_filename_prefix()
+    generator.output_file=create_new_absolute_filename(prefix)
+    generator.generate_curve()
+
+```
+
+
+## Desired flow
+```
+    generator=GenericCurveGenerator(width=img_width,height=img_height)
+    generator.saltpepper=salt_pepper_noise
+    generator.max_consecutive_distance=max_distance_between_2_points
+    generator.output_file="c:/blah.png"
+    generator.generate_curve(["circle", "parabola","spiral"])
+
+```

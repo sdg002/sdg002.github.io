@@ -17,3 +17,5 @@ python -m unittest discover -s .\tests\ -p "test_*.py
 Refer this article https://realpython.com/absolute-vs-relative-python-imports/#how-imports-work
 We are not following the `__init__.py` but instead createing a module Python file 
 
+# How to reference this module from folders outside this hierarchy?
+You need to ensure that the variable PYTHONPATH has the top level folder to the folder containing the module `simplegeometry.py`
