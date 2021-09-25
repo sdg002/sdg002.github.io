@@ -1,20 +1,22 @@
+from RansacLineInfo import RansacLineInfo
 import numpy as np
-from RansacCircleInfo import RansacCircleInfo
-from skimage.measure import CircleModel, ransac
+from skimage.measure import LineModelND, ransac
 from typing import List
 from sklearn.neighbors import KDTree
 import statistics
 
-class CircleFinder(object):
-    """Sequentially finds circles from the given points"""
+
+class LineFinder(object):
+    """Sequentially finds line from the given points using the RANSAC algorithm"""
     def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int,nnd_threshold_factor:float):
         self.__width=width
         self.__height=height
         self.__all_black_points=pixels
         self.__max_models_to_find=max_models
-        self.__min_inliers_allowed=3 # A circle is selected only if it has these many inliers
+        self.__min_inliers_allowed=3 # A line is selected only if it has these many inliers
         self.__min_samples=3 #RANSAC parameter - The minimum number of data points to fit a model to
         self.__mean_nne_threshold_factor=nnd_threshold_factor #This will be multiplied by the mean nearest neighbour distance. 0.5, 0.25 are good values
+        self.__MAX_RANSAC_TRIALS=1000 #total no of samples to draw
 
     '''
     Use the mean nearest neighbour distance to arrive at the RANSAC threshold
@@ -27,27 +29,26 @@ class CircleFinder(object):
         mean=statistics.mean(mean_distances_current_iterations)
         ransac_thresold= mean * self.__mean_nne_threshold_factor
         return (mean,ransac_thresold)
-        pass
 
-    def find(self)->List[RansacCircleInfo]:
-        circle_results:List[RansacCircleInfo]=[]
+    def find(self)->List[RansacLineInfo]:
+        line_results:List[RansacLineInfo]=[]
         starting_points=self.__all_black_points
         for index in range(0,self.__max_models_to_find):
             if (len(starting_points) <= self.__min_samples):
                 print("No more points available. Terminating search for RANSAC")
                 break
             (mean_nnd,ransac_threshold)=self.determine_ransac_threshold(starting_points)
-            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_circle(starting_points,max_distance=ransac_threshold)
+            inlier_points,inliers_removed_from_starting,model=self.__extract_first_ransac_line(starting_points,max_distance=ransac_threshold)
             if (len(inlier_points) < self.__min_inliers_allowed):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
             starting_points=inliers_removed_from_starting
-            rascal_model=RansacCircleInfo(inlier_points,model)
-            circle_results.append(rascal_model)
-            print(f"Found a RANSAC circle with center {index}, {rascal_model.center} and radius={rascal_model.radius}, inliers={len(starting_points)} , ransac_threshold={ransac_threshold}, mean nnnd={mean_nnd} threshold_factory={self.__mean_nne_threshold_factor}")
-        return circle_results
-    
-    def __extract_first_ransac_circle(self,data_points, max_distance:int):
+            rascal_model=RansacLineInfo(inlier_points,model)
+            line_results.append(rascal_model)
+            print(f"\tFound RANSAC line with {len(rascal_model.inliers)} inliers, line number {index},mean nnnd={mean_nnd} ,nnd_threshold={self.__mean_nne_threshold_factor},ransac_threshold={ransac_threshold},line info:{rascal_model}" )
+        return line_results
+        
+    def __extract_first_ransac_line(self,data_points, max_distance:int):
         """
         Accepts a numpy array with shape N,2  N points, with coordinates x=[0],y=[1]
         Returns 
@@ -55,8 +56,7 @@ class CircleFinder(object):
             All data points with the inliers removed
             The model line
         """
-            
-        model_robust, inliers = ransac(data_points, CircleModel, min_samples=self.__min_samples,residual_threshold=max_distance, max_trials=1000)
+        model_robust, inliers = ransac(data_points, LineModelND, min_samples=self.__min_samples,residual_threshold=max_distance, max_trials=self.__MAX_RANSAC_TRIALS)
         results_inliers=[]
         results_inliers_removed=[]
         for i in range(0,len(data_points)):

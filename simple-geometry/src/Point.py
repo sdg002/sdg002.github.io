@@ -9,11 +9,11 @@ class Point:
         self.ID=Point.idcounter+1
         Point.idcounter+=1
     def __str__(self):
-        s="ID=%d x='%d' y='%d'" % (self.ID,self.X,self.Y)
+        s="ID=%d x='%f' y='%f'" % (self.ID,self.X,self.Y)
         return s
 
     def __repr__(self):
-        s="ID=%d ('%d','%d')" % (self.ID,self.X,self.Y)
+        s="ID=%d ('%f','%f')" % (self.ID,self.X,self.Y)
         return s
 
     def __hash__(self):

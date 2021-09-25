@@ -6,9 +6,11 @@ import skimage
 import skimage.io
 from skimage.measure import CircleModel, ransac
 from CircleFinder import CircleFinder
+from LineFinder import LineFinder
 from RansacCircleInfo import RansacCircleInfo
+from RansacLineInfo import RansacLineInfo
 import simplegeometry as sg
-
+from RootModel import RootModel
 
 max_distance=2 #8,4 #use NNE as an estimate
 max_circles=10 #how many models to find
@@ -72,9 +74,9 @@ def plot_circles(inputfilepath:str,circles:List[RansacCircleInfo]):
         skimage.io.imsave(absolute_path,np_newimage)
     pass
 
-def plot_circles_with_projections(inputfilepath:str,circles:List[RansacCircleInfo]):
-    fullpathtoscript=os.path.realpath(__file__)
-    folder_script=os.path.dirname(fullpathtoscript)
+def plot_circles_with_projections(model:RootModel):
+    inputfilepath:str=model.filename
+    circles=model.ransac_circles
     
     print(f"Superimposing circles on base image: {inputfilepath}")
     for result_index in range(0,len(circles)):
@@ -82,71 +84,106 @@ def plot_circles_with_projections(inputfilepath:str,circles:List[RansacCircleInf
         np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
         np_blank_image.fill(1)
         new_filename=f"result-projected-{result_index}.png"
-        absolute_path=os.path.join(folder_script,"out/",new_filename)
+        absolute_path=os.path.join(model.output_folder,new_filename)
         print(f"Got a circle {circle}, saving to file {absolute_path}")
         points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.projected_inliers ))
         np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
         skimage.io.imsave(absolute_path,np_newimage)
     pass
 
-#what was I thinking?
-'''
-result0 and result1 appear to have captured the circles on the cubic curve
-You have the cirlces
-Now get the lines
-Eliminate the portions of the circles which have lesser density
-How to estimate density? N * median gap
-Project points on Cirlce
-Try joining the lines and circles in a MC fashion, find the best candidate, longest candidate
+def plot_lines_with_projections(model:RootModel):
+    inputfilepath:str=model.filename
 
+    print(f"Superimposing lines on base image: {inputfilepath}")
+    for result_index in range(0,len(model.ransac_lines)):
+        line=model.ransac_lines[result_index]
+        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
+        np_blank_image.fill(1)
+        new_filename=f"line-result-projected-{result_index}.png"
+        absolute_path=os.path.join(model.output_folder,new_filename)
+        print(f"Got a line {line}, saving to file {absolute_path}")
 
-Next steps
-----------
-    You have done the  NNE to determine the RANSAC threshold
-    You did the sequencing
-    Now do the elimination
+        #points_list = list(map(lambda x: sg.Point(x[0],x[1]) , line.projected_inliers ))
+        points_list=line.projected_inliers
+        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
+        skimage.io.imsave(absolute_path,np_newimage)
+    pass
 
-    
-'''
+def find_circles2(model:RootModel):
+    circle_results:List[RansacCircleInfo]=[]
+    for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
+        finder=CircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor)        
+        circles= finder.find()
+        circle_results.extend(circles)
+    model.ransac_circles=circle_results
+    pass
 
-def find_circles(inputfilename:str):
+def find_lines(model:RootModel):
+    line_results:List[RansacCircleInfo]=[]
+    for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
+        finder=LineFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_LINES, nnd_threshold_factor=ransac_threshold_factor)
+        lines=finder.find()
+        line_results.extend(lines)
+    model.ransac_lines=line_results
+    pass
+
+def read_image(model:RootModel):
+    all_black_points,width,height=read_black_pixels(model.filename)
+    model.black_pixels=all_black_points
+    model.image__width=width
+    model.image_height=height
+
+def process_file(filename:str):
     fullpathtoscript=os.path.realpath(__file__)
     folder_script=os.path.dirname(fullpathtoscript)
-    absolute_path=os.path.join(folder_script,"data/",inputfilename)
-    print(f"Inside parabola {absolute_path}")
-    all_black_points,width,height=read_black_pixels(absolute_path)
-    print("Found %d pixels in the file %s" % (len(all_black_points),inputfilename))
+    absolute_path=os.path.join(folder_script,"data/",filename)
 
-    
-    circle_results:List[RansacCircleInfo]=[]
+    model=RootModel()
+    model.filename=absolute_path
 
-    finder=CircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circles )
-    circle_results:List[RansacCircleInfo]
-    circle_results = finder.find()
-    #plot_circles(inputfilepath=absolute_path,circles=circle_results)
-    plot_circles_with_projections(inputfilepath=absolute_path,circles=circle_results)
-    print(f"Total no of circles found={len(circle_results)}")
+    fullpathtoscript=os.path.realpath(__file__)
+    model.output_folder=os.path.join(os.path.dirname(fullpathtoscript),"out/")
 
-    #
-    '''
-    you were here
-        Find a way to superimpose the results
-        Find a way to capture the results in a JSON that can be viewed later on 
-            probably superimposition images in a sub-folder, keep it simple, top level JSON
+    read_image(model)
+    find_circles2(model) #temporary commenting out to speed up lines
+    plot_circles_with_projections(model) #temporary commenting out to speed up lines
+    # find_lines(model)
+    # plot_lines_with_projections(model=model)
 
-        RansacCircleInfo
-            Add property 'projected_points'
-            Add property 'arc_length'
-            Add property 'arc_fraction'
-    '''
+    #the line result - does it work? worked once , did not work second time
+    #you were here - move on to finding circles with some continuitt
+    #use the median distance as the epsilon
+
+
     pass
 
 
 if (__name__ =="__main__"):
     print("Inside main")
+    process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
     #process_parabola(inputfilename='parabola.W=500.H=200.MAXD=8.SP=0.99.39.png')
-    find_circles(inputfilename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
+    ##find_circles(inputfilename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
     #works fine for cubic
     #not well for parabola
     #run recursively for cubic - see if it generates 2 sensible circles
 
+
+
+
+    # you were here
+    #     Find a way to superimpose the results
+    #     Find a way to capture the results in a JSON that can be viewed later on 
+    #         probably superimposition images in a sub-folder, keep it simple, top level JSON
+
+    #     RansacCircleInfo
+    #         Add property 'projected_points'
+    #         Add property 'arc_length'
+    #         Add property 'arc_fraction'
+
+    # result0 and result1 appear to have captured the circles on the cubic curve
+    # You have the cirlces
+    # Now get the lines
+    # Eliminate the portions of the circles which have lesser density
+    # How to estimate density? N * median gap
+    # Project points on Cirlce
+    # Try joining the lines and circles in a MC fashion, find the best candidate, longest candidate

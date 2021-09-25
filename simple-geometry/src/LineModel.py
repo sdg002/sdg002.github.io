@@ -175,7 +175,7 @@ class LineModel:
         return pts_result
 
     #
-    #Determines the projection of the specified points on the given line
+    #Determines the projection of the specified points on the given line (LineModel)
     #Returns a list of projected Point objects
     #
     @classmethod

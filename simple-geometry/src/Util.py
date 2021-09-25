@@ -51,7 +51,7 @@ class Util(object):
     #The coordinate system of the point will be transformed from Cartesian(bottom-left) to Image(top-left)
     #
     @classmethod
-    def superimpose_points_on_image(cls,arr_image_input:np.ndarray, points,red:int,green:int,blue:int):
+    def superimpose_points_on_image(cls,arr_image_input:np.ndarray, points:List[Point],red:int,green:int,blue:int):
         width=arr_image_input.shape[1]
         height=arr_image_input.shape[0]
         arr_new=np.zeros(shape=[height,width,3], dtype='int')

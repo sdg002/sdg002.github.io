@@ -14,7 +14,7 @@ Give 2 or more continous curves in a field of noisy points, can we not only elim
 # How to set PYTHONPATH?
 From inside VSCODE, you can do the following to both the Python Debug Console and Python Console
 ```
-$env:PYTHONPATH="%USERPROFILE%\MyTrials\MyGithubPage\simple-geometry"
+$env:PYTHONPATH="$env:USERPROFILE%\MyTrials\MyGithubPage\simple-geometry"
 ```
 
 # Installing via Anaconda
