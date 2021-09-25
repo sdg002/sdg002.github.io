@@ -11,9 +11,9 @@ from RansacCircleInfo import RansacCircleInfo
 from RansacLineInfo import RansacLineInfo
 import simplegeometry as sg
 from RootModel import RootModel
+from OutputGenerator import *
 
-max_distance=2 #8,4 #use NNE as an estimate
-max_circles=10 #how many models to find
+
 
 '''
     Plots the tuple of points
@@ -57,57 +57,7 @@ def read_black_pixels(imagefilename:str):
     np_data_points=np.column_stack((indices[1],cartesian_y)) 
     return np_data_points, width,height
 
-def plot_circles(inputfilepath:str,circles:List[RansacCircleInfo]):
-    fullpathtoscript=os.path.realpath(__file__)
-    folder_script=os.path.dirname(fullpathtoscript)
-    
-    print(f"Superimposing circles on base image: {inputfilepath}")
-    for result_index in range(0,len(circles)):
-        circle=circles[result_index]
-        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
-        np_blank_image.fill(1)
-        new_filename=f"result-{result_index}.png"
-        absolute_path=os.path.join(folder_script,"out/",new_filename)
-        print(f"Got a circle {circle}, saving to file {absolute_path}")
-        points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.inlier_points ))
-        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,255,0)
-        skimage.io.imsave(absolute_path,np_newimage)
-    pass
 
-def plot_circles_with_projections(model:RootModel):
-    inputfilepath:str=model.filename
-    circles=model.ransac_circles
-    
-    print(f"Superimposing circles on base image: {inputfilepath}")
-    for result_index in range(0,len(circles)):
-        circle=circles[result_index]
-        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
-        np_blank_image.fill(1)
-        new_filename=f"result-projected-{result_index}.png"
-        absolute_path=os.path.join(model.output_folder,new_filename)
-        print(f"Got a circle {circle}, saving to file {absolute_path}")
-        points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.projected_inliers ))
-        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
-        skimage.io.imsave(absolute_path,np_newimage)
-    pass
-
-def plot_lines_with_projections(model:RootModel):
-    inputfilepath:str=model.filename
-
-    print(f"Superimposing lines on base image: {inputfilepath}")
-    for result_index in range(0,len(model.ransac_lines)):
-        line=model.ransac_lines[result_index]
-        np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
-        np_blank_image.fill(1)
-        new_filename=f"line-result-projected-{result_index}.png"
-        absolute_path=os.path.join(model.output_folder,new_filename)
-        print(f"Got a line {line}, saving to file {absolute_path}")
-
-        #points_list = list(map(lambda x: sg.Point(x[0],x[1]) , line.projected_inliers ))
-        points_list=line.projected_inliers
-        np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
-        skimage.io.imsave(absolute_path,np_newimage)
-    pass
 
 def find_circles2(model:RootModel):
     circle_results:List[RansacCircleInfo]=[]
@@ -145,10 +95,12 @@ def process_file(filename:str):
     model.output_folder=os.path.join(os.path.dirname(fullpathtoscript),"out/")
 
     read_image(model)
-    find_circles2(model) #temporary commenting out to speed up lines
-    plot_circles_with_projections(model) #temporary commenting out to speed up lines
-    # find_lines(model)
-    # plot_lines_with_projections(model=model)
+
+    # find_circles2(model) #temporary commenting out to speed up lines    
+    # OutputGenerator.plot_circles_with_projections(model) #temporary commenting out to speed up lines
+    
+    find_lines(model)
+    OutputGenerator.plot_lines_with_projections(model=model)
 
     #the line result - does it work? worked once , did not work second time
     #you were here - move on to finding circles with some continuitt
