@@ -42,9 +42,11 @@ class CircleFinder(object):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
             starting_points=inliers_removed_from_starting
-            rascal_model=RansacCircleInfo(inlier_points,model)
-            circle_results.append(rascal_model)
-            print(f"Found a RANSAC circle with center {index}, {rascal_model.center} and radius={rascal_model.radius}, inliers={len(starting_points)} , ransac_threshold={ransac_threshold}, mean nnnd={mean_nnd} threshold_factory={self.__mean_nne_threshold_factor}")
+            ransac_model=RansacCircleInfo(inlier_points,model)
+            ransac_model.mean_nnd=mean_nnd
+            ransac_model.ransac_threshold=ransac_threshold
+            circle_results.append(ransac_model)
+            print(f"Found a RANSAC circle with center {index}, {ransac_model.center} and radius={ransac_model.radius}, inliers={len(starting_points)} , ransac_threshold={ransac_threshold}, mean nnnd={mean_nnd} threshold_factory={self.__mean_nne_threshold_factor}")
         return circle_results
     
     def __extract_first_ransac_circle(self,data_points, max_distance:int):

@@ -81,3 +81,19 @@ class RansacLineInfo(object):
         second_point=sg.Point(first_point.X + self.unitvector.X*10, first_point.Y+self.unitvector.Y*10)
         self._lineequation=sg.LineModel.create_line_from_2points(first_point.X,first_point.Y, second_point.X, second_point.Y)
         return self._lineequation
+
+    @property
+    def ransac_threshold(self):
+        """The ransac_threshold that was used for determing this line model."""
+        return self._ransac_threshold
+    @ransac_threshold.setter
+    def ransac_threshold(self, value):
+        self._ransac_threshold = value
+
+    @property
+    def mean_nnd(self):
+        """The mean nearest neighbour distance of the image that was used for determining this line model."""
+        return self._mean_nnd
+    @mean_nnd.setter
+    def mean_nnd(self, value):
+        self._mean_nnd = value

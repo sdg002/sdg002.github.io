@@ -80,4 +80,18 @@ class RansacCircleInfo(object):
         self.__projected_inliers=np.array(lst_temp_sorted)
         return self.__projected_inliers
     
-    
+    @property
+    def ransac_threshold(self):
+        """The ransac_threshold that was used for determing this circle."""
+        return self._ransac_threshold
+    @ransac_threshold.setter
+    def ransac_threshold(self, value):
+        self._ransac_threshold = value
+
+    @property
+    def mean_nnd(self):
+        """The mean nearest neighbour distance of the image that was used for determining this circle."""
+        return self._mean_nnd
+    @mean_nnd.setter
+    def mean_nnd(self, value):
+        self._mean_nnd = value

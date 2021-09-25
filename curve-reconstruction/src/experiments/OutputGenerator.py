@@ -18,7 +18,7 @@ class OutputGenerator(object):
             circle=circles[result_index]
             np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
             np_blank_image.fill(1)
-            new_filename=f"result-projected-{result_index}.png"
+            new_filename=f"circle-result-{result_index}-inlier-{len(circle.inlier_points)}-threshold-{round(circle.ransac_threshold,2)}-nnd-{round(circle.mean_nnd,2)}.png"
             absolute_path=os.path.join(model.output_folder,new_filename)
             print(f"Got a circle {circle}, saving to file {absolute_path}")
             points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.projected_inliers ))
@@ -36,11 +36,10 @@ class OutputGenerator(object):
             line=model.ransac_lines[result_index]
             np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
             np_blank_image.fill(1)
-            new_filename=f"line-result-projected-{result_index}.png"
+            new_filename=f"line-result-{result_index}-inlier-{len(line.projected_inliers)}-threshold-{round(line.ransac_threshold,2)}-nnd-{round(line.mean_nnd,2)}.png"
             absolute_path=os.path.join(model.output_folder,new_filename)
             print(f"Got a line {line}, saving to file {absolute_path}")
 
-            #points_list = list(map(lambda x: sg.Point(x[0],x[1]) , line.projected_inliers ))
             points_list=line.projected_inliers
             np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
             skimage.io.imsave(absolute_path,np_newimage)

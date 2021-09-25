@@ -59,7 +59,7 @@ def read_black_pixels(imagefilename:str):
 
 
 
-def find_circles2(model:RootModel):
+def find_circles(model:RootModel):
     circle_results:List[RansacCircleInfo]=[]
     for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
         finder=CircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor)        
@@ -96,7 +96,7 @@ def process_file(filename:str):
 
     read_image(model)
 
-    # find_circles2(model) #temporary commenting out to speed up lines    
+    # find_circles(model) #temporary commenting out to speed up lines    
     # OutputGenerator.plot_circles_with_projections(model) #temporary commenting out to speed up lines
     
     find_lines(model)

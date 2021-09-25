@@ -43,9 +43,11 @@ class LineFinder(object):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
             starting_points=inliers_removed_from_starting
-            rascal_model=RansacLineInfo(inlier_points,model)
-            line_results.append(rascal_model)
-            print(f"\tFound RANSAC line with {len(rascal_model.inliers)} inliers, line number {index},mean nnnd={mean_nnd} ,nnd_threshold={self.__mean_nne_threshold_factor},ransac_threshold={ransac_threshold},line info:{rascal_model}" )
+            ransac_model=RansacLineInfo(inlier_points,model)
+            ransac_model.mean_nnd=mean_nnd
+            ransac_model.ransac_threshold=ransac_threshold
+            line_results.append(ransac_model)
+            print(f"\tFound RANSAC line with {len(ransac_model.inliers)} inliers, line number {index},mean nnnd={mean_nnd} ,nnd_threshold={self.__mean_nne_threshold_factor},ransac_threshold={ransac_threshold},line info:{ransac_model}" )
         return line_results
         
     def __extract_first_ransac_line(self,data_points, max_distance:int):
