@@ -2,6 +2,7 @@ import sys
 from typing import List
 import numpy as np
 import os
+from numpy.lib.function_base import diff
 import skimage
 import skimage.io
 from skimage.measure import CircleModel, ransac
@@ -12,6 +13,8 @@ from RansacLineInfo import RansacLineInfo
 import simplegeometry as sg
 from RootModel import RootModel
 from OutputGenerator import *
+import statistics
+from sklearn.cluster import DBSCAN
 
 
 
@@ -68,6 +71,44 @@ def find_circles(model:RootModel):
     model.ransac_circles=circle_results
     pass
 
+def find_consecutive_differences(values:List[float]):
+    results=[]
+    for index in range(0,len(values)-1):
+        diff=values[index+1]-values[index]
+        results.append(diff)
+    return results
+
+def find_circle_clusters(model:RootModel):
+    circle:RansacCircleInfo
+    clustered_circles=[]
+    for circle in model.ransac_circles:
+        projected_inliers=circle.projected_inliers
+        thetas=list(map(lambda x: x[2], projected_inliers))
+        diffs=find_consecutive_differences(thetas)
+        median=statistics.median(diffs)
+        epsilon=median*model.DBSCAN_EPISOLON_THRESHOLD
+        new_datapoints_2d=list(map(lambda x: [x], thetas))
+        data_points=np.array(new_datapoints_2d)
+        dbs=DBSCAN(eps=epsilon, min_samples=3)
+        dbs.fit(new_datapoints_2d)
+        
+        count_of_outliers=len(list(filter(lambda  l: l==-1, dbs.labels_)))
+        set_of_clusters=set(filter(lambda  l: l!=-1, dbs.labels_))
+        print(f"Found {len(set_of_clusters)} clusters in RANSAC circle , outliers:{count_of_outliers}, initial points={len(thetas)}")
+        clusterable_point_indices=np.where(dbs.labels_ != -1)
+        for cluster_index in set_of_clusters:
+            cluster_point_indices=np.where(dbs.labels_ == cluster_index)
+            new_inliers=projected_inliers[list(cluster_point_indices[0])]
+            new_inliers_notheta=new_inliers[:,0:2]
+            new_circle = RansacCircleInfo(new_inliers_notheta,circle.model)
+            print(f"\tGoing to create a new circle at index {cluster_index}, points={len(new_inliers)}, median arc separation={circle.radius * median}, original radius={circle.radius} new radius={new_circle.radius} original center={circle.center} newcenter={new_circle.center}")
+            clustered_circles.append(new_circle)
+        #THE ABOVE WORKS - TIDY UP THE CODE, FIX THE TUPLE THING
+        print(f"Found {len(clustered_circles)} circles")
+    model.clustered_circles=clustered_circles
+    print(f"Found a total of {len(model.clustered_circles)} circles from {len(model.ransac_circles)} ransac circles")
+    pass
+
 def find_lines(model:RootModel):
     line_results:List[RansacCircleInfo]=[]
     for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
@@ -96,11 +137,13 @@ def process_file(filename:str):
 
     read_image(model)
 
-    # find_circles(model) #temporary commenting out to speed up lines    
-    # OutputGenerator.plot_circles_with_projections(model) #temporary commenting out to speed up lines
+    find_circles(model) 
+    find_circle_clusters(model)
+    #OutputGenerator.plot_circles_with_projections(model) 
     
-    find_lines(model)
-    OutputGenerator.plot_lines_with_projections(model=model)
+    #temporary commenting out to speed up 
+    # find_lines(model)  
+    # OutputGenerator.plot_lines_with_projections(model=model)
 
     #the line result - does it work? worked once , did not work second time
     #you were here - move on to finding circles with some continuitt

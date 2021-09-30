@@ -7,7 +7,8 @@ class RootModel(object):
     def __init__(self):
         self.MAX_CIRCLES=11 #Max number of circles to find
         self.MAX_LINES=20 #Max number of lines to find
-        self.RANSAC_THRESHOLD_FACTORS=[0.25,0.5]
+        self.RANSAC_THRESHOLD_FACTORS=[0.25,0.5]  #Multiplied by mean nearest neighbour distance to arrive at Ransac threshold
+        self.DBSCAN_EPISOLON_THRESHOLD=2 # Multiplied by median gap or median angular distance to arrive at the Epsilon parameter for the DBSCAN cluster detection algorithm
         pass
 
     @property
@@ -68,3 +69,11 @@ class RootModel(object):
     def output_folder(self, value):
         self._output_folder = value
 
+    @property
+    def clustered_circles(self)->List[RansacCircleInfo]:
+        """Circles obtained after finding clusters in the RANSAC circles."""
+        return self._clustered_circles
+
+    @clustered_circles.setter
+    def clustered_circles(self, value:List[RansacCircleInfo]):
+        self._clustered_circles = value

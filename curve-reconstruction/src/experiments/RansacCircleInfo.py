@@ -72,7 +72,8 @@ class RansacCircleInfo(object):
             projected_y=unit_vector.Y *self.radius
             np_temp[index][0]=projected_x+self.center.X
             np_temp[index][1]=projected_y+self.center.Y
-            theta=math.atan2(unit_vector.Y,unit_vector.X)
+            #We want to use 0 to 2pi range for the angles so that the points can be sorted
+            theta=sg.MathUtil.atan2_0to2pi(unit_vector.Y,unit_vector.X)
             np_temp[index][2]=theta
         
         lst_temp=list(map(lambda x:(x[0],x[1],x[2]),np_temp))
