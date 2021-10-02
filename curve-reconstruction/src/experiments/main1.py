@@ -81,29 +81,44 @@ def find_consecutive_differences(values:List[float]):
 def find_circle_clusters(model:RootModel):
     circle:RansacCircleInfo
     clustered_circles=[]
+    #
+    #Cluster processing can be parameterized by writing a central function which accepts the following
+    #   RANSAC circle
+    #   epislon threshold
+    #   minp points
+    #Call this function via itertools.product
+    #
     for circle in model.ransac_circles:
         projected_inliers=circle.projected_inliers
         thetas=list(map(lambda x: x[2], projected_inliers))
         diffs=find_consecutive_differences(thetas)
         median=statistics.median(diffs)
-        epsilon=median*model.DBSCAN_EPISOLON_THRESHOLD
+        epsilon=median*model.DBSCAN_EPISOLON_THRESHOLD_FACTOR[0]  #should use itertools
         new_datapoints_2d=list(map(lambda x: [x], thetas))
         data_points=np.array(new_datapoints_2d)
-        dbs=DBSCAN(eps=epsilon, min_samples=3)
+        dbs=DBSCAN(eps=epsilon, min_samples=model.DBSCAN_MINPOINTS[0]) #we  should use all the values and use itertools
         dbs.fit(new_datapoints_2d)
         
         count_of_outliers=len(list(filter(lambda  l: l==-1, dbs.labels_)))
         set_of_clusters=set(filter(lambda  l: l!=-1, dbs.labels_))
         print(f"Found {len(set_of_clusters)} clusters in RANSAC circle , outliers:{count_of_outliers}, initial points={len(thetas)}")
+        permissible_lower_limit_of_points=model.MIN_INLIERS_FACTOR_AFTER_CLUSTERING[0]* len(circle.inlier_points) #Should use itertools
         clusterable_point_indices=np.where(dbs.labels_ != -1)
         for cluster_index in set_of_clusters:
             cluster_point_indices=np.where(dbs.labels_ == cluster_index)
             new_inliers=projected_inliers[list(cluster_point_indices[0])]
             new_inliers_notheta=new_inliers[:,0:2]
+            if (len(new_inliers) < permissible_lower_limit_of_points):
+                print(f"\tThe count of inliers:{len(new_inliers)} is less than the threshold:{permissible_lower_limit_of_points}. Skipping circle")
+                continue
             new_circle = RansacCircleInfo(new_inliers_notheta,circle.model)
             print(f"\tGoing to create a new circle at index {cluster_index}, points={len(new_inliers)}, median arc separation={circle.radius * median}, original radius={circle.radius} new radius={new_circle.radius} original center={circle.center} newcenter={new_circle.center}")
             clustered_circles.append(new_circle)
-        #THE ABOVE WORKS - TIDY UP THE CODE, FIX THE TUPLE THING
+        #THE ABOVE WORKS - 
+        # https://stackoverflow.com/questions/44887695/execute-function-on-all-possible-combinations-of-parameters
+        # You should examine the resulting images - before it is too late
+        # How to see results? Use the same function and use Model.clustered_circles
+        # TIDY UP THE CODE, 
         print(f"Found {len(clustered_circles)} circles")
     model.clustered_circles=clustered_circles
     print(f"Found a total of {len(model.clustered_circles)} circles from {len(model.ransac_circles)} ransac circles")

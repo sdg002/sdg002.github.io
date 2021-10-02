@@ -8,7 +8,9 @@ class RootModel(object):
         self.MAX_CIRCLES=11 #Max number of circles to find
         self.MAX_LINES=20 #Max number of lines to find
         self.RANSAC_THRESHOLD_FACTORS=[0.25,0.5]  #Multiplied by mean nearest neighbour distance to arrive at Ransac threshold
-        self.DBSCAN_EPISOLON_THRESHOLD=2 # Multiplied by median gap or median angular distance to arrive at the Epsilon parameter for the DBSCAN cluster detection algorithm
+        self.DBSCAN_EPISOLON_THRESHOLD_FACTOR=[2] # Multiplied by median gap or median angular distance to arrive at the Epsilon parameter for the DBSCAN cluster detection algorithm
+        self.DBSCAN_MINPOINTS=[3,6,10]
+        self.MIN_INLIERS_FACTOR_AFTER_CLUSTERING=[0.1,0.25] #A clustered circle is discarded if it has inliers below (threshold*original_inliers)
         pass
 
     @property
