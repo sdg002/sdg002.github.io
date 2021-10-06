@@ -16,16 +16,27 @@ class Customers(Base):
    name = Column(String)
    address = Column(String)
    email = Column(String)
-
+   def __repr__(self) -> str:
+        return f"Name: '{self.name}'; Address: '{self.address}'; Email: '{self.email}'"
 
 def add_customer(session):
     now=datetime.now()
-    c1=Customers(name=f"john {now.second}", address="blah address", email=f"john-{now.second}@cool.com")
+    c1=Customers(name=f"john {now.second}", address="blah address", email=f"john-{now.microsecond}@cool.com")
     session.add(c1)
     session.commit()
     print(f"Added new customer with the name {c1.name}")
     pass
 
+def query_all_customers(session):
+    result = session.query(Customers).all()
+    for row in result:
+        #print (f"Name: {row.name} Address: {row.address} Email: {row.email}")
+        print(row)
+
+def delete_all_customers(connection):
+    sql = 'DELETE FROM customers'
+    r_set=connection.execute(sql)
+    print(f"No of Records deleted {r_set.rowcount}")
 
 
 def main():
@@ -36,7 +47,12 @@ def main():
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind = engine)
     session = Session()
+    delete_all_customers(connection=connection)
     add_customer(session)
+    add_customer(session)
+    add_customer(session)
+    add_customer(session)
+    query_all_customers(session)
 
 if (__name__ =="__main__"):
     main()
