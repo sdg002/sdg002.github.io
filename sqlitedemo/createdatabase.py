@@ -63,7 +63,7 @@ def main():
     add_multiple_customers(session)
     #c=add_customer(session)
     #print(inspect.getmembers(c)) #how to get all members
-    #print(inspect.getmembers, inspect.isfunction) #when you want all function members only
+    #print(inspect.getmembers, inspect.isfunction) #when you want all function members
     query_all_customers(session)
 
 if (__name__ =="__main__"):
