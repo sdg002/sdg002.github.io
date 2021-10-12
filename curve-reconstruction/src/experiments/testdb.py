@@ -6,6 +6,15 @@ from entity.Circle import Circle
 import os
 from datetime import datetime
 
+
+def read_database(dbwrapper:SqliteWrapper):
+    print("Fetching circles")
+    circles=dbwrapper.get_all_circles()
+    for c in circles:
+        print(f"\t{c}")
+    pass
+
+
 if (__name__ =="__main__"):
     print("Inside main")
     dbfilename="demo.entity.db"
@@ -19,3 +28,4 @@ if (__name__ =="__main__"):
     c1=Circle(x=1.1,y=1.2, radius=1.3, id=now.second+1)  #the id has to be specified
     c2=Circle(x=2.1,y=2.2, radius=2.3, id=now.second+2)
     dbwrapper.add_circles([c1,c2])
+    read_database(dbwrapper)

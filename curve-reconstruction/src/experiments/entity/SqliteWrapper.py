@@ -42,3 +42,12 @@ class SqliteWrapper(object):
     def delete_all_objects(self):
         self.delete_all_circles()
         self.delete_all_lines()
+
+    def get_all_circles(self)->List[Circle]:
+        Session = sessionmaker(bind = self.__engine)
+        session = Session()
+        result = session.query(Circle).all()
+        circles=[]
+        for row in result:
+            circles.append(row)
+        return circles
