@@ -1,9 +1,13 @@
 #
 #Placeholder Python file to test Sqlite operations
 #
-from entity.SqliteWrapper import SqliteWrapper
-from entity.Circle import Circle
-from entity.Line import Line
+import os, sys
+
+currentdir = os.path.dirname(os.path.realpath(__file__))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
+from entity import *
+
 import os
 from datetime import datetime
 

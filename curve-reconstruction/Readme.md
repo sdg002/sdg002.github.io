@@ -63,10 +63,13 @@ Installed miniconda because it has a smaller disk foot print
 ## Folder structure
 - root
     - entity
-        - experiments
-            - Circle
-            - Line
-
+        - Circle
+        - Line
+        - SqliteWrapper
+    - experiments
+    - tests
+        - test_CircleEntity
+        - test_LineEntity
 
 ## Circle entity
 - center(Point)
@@ -91,6 +94,6 @@ Installed miniconda because it has a smaller disk foot print
 - method DeleteAll() to remove all Circle and Line objects
 
 ##  Work log
-- You have complete Circle
-- You need to do everything Line
+- Write an unit test for Line
+- Write an unit test for Circle
 - 
