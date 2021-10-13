@@ -58,3 +58,39 @@ Installed miniconda because it has a smaller disk foot print
     generator.generate_curve(["circle", "parabola","spiral"])
 
 ```
+# Structuring into entities
+
+## Folder structure
+- root
+    - entity
+        - experiments
+            - Circle
+            - Line
+
+
+## Circle entity
+- center(Point)
+- radius
+- Start angle
+- End angle
+- Number of points
+- Mean angular distance between points (read only property)
+
+## Line entity
+- unit vector (Point)
+- Start (Point)
+- End (Point)
+- Number of points
+- Mean distance between points (read only property)
+
+
+## SqlLiteWrapper clas
+- ctor to initialize a new database, with givne path
+- method to add multiple Circle objects
+- method to add multiple Line objects
+- method DeleteAll() to remove all Circle and Line objects
+
+##  Work log
+- You have complete Circle
+- You need to do everything Line
+- 

@@ -6,6 +6,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import sessionmaker
 from .Circle import Circle
+from .Line import Line
 from .sqllitebase import Base  #common file for Base type, otherwise cannot find circles table
 
 class SqliteWrapper(object):
@@ -29,6 +30,13 @@ class SqliteWrapper(object):
             session.add(circle)
         session.commit()
 
+    def add_lines(self,lines:List[Line]):
+        Session = sessionmaker(bind = self.__engine)
+        session = Session()
+        for line in lines:
+            session.add(line)
+        session.commit()
+
     def delete_all_circles(self):
         sql = 'DELETE FROM circles'
         connection = self.__engine.connect()
@@ -37,6 +45,10 @@ class SqliteWrapper(object):
         pass
 
     def delete_all_lines(self):
+        sql = 'DELETE FROM lines'
+        connection = self.__engine.connect()
+        r_set=connection.execute(sql)
+        print(f"No of circles deleted {r_set.rowcount}")
         pass
 
     def delete_all_objects(self):
@@ -51,3 +63,12 @@ class SqliteWrapper(object):
         for row in result:
             circles.append(row)
         return circles
+
+    def get_all_lines(self)->List[Circle]:
+        Session = sessionmaker(bind = self.__engine)
+        session = Session()
+        result = session.query(Line).all()
+        lines=[]
+        for row in result:
+            lines.append(row)
+        return lines
