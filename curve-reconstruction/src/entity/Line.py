@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float
 from .sqllitebase import Base #shared file for Base type, otherwise cannot find table circles
+import math
 
 class Line(Base):
     """Represents a Line object"""
@@ -18,4 +19,8 @@ class Line(Base):
     @property
     def mean_distance(self):
         """The mean distance between the points discovered on this line."""
+        if (self._mean_distance != -1):
+            return self._mean_distance
+        d=math.sqrt((self.start_x - self.end_x)**2+(self.start_y-self.end_y)**2)
+        self._mean_distance=d/self.points
         return self._mean_distance
