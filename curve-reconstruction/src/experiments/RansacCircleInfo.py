@@ -59,7 +59,9 @@ class RansacCircleInfo(object):
         x,y are the cartesian coordinates
         theta is the angular orientation the vector (center to projection) makes with the X axis
         """
-        if (self.__projected_inliers != None):
+        #if (self.__projected_inliers != None): #does not work with empty arrays
+        #if ((not self.__projected_inliers) == False): #does not work with empty arrays
+        if ((self.__projected_inliers is None) == False):
             return self.__projected_inliers
         total_points=self.inlier_points.shape[0]
         np_temp=np.empty(dtype='float', shape=[len(self.inlier_points),3])
@@ -96,3 +98,19 @@ class RansacCircleInfo(object):
     @mean_nnd.setter
     def mean_nnd(self, value):
         self._mean_nnd = value
+
+    @property
+    def dbscan_epsilon(self):
+        """The epsilon parameter used for the DBSCAN algorithm."""
+        return self._mean_angular_distance
+    @dbscan_epsilon.setter
+    def dbscan_epsilon(self, value):
+        self._mean_angular_distance = value
+
+    @property
+    def dbscan_minpts(self):
+        """The minpts parameter used for the DBSCAN algorithm."""
+        return self._dbscan_minpts
+    @dbscan_minpts.setter
+    def dbscan_minpts(self, value):
+        self._dbscan_minpts = value

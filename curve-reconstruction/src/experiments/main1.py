@@ -6,7 +6,7 @@ from numpy.lib.function_base import diff
 import skimage
 import skimage.io
 from skimage.measure import CircleModel, ransac
-from CircleFinder import CircleFinder
+from RansacCircleFinder import RansacCircleFinder
 from LineFinder import LineFinder
 from RansacCircleInfo import RansacCircleInfo
 from RansacLineInfo import RansacLineInfo
@@ -15,7 +15,7 @@ from RootModel import RootModel
 from OutputGenerator import *
 import statistics
 from sklearn.cluster import DBSCAN
-
+from CircleClusterCreator import CircleClusterCreator
 
 
 '''
@@ -65,7 +65,7 @@ def read_black_pixels(imagefilename:str):
 def find_circles(model:RootModel):
     circle_results:List[RansacCircleInfo]=[]
     for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
-        finder=CircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor)        
+        finder=RansacCircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor)        
         circles= finder.find()
         circle_results.extend(circles)
     model.ransac_circles=circle_results
@@ -77,6 +77,12 @@ def find_consecutive_differences(values:List[float]):
         diff=values[index+1]-values[index]
         results.append(diff)
     return results
+
+def find_circle_clusters1(model:RootModel):
+    cluster_creator=CircleClusterCreator()
+    clustered_circles=cluster_creator.create_clusters(ransaccircles=model.ransac_circles , dbscan_epsilon_thresholds=model.DBSCAN_EPISOLON_THRESHOLD_FACTOR ,dbscan_min_pts=model.DBSCAN_MINPOINTS, min_allowedinliers_factor=model.MIN_INLIERS_FACTOR_AFTER_CLUSTERING)
+    model.clustered_circles=clustered_circles
+    print(f"Found a total of {len(model.clustered_circles)} circles from {len(model.ransac_circles)} ransac circles")
 
 def find_circle_clusters(model:RootModel):
     circle:RansacCircleInfo
@@ -139,6 +145,13 @@ def read_image(model:RootModel):
     model.image__width=width
     model.image_height=height
 
+def extract_abstracted_lines(model:RootModel):
+    raise Exception("not yet implemented")
+    pass
+
+def extract_abstracted_circles(model:RootModel):
+    raise Exception("not yet implemented")
+
 def process_file(filename:str):
     fullpathtoscript=os.path.realpath(__file__)
     folder_script=os.path.dirname(fullpathtoscript)
@@ -153,11 +166,13 @@ def process_file(filename:str):
     read_image(model)
 
     find_circles(model) 
-    find_circle_clusters(model)
-    #OutputGenerator.plot_circles_with_projections(model) 
+    find_circle_clusters1(model)
+
+
+    OutputGenerator.plot_clustered_circles_with_projections(model) 
     
     #temporary commenting out to speed up 
-    # find_lines(model)  
+    #find_lines(model) 
     # OutputGenerator.plot_lines_with_projections(model=model)
 
     #the line result - does it work? worked once , did not work second time

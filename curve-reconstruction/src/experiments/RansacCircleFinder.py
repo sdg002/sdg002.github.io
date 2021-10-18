@@ -5,7 +5,7 @@ from typing import List
 from sklearn.neighbors import KDTree
 import statistics
 
-class CircleFinder(object):
+class RansacCircleFinder(object):
     """Sequentially finds circles from the given points"""
     def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int,nnd_threshold_factor:float):
         self.__width=width

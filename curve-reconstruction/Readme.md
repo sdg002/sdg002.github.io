@@ -94,6 +94,14 @@ Installed miniconda because it has a smaller disk foot print
 - method DeleteAll() to remove all Circle and Line objects
 
 ##  Work log
-- Write an unit test for Line
-- Write an unit test for Circle
-- 
+- Move find_circle_clusters to CircleFinder (done)
+- Clean up and test the movement
+- Use the Sine wave using the above
+- Create clusters of lines using median separation
+- Add Circle to RootModel during detection
+- Add Line to RootModel during detection
+- Write algorithm to fit Line and Circle
+    - Line and Line (fit a line/circle , how many inliers?)
+    - Cirle and Line (fit a tangent to Circle, how much cost)
+    - Circle and Circle
+- ? 
