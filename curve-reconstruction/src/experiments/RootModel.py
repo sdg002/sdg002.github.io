@@ -11,14 +11,15 @@ from entity import *
 class RootModel(object):
     """docstring for RootModel."""
     def __init__(self):
-        self.MAX_CIRCLES=11 #Max number of circles to find
+        self.MAX_CIRCLES=4 #Max number of circles to find
         self.MAX_LINES=20 #Max number of lines to find
-        self.RANSAC_THRESHOLD_FACTORS=[0.25,0.5]  #Multiplied by mean nearest neighbour distance to arrive at Ransac threshold
-        self.DBSCAN_EPISOLON_THRESHOLD_FACTOR=[2] # Multiplied by median gap or median angular distance to arrive at the Epsilon parameter for the DBSCAN cluster detection algorithm
+        self.RANSAC_THRESHOLD_FACTORS=[ 0.25,0.5, 1.0]  #Multiplied by mean nearest neighbour distance to arrive at Ransac threshold
+        self.DBSCAN_EPISOLON_THRESHOLD_FACTOR=[1,2] # Multiplied by median gap or median angular distance to arrive at the Epsilon parameter for the DBSCAN cluster detection algorithm
         self.DBSCAN_MINPOINTS=[3,6,10]  #min points parameter for DBSCAN algorithm
         self.MIN_INLIERS_FACTOR_AFTER_CLUSTERING=[0.1,0.25] #A clustered circle is discarded if it has inliers below (threshold*original_inliers)
         self.__abstracted_lines=[]
         self.__abstracted_circles=[]
+        self.MAX_RANSAC_TRIALS=10000 #1000000  # The maxtrials parameter of the scikit RANSAC algorithm
 
     @property
     def filename(self):

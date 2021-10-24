@@ -14,6 +14,8 @@ class RansacCircleInfo(object):
         self.__model=model
         self.__projected_inliers=None
         self.__center=None
+        self._mean_angular_distance=0
+        self._dbscan_minpts=0
     
     def __checkforinitialization(self):
         if (self.__model == None):

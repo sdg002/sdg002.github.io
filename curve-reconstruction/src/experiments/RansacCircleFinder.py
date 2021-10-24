@@ -7,7 +7,7 @@ import statistics
 
 class RansacCircleFinder(object):
     """Sequentially finds circles from the given points"""
-    def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int,nnd_threshold_factor:float):
+    def __init__(self, pixels:np.ndarray,width:float,height:float,max_models:int,nnd_threshold_factor:float,max_ransac_trials:float):
         self.__width=width
         self.__height=height
         self.__all_black_points=pixels
@@ -15,6 +15,7 @@ class RansacCircleFinder(object):
         self.__min_inliers_allowed=3 # A circle is selected only if it has these many inliers
         self.__min_samples=3 #RANSAC parameter - The minimum number of data points to fit a model to
         self.__mean_nne_threshold_factor=nnd_threshold_factor #This will be multiplied by the mean nearest neighbour distance. 0.5, 0.25 are good values
+        self.__max_ransac_trials=max_ransac_trials
 
     '''
     Use the mean nearest neighbour distance to arrive at the RANSAC threshold
@@ -30,6 +31,7 @@ class RansacCircleFinder(object):
         pass
 
     def find(self)->List[RansacCircleInfo]:
+        print(f"Going to run RANSAC with MAX_RANSAC_TRIALS={self.__max_ransac_trials} , MAX MODELS={self.__max_models_to_find}")
         circle_results:List[RansacCircleInfo]=[]
         starting_points=self.__all_black_points
         for index in range(0,self.__max_models_to_find):
@@ -46,7 +48,8 @@ class RansacCircleFinder(object):
             ransac_model.mean_nnd=mean_nnd
             ransac_model.ransac_threshold=ransac_threshold
             circle_results.append(ransac_model)
-            print(f"Found a RANSAC circle with center {index}, {ransac_model.center} and radius={ransac_model.radius}, inliers={len(starting_points)} , ransac_threshold={ransac_threshold}, mean nnnd={mean_nnd} threshold_factory={self.__mean_nne_threshold_factor}")
+            print(f"Found a RANSAC circle with center {index}, {ransac_model.center} and radius={ransac_model.radius}, inliers={len(inlier_points)} , ransac_threshold={ransac_threshold}, mean nnnd={mean_nnd} threshold_factory={self.__mean_nne_threshold_factor}")
+        print(f"Total ransac circles found:{len(circle_results)}")
         return circle_results
     
     def __extract_first_ransac_circle(self,data_points, max_distance:int):
@@ -58,7 +61,7 @@ class RansacCircleFinder(object):
             The model line
         """
             
-        model_robust, inliers = ransac(data_points, CircleModel, min_samples=self.__min_samples,residual_threshold=max_distance, max_trials=1000)
+        model_robust, inliers = ransac(data_points, CircleModel, min_samples=self.__min_samples,residual_threshold=max_distance, max_trials=self.__max_ransac_trials)
         results_inliers=[]
         results_inliers_removed=[]
         for i in range(0,len(data_points)):

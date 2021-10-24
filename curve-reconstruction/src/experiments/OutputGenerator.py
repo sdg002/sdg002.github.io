@@ -1,3 +1,5 @@
+from typing import List
+from experiments.RansacCircleInfo import RansacCircleInfo
 import simplegeometry as sg
 from RootModel import RootModel
 import skimage.io
@@ -29,19 +31,21 @@ class OutputGenerator(object):
     @classmethod
     def plot_clustered_circles_with_projections(cls,model:RootModel):
         inputfilepath:str=model.filename
-        circles=model.clustered_circles
+        circles=model.ransac_circles
+        #circles=model.clustered_circles
         
         print(f"Superimposing clustered circles on base image: {inputfilepath}")
         for result_index in range(0,len(circles)):
             circle=circles[result_index]
             np_blank_image=skimage.io.imread(inputfilepath,as_gray=True)
             np_blank_image.fill(1)
-            new_filename=f"circle-clustered-{result_index}-inlier-{len(circle.inlier_points)}-threshold-{round(circle.ransac_threshold,2)}-nnd-{round(circle.mean_nnd,2)}.png"
+            new_filename=f"circle-clustered-{result_index}-inlier-{len(circle.inlier_points)}-threshold-{round(circle.ransac_threshold,2)}-nnd-{round(circle.mean_nnd,2)}-ep-{round(circle.dbscan_epsilon,2)}-minpts-{circle.dbscan_minpts}.png"
             absolute_path=os.path.join(model.output_folder,new_filename)
             print(f"Got a circle {circle}, saving to file {absolute_path}")
             points_list = list(map(lambda x: sg.Point(x[0],x[1]) , circle.projected_inliers ))
             np_newimage=sg.Util.superimpose_points_on_image(np_blank_image,points_list,255,0,0)
             skimage.io.imsave(absolute_path,np_newimage)
+        print(f"Total circles printed={len(circles)}")
         pass
 
 

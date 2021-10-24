@@ -93,9 +93,9 @@ Installed miniconda because it has a smaller disk foot print
 - method to add multiple Line objects
 - method DeleteAll() to remove all Circle and Line objects
 
-##  Work log
+## Old Work log
 - Move find_circle_clusters to CircleFinder (done)
-- Clean up and test the movement
+- Clean up and test the movement (done)
 - Use the Sine wave using the above
 - Create clusters of lines using median separation
 - Add Circle to RootModel during detection
@@ -105,3 +105,41 @@ Installed miniconda because it has a smaller disk foot print
     - Cirle and Line (fit a tangent to Circle, how much cost)
     - Circle and Circle
 - ? 
+
+## Challenges with non-patch approach
+### Large parabola
+- Lack of reliability
+- E.g. In case of LARGE parabola, I was able to detect left side completely, but the right was partial (bottom was cut off)
+- Possible reason - Change of NNE after the detection of the left side
+- Possible reason - The RANSAC Trials count should be proportional to the square of the number of points
+- Increased max trials to 1000,000.
+- Very slow performance
+
+### Narrow parabola (parabola.narrow)
+- The results with NARROW parabola were better - But, I failed to detect the lower circle
+
+### Bottom parabola (parabola.small)
+- Did not get the complete bottom circle
+- Did get left part of the bottom circle
+- Did get partial right part of the bottom circle (Not good, but remember we do not have many points to work with)
+
+
+##  Work log
+
+# Patch by Patch approach
+## Overall idea
+- Decide on the dimension of the square patch (W pixels)
+- Stride should be W/2 in both axis
+- Begin with searching for 1 RANSAC line in each patch
+- For every patch, calculate median distance between projected inliers (MD)
+- Now, select those patches which have median distance > MD
+- For these patches, re-run RANSAC till median distance falls below MD
+- Collect all the new RANSAC lines that were found by the above step
+- What do we end up with? - The image split into Patches and a collection of RANSAC lines from every Patch
+
+## What do we detect first? Lines or circles
+to be done
+
+## How do we decide the size W of the patch square?
+to be done
+
