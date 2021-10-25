@@ -6,7 +6,6 @@ from typing import List, Set, Dict, Tuple, Optional
 import numpy as np
 from scipy import linalg
 
-
 class LineModel:
     """Describes the equation of a straight line in ax+by+c format"""
     SMALL=0.001

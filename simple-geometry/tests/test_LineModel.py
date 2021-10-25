@@ -5,6 +5,7 @@ import unittest
 from src.Point import Point
 from src.LineModel import LineModel
 import math
+import random
 
 class Test_LineModel(unittest.TestCase):
     def test_construction(self):
@@ -212,5 +213,35 @@ class Test_LineModel(unittest.TestCase):
             self.assertAlmostEqual(actual.X,expected.X,0.1)
             self.assertAlmostEqual(actual.Y,expected.Y,0.1)
 
+    def test_is_vertical(self):
+        vertical_line=LineModel(1,0,1)
+        self.assertEqual(vertical_line.is_vertical,True)
+
+        horizontal_line=LineModel(0,1,1)
+        self.assertEqual(horizontal_line.is_vertical,False)
+
+        inclined_line=LineModel(0,1,1)
+        self.assertEqual(inclined_line.is_vertical,False)
+
+    def test_sequential_projection(self):
+        diagonal=LineModel(-1,1,0)
+        external_points=[]
+        external_points.append(Point(1,1.2))
+        external_points.append(Point(2,2))
+        external_points.append(Point(3,3.2))
+        external_points.append(Point(4.2,4))
+        shuffled_points=sorted(external_points, key=lambda x: random.random())
+        projected_points=LineModel.compute_projection_of_points_sequential(diagonal,shuffled_points)
+        self.assertEqual(len(shuffled_points),len(projected_points))
+        for projected_point in projected_points:
+            self.assertEqual(projected_point.X,projected_point.Y)
+        for index in range(len(projected_points)-1):
+            first_point=projected_points[index]
+            second_point=projected_points[index+1]
+            self.assertGreater(second_point.X,first_point.X)
+            self.assertGreater(second_point.Y,first_point.Y)
+        pass
+
+        
 if __name__ == '__main__':
     unittest.main()
