@@ -1,3 +1,4 @@
+import statistics
 import numpy as np
 
 from typing import Union, Any, List, Optional, cast, Dict
@@ -19,6 +20,7 @@ class RansacLineInfo(object):
         self._inliers=inlier_points #the inliers that were detected by RANSAC algo
         self._model=model    #The LinearModelND that was a result of RANSAC algo
         self._lineequation=None
+        self.__median_gap_between_projected_inliers = math.nan
     
     @property
     def unitvector(self)->sg.Point:
@@ -40,7 +42,7 @@ class RansacLineInfo(object):
     @property
     def projected_inliers(self)->List[sg.Point]:
         """The projection of the inliers on the Ransac line"""
-        projected_points=sg.LineModel.compute_projection_of_points(self.standard_equation,self.inliers)
+        projected_points=sg.LineModel.compute_projection_of_points_sequential(self.standard_equation,self.inliers)
         return projected_points
 
 
@@ -97,3 +99,19 @@ class RansacLineInfo(object):
     @mean_nnd.setter
     def mean_nnd(self, value):
         self._mean_nnd = value
+
+    @property
+    def median_gap_between_projected_inliers(self):
+        """The meadian_gap_between_projected_inliers property."""
+        if (math.isnan(self.__median_gap_between_projected_inliers)== False):
+            return self.__median_gap_between_projected_inliers
+        inliers=self.projected_inliers
+        distances=[]
+        for index in range(0,len(inliers)-1):
+            pt1=inliers[index]
+            pt2=inliers[index+1]
+            distance=sg.Point.euclidean_distance(pt1,pt2)
+            distances.append(distance)
+        self.__median_gap_between_projected_inliers=statistics.median(distances)
+        return self.__median_gap_between_projected_inliers
+

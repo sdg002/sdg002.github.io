@@ -54,6 +54,12 @@ class LineModel:
             slope=-self.A/self.B
             angle=math.atan(slope)
             return angle
+
+    @property
+    def is_vertical(self):
+        """Returns True if the line is perpendicular to  X axis."""
+        return (math.fabs( self.B ) < 0.001)
+
     #
     #Gets the Y intercept of the line, if infinite then math.inf
     #
@@ -194,3 +200,18 @@ class LineModel:
             lst_projections.append(Point(intersection[0],intersection[1]))
         return lst_projections
         pass
+
+    #
+    #Similar to the method compute_projection_of_points. However, the points are re-ordered sequentially
+    #from one end of the specified line to the other end
+    #
+    @classmethod
+    def compute_projection_of_points_sequential(cls,line,points:List[Point]):
+        projected_points=cls.compute_projection_of_points(line,points)
+        sort_function=None
+        if (line.is_vertical):
+            sort_function=lambda p:p.Y
+        else:
+            sort_function=lambda p:p.X
+        sequential_points=sorted(projected_points,key=sort_function)
+        return sequential_points

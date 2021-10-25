@@ -16,7 +16,12 @@ class LineFinder(object):
         self.__min_inliers_allowed=3 # A line is selected only if it has these many inliers
         self.__min_samples=3 #RANSAC parameter - The minimum number of data points to fit a model to
         self.__mean_nne_threshold_factor=nnd_threshold_factor #This will be multiplied by the mean nearest neighbour distance. 0.5, 0.25 are good values
-        self.__MAX_RANSAC_TRIALS=1000 #total no of samples to draw
+        self.compute_max_ransac_trials()
+
+    def compute_max_ransac_trials(self):
+        count_of_pixels=len(self.__all_black_points)
+        self.__MAX_RANSAC_TRIALS=int(count_of_pixels*(count_of_pixels-1)/2)
+        pass
 
     '''
     Use the mean nearest neighbour distance to arrive at the RANSAC threshold
@@ -31,6 +36,7 @@ class LineFinder(object):
         return (mean,ransac_thresold)
 
     def find(self)->List[RansacLineInfo]:
+        print(f"Starting RANSAC line determination using max trials={self.__MAX_RANSAC_TRIALS}")
         line_results:List[RansacLineInfo]=[]
         starting_points=self.__all_black_points
         for index in range(0,self.__max_models_to_find):
@@ -42,6 +48,14 @@ class LineFinder(object):
             if (len(inlier_points) < self.__min_inliers_allowed):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
+            #
+            #New idea on 25 Oct - Inliers that have been removed could be a legitimate member of a subsequently discovered line
+            #Consider the scenario of a 2 strong lines. The intersecting point belongs to both the lines.
+            #Problem - The second RANSAC line is penalized because the point of intersection has already been added to the first RANSAC line
+            #Accumulate all inlier points in a List
+            #For every new line that is discovered, check the accumulator to see if any point can be a member
+            #If yes, then add this point to the inlier_points
+            #
             starting_points=inliers_removed_from_starting
             ransac_model=RansacLineInfo(inlier_points,model)
             ransac_model.mean_nnd=mean_nnd
