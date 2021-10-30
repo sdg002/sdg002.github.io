@@ -143,3 +143,7 @@ to be done
 ## How do we decide the size W of the patch square?
 to be done
 
+# Improving RANSAC
+When 2 or more sequentially detected RANSAC lines, then inliers from earliers line should be allowed to become members of new lines (TO BE DONE)
+
+# PROBLEM WITH MODULE REFERENCES in Main.py !!!

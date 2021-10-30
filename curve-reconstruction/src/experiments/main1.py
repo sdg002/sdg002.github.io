@@ -7,9 +7,9 @@ import skimage
 import skimage.io
 from skimage.measure import CircleModel, ransac
 from RansacCircleFinder import RansacCircleFinder
+from RansacLineInfo import RansacLineInfo 
 from LineFinder import LineFinder
 from RansacCircleInfo import RansacCircleInfo
-from RansacLineInfo import RansacLineInfo
 import simplegeometry as sg
 from RootModel import RootModel
 from OutputGenerator import *
