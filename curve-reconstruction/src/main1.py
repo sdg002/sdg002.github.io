@@ -15,7 +15,7 @@ from RootModel import RootModel
 from OutputGenerator import *
 import statistics
 from sklearn.cluster import DBSCAN
-#from CircleClusterCreator import CircleClusterCreator
+from ransacalgorithm import CircleClusterCreator
 
 
 def read_black_pixels(imagefilename:str):
@@ -50,6 +50,22 @@ def read_image(model:RootModel):
     model.image__width=width
     model.image_height=height
 
+def find_circles(model:RootModel):
+    circle_results:List[RansacCircleInfo]=[]
+    for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
+        finder=RansacCircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor , max_ransac_trials=model.MAX_RANSAC_TRIALS)
+        circles= finder.find()
+        circle_results.extend(circles)
+    model.ransac_circles=circle_results
+    pass
+
+def find_circle_clusters(model:RootModel):
+    cluster_creator=CircleClusterCreator()
+    clustered_circles=cluster_creator.create_clusters(ransaccircles=model.ransac_circles , dbscan_epsilon_thresholds=model.DBSCAN_EPISOLON_THRESHOLD_FACTOR ,dbscan_min_pts=model.DBSCAN_MINPOINTS, min_allowedinliers_factor=model.MIN_INLIERS_FACTOR_AFTER_CLUSTERING)
+    model.clustered_circles=clustered_circles
+    print(f"Found a total of {len(model.clustered_circles)} circles from {len(model.ransac_circles)} ransac circles")
+
+
 def process_file(filename:str):
     fullpathtoscript=os.path.realpath(__file__)
     folder_script=os.path.dirname(fullpathtoscript)
@@ -63,13 +79,14 @@ def process_file(filename:str):
 
     read_image(model)
 
-    ######find_circles(model) 
-    ###### temp commenting find_circle_clusters(model)
-    ###### OutputGenerator.plot_clustered_circles_with_projections(model) 
+    #temp commenting 
+    find_circles(model) 
+    find_circle_clusters(model)
+    OutputGenerator.plot_clustered_circles_with_projections(model) 
     
     #temporary commenting out to speed up 
-    find_lines(model) 
-    OutputGenerator.plot_lines_with_projections(model=model)
+    # find_lines(model) 
+    # OutputGenerator.plot_lines_with_projections(model=model)
 
     #the line result - does it work? worked once , did not work second time
     #you were here - move on to finding circles with some continuitt
@@ -80,8 +97,8 @@ def process_file(filename:str):
 
 if (__name__ =="__main__"):
     print("Inside main")
-    #process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
+    process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
     #process_file(filename='parabola.W=500.H=200.MAXD=8.SP=0.99.39.png')
-    process_file(filename='parabola.small.png')
+    #process_file(filename='parabola.small.png')
     #process_file(filename='parabola.narrow.png')
     #process_file(filename='parabola.patch1.png')

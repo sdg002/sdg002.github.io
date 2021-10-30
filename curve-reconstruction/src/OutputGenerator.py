@@ -33,8 +33,8 @@ class OutputGenerator(object):
     @classmethod
     def plot_clustered_circles_with_projections(cls,model:RootModel):
         inputfilepath:str=model.filename
-        circles=model.ransac_circles
-        #circles=model.clustered_circles
+        #circles=model.ransac_circles
+        circles=model.clustered_circles
         
         print(f"Superimposing clustered circles on base image: {inputfilepath}")
         for result_index in range(0,len(circles)):
