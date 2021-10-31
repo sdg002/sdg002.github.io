@@ -79,26 +79,24 @@ def process_file(filename:str):
 
     read_image(model)
 
-    #temp commenting 
+    #Comment out the following to speed up
     find_circles(model) 
     find_circle_clusters(model)
     OutputGenerator.plot_clustered_circles_with_projections(model) 
     
-    #temporary commenting out to speed up 
-    # find_lines(model) 
-    # OutputGenerator.plot_lines_with_projections(model=model)
+    #Comment out the following to speed up
+    find_lines(model) 
+    OutputGenerator.plot_lines_with_projections(model=model)
 
-    #the line result - does it work? worked once , did not work second time
-    #you were here - move on to finding circles with some continuitt
-    #use the median distance as the epsilon
+
 
 
     pass
 
 if (__name__ =="__main__"):
     print("Inside main")
-    process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
+    #process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
     #process_file(filename='parabola.W=500.H=200.MAXD=8.SP=0.99.39.png')
     #process_file(filename='parabola.small.png')
-    #process_file(filename='parabola.narrow.png')
+    process_file(filename='parabola.narrow.png')
     #process_file(filename='parabola.patch1.png')

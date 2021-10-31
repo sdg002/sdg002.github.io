@@ -1,7 +1,6 @@
 from typing import List
 
 from numpy.lib.function_base import median
-from experiments.RansacCircleInfo import RansacCircleInfo
 import simplegeometry as sg
 from RootModel import RootModel
 import skimage.io
