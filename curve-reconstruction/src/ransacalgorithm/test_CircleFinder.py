@@ -63,11 +63,39 @@ class Test_CircleFinder(unittest.TestCase):
         self.assertAlmostEquals(first_circle.center.X,45,delta=2)
         self.assertAlmostEquals(first_circle.center.Y,57,delta=2)
         self.assertAlmostEquals(first_circle.radius,28,delta=2)
-        self.assertGreaterEqual(len(first_circle.inlier_points),105)
+        self.assertGreaterEqual(len(first_circle.inlier_points),150)
 
         for circle_result in range(0,max_circle_results):
             self.superimpose_resulting_circle(imagefilename="one_simple_circle.png", resultfilename=f"one_simple_circle.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
 
         pass
 
+    def test_with_2_concentric_circles(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="two_concentric_circles.png")
+        max_circle_results=2
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        ransac_circles=finder.find()
+        outer_circle=None
+        inner_circle=None
+        if (ransac_circles[0].radius > ransac_circles[1].radius):
+            outer_circle=ransac_circles[0]
+            inner_circle=ransac_circles[1]
+        else:
+            outer_circle=ransac_circles[1]
+            inner_circle=ransac_circles[0]
+
+        self.assertAlmostEquals(outer_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(outer_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(outer_circle.radius,28,delta=2)
+        self.assertGreaterEqual(len(outer_circle.inlier_points),120)
+
+        self.assertAlmostEquals(inner_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(inner_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(inner_circle.radius,17,delta=2)
+        self.assertGreaterEqual(len(inner_circle.inlier_points),100)
+
+        for circle_result in range(0,max_circle_results):
+            self.superimpose_resulting_circle(imagefilename="two_concentric_circles.png", resultfilename=f"two_concentric_circles.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+        pass
     
