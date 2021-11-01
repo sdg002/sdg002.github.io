@@ -4,6 +4,7 @@ from skimage.measure import CircleModel, ransac
 from typing import List
 from sklearn.neighbors import KDTree
 import statistics
+import simplegeometry as sg
 
 class RansacCircleFinder(object):
     """Sequentially finds circles from the given points"""
@@ -44,7 +45,13 @@ class RansacCircleFinder(object):
                 print("Not sufficeint inliers found %d , threshold=%d, therefore halting" % (len(inlier_points),self.__min_inliers_allowed))
                 break
             starting_points=inliers_removed_from_starting
-            ransac_model=RansacCircleInfo(inlier_points,model)
+            
+            circle_equation:sg.CircleModel
+            circle_equation=self.create_circlemodel_from_scikit_model(scikitmodel=model)
+
+            all_possible_inliers=self.find_inliers_from_all_points(circle_equation=circle_equation, threshold=ransac_threshold)
+            
+            ransac_model=RansacCircleInfo(all_possible_inliers,model)
             ransac_model.mean_nnd=mean_nnd
             ransac_model.ransac_threshold=ransac_threshold
             circle_results.append(ransac_model)
@@ -52,6 +59,26 @@ class RansacCircleFinder(object):
         print(f"Total ransac circles found:{len(circle_results)}")
         return circle_results
     
+    def create_circlemodel_from_scikit_model(self,scikitmodel)->sg.CircleModel:
+        c=sg.CircleModel(center_x=scikitmodel.params[0],center_y=scikitmodel.params[1],radius=scikitmodel.params[2])
+        return c
+
+    #
+    #Iterate over all the data points , returns those points which are within threshold distance of the model circle circumfrence
+    #
+    def find_inliers_from_all_points(self,circle_equation:sg.CircleModel,threshold:float):
+        resulting_inlier_tuples=[]
+        center=sg.Point(circle_equation.X,circle_equation.Y)
+        for black_pixel in self.__all_black_points:
+            black_point=sg.Point(black_pixel[0],black_pixel[1])
+            
+            radial_distance=sg.Point.euclidean_distance(point1=black_point, point2=center)
+            if (abs(radial_distance - circle_equation.R) > threshold):
+                continue
+            resulting_inlier_tuples.append((black_point.X,black_point.Y))
+        arr=np.array(resulting_inlier_tuples)
+        return arr
+
     def __extract_first_ransac_circle(self,data_points, max_distance:int):
         """
         Accepts a numpy array with shape N,2  N points, with coordinates x=[0],y=[1]

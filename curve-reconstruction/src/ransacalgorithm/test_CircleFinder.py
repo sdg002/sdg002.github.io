@@ -72,7 +72,7 @@ class Test_CircleFinder(unittest.TestCase):
 
     def test_with_2_concentric_circles(self):
         all_black_points,width,height=self.read_test_image(filenameonly="two_concentric_circles.png")
-        max_circle_results=2
+        max_circle_results=3
         finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
         ransac_circles=finder.find()
         outer_circle=None
@@ -92,10 +92,57 @@ class Test_CircleFinder(unittest.TestCase):
         self.assertAlmostEquals(inner_circle.center.X,45,delta=2)
         self.assertAlmostEquals(inner_circle.center.Y,57,delta=2)
         self.assertAlmostEquals(inner_circle.radius,17,delta=2)
-        self.assertGreaterEqual(len(inner_circle.inlier_points),100)
+        self.assertGreaterEqual(len(inner_circle.inlier_points),95)
 
         for circle_result in range(0,max_circle_results):
             self.superimpose_resulting_circle(imagefilename="two_concentric_circles.png", resultfilename=f"two_concentric_circles.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
 
-        pass
-    
+    def test_with_2_sidebyside_circles(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="two_circles-side-by-side.png")
+        max_circle_results=3
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        ransac_circles=finder.find()
+        larger_circle=None
+        smaller_circle=None
+        if (ransac_circles[0].radius > ransac_circles[1].radius):
+            larger_circle=ransac_circles[0]
+            smaller_circle=ransac_circles[1]
+        else:
+            larger_circle=ransac_circles[1]
+            smaller_circle=ransac_circles[0]
+
+        self.assertAlmostEquals(larger_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(larger_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(larger_circle.radius,28,delta=2)
+        self.assertGreaterEqual(len(larger_circle.inlier_points),120)
+
+        self.assertAlmostEquals(smaller_circle.center.X,65,delta=2)
+        self.assertAlmostEquals(smaller_circle.center.Y,31,delta=2)
+        self.assertAlmostEquals(smaller_circle.radius,20,delta=2)
+        self.assertGreaterEqual(len(smaller_circle.inlier_points),100)
+
+        for circle_result in range(0,max_circle_results):
+            self.superimpose_resulting_circle(imagefilename="two_circles-side-by-side.png", resultfilename=f"two_circles-side-by-side.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+    def test_with_2_simple_circles_inliers_mustbe_shared(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="two-simple-circles.png")
+        max_circle_results=3
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        ransac_circles=finder.find()
+
+        first_circle=ransac_circles[0]
+        second_circle=ransac_circles[1]
+
+        for circle_result in range(0,len(ransac_circles)):
+            self.superimpose_resulting_circle(imagefilename="two-simple-circles.png", resultfilename=f"two-simple-circles.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+        first_circle_inliers = list(map(lambda x: sg.Point(x[0],x[1]) , first_circle.inlier_points ))
+        second_circle_inliers = list(map(lambda x: sg.Point(x[0],x[1]) , second_circle.inlier_points ))
+
+        count_of_overlaps=0
+        for first_circle_inlier in first_circle_inliers:
+            for second_circle_inlier in second_circle_inliers:
+                if ((first_circle_inlier.X == second_circle_inlier.X) and (first_circle_inlier.Y == second_circle_inlier.Y)):
+                    count_of_overlaps=count_of_overlaps+1
+
+        self.assertGreater(count_of_overlaps,1,"There must be 1 or more common inliers between the 2 ransac circles")
