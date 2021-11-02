@@ -9,13 +9,14 @@ from skimage.measure import CircleModel, ransac
 from ransacalgorithm import RansacCircleInfo
 from ransacalgorithm import RansacCircleFinder
 from ransacalgorithm import RansacLineInfo 
-from ransacalgorithm import LineFinder
+from ransacalgorithm import RansacLineFinder
 import simplegeometry as sg
 from RootModel import RootModel
 from OutputGenerator import *
 import statistics
 from sklearn.cluster import DBSCAN
 from ransacalgorithm import CircleClusterCreator
+from ransacalgorithm import StoppingCriteria
 
 
 def read_black_pixels(imagefilename:str):
@@ -37,7 +38,9 @@ def read_black_pixels(imagefilename:str):
 def find_lines(model:RootModel):
     line_results:List[RansacCircleInfo]=[]
     for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
-        finder=LineFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_LINES, nnd_threshold_factor=ransac_threshold_factor)
+        finder=RansacLineFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, nnd_threshold_factor=ransac_threshold_factor)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
         lines=finder.find()
         line_results.extend(lines)
     model.ransac_lines=line_results
@@ -79,10 +82,10 @@ def process_file(filename:str):
 
     read_image(model)
 
-    #Comment out the following to speed up
-    find_circles(model) 
-    find_circle_clusters(model)
-    OutputGenerator.plot_clustered_circles_with_projections(model) 
+    # #Comment out the following to speed up
+    # find_circles(model) 
+    # find_circle_clusters(model)
+    # OutputGenerator.plot_clustered_circles_with_projections(model) 
     
     #Comment out the following to speed up
     find_lines(model) 
