@@ -1,3 +1,4 @@
+from math import erf
 import os
 import unittest
 import skimage
@@ -9,6 +10,7 @@ from ransacalgorithm.RansacCircleInfo import RansacCircleInfo
 from .RansacLineInfo import RansacLineInfo
 from .RansacCircleFinder import RansacCircleFinder
 import simplegeometry as sg
+from ransacalgorithm.StoppingCriteria import StoppingCriteria
 
 
 class Test_CircleFinder(unittest.TestCase):
@@ -54,10 +56,11 @@ class Test_CircleFinder(unittest.TestCase):
         skimage.io.imsave(result_imagefilename,np_newimage)
         pass
 
-    def test_with_1_circle(self):
+    def test_with_1_circle_and_ransacthresholdspike_stopping_criteria(self):
         all_black_points,width,height=self.read_test_image(filenameonly="one_simple_circle.png")
-        max_circle_results=3
-        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1.0,max_ransac_trials=200)
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1.0,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
         ransac_circles=finder.find()
         first_circle=ransac_circles[0]
         self.assertAlmostEquals(first_circle.center.X,45,delta=2)
@@ -65,15 +68,33 @@ class Test_CircleFinder(unittest.TestCase):
         self.assertAlmostEquals(first_circle.radius,28,delta=2)
         self.assertGreaterEqual(len(first_circle.inlier_points),150)
 
-        for circle_result in range(0,max_circle_results):
+        for circle_result in range(0,len(ransac_circles)):
             self.superimpose_resulting_circle(imagefilename="one_simple_circle.png", resultfilename=f"one_simple_circle.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
 
         pass
 
-    def test_with_2_concentric_circles(self):
+    def test_with_1_circle_and_maxobjects_stopping_criteria(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="one_simple_circle.png")
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1.0,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.MAX_OBJECTS
+        finder.max_models=3
+        ransac_circles=finder.find()
+        first_circle=ransac_circles[0]
+        self.assertAlmostEquals(first_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(first_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(first_circle.radius,28,delta=2)
+        self.assertGreaterEqual(len(first_circle.inlier_points),150)
+
+        for circle_result in range(0,len(ransac_circles)):
+            self.superimpose_resulting_circle(imagefilename="one_simple_circle.png", resultfilename=f"one_simple_circle.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+        pass
+
+    def test_with_2_concentric_circles_and_ransacthresholdspike_stopping_criteria(self):
         all_black_points,width,height=self.read_test_image(filenameonly="two_concentric_circles.png")
-        max_circle_results=3
-        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
         ransac_circles=finder.find()
         outer_circle=None
         inner_circle=None
@@ -94,13 +115,42 @@ class Test_CircleFinder(unittest.TestCase):
         self.assertAlmostEquals(inner_circle.radius,17,delta=2)
         self.assertGreaterEqual(len(inner_circle.inlier_points),95)
 
-        for circle_result in range(0,max_circle_results):
+        for circle_result in range(0,len(ransac_circles)):
             self.superimpose_resulting_circle(imagefilename="two_concentric_circles.png", resultfilename=f"two_concentric_circles.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
 
-    def test_with_2_sidebyside_circles(self):
+    def test_with_2_concentric_circles_and_maxobjects_stopping_criteria(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="two_concentric_circles.png")
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder.max_models=3
+        finder.stopping_criteria=StoppingCriteria.MAX_OBJECTS
+        ransac_circles=finder.find()
+        outer_circle=None
+        inner_circle=None
+        if (ransac_circles[0].radius > ransac_circles[1].radius):
+            outer_circle=ransac_circles[0]
+            inner_circle=ransac_circles[1]
+        else:
+            outer_circle=ransac_circles[1]
+            inner_circle=ransac_circles[0]
+
+        self.assertAlmostEquals(outer_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(outer_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(outer_circle.radius,28,delta=2)
+        self.assertGreaterEqual(len(outer_circle.inlier_points),120)
+
+        self.assertAlmostEquals(inner_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(inner_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(inner_circle.radius,17,delta=2)
+        self.assertGreaterEqual(len(inner_circle.inlier_points),95)
+
+        for circle_result in range(0,len(ransac_circles)):
+            self.superimpose_resulting_circle(imagefilename="two_concentric_circles.png", resultfilename=f"two_concentric_circles.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+    def test_with_2_sidebyside_circles_and_maxobjects_stopping_criteria(self):
         all_black_points,width,height=self.read_test_image(filenameonly="two_circles-side-by-side.png")
-        max_circle_results=3
-        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.MAX_OBJECTS
+        finder.max_models=2
         ransac_circles=finder.find()
         larger_circle=None
         smaller_circle=None
@@ -121,13 +171,42 @@ class Test_CircleFinder(unittest.TestCase):
         self.assertAlmostEquals(smaller_circle.radius,20,delta=2)
         self.assertGreaterEqual(len(smaller_circle.inlier_points),100)
 
-        for circle_result in range(0,max_circle_results):
+        for circle_result in range(0,finder.max_models):
             self.superimpose_resulting_circle(imagefilename="two_circles-side-by-side.png", resultfilename=f"two_circles-side-by-side.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
 
-    def test_with_2_simple_circles_inliers_mustbe_shared(self):
+    def test_with_2_sidebyside_circles_and_ransacthresholdspike_stopping_criteria(self):
+        all_black_points,width,height=self.read_test_image(filenameonly="two_circles-side-by-side.png")
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
+        ransac_circles=finder.find()
+        larger_circle=None
+        smaller_circle=None
+        if (ransac_circles[0].radius > ransac_circles[1].radius):
+            larger_circle=ransac_circles[0]
+            smaller_circle=ransac_circles[1]
+        else:
+            larger_circle=ransac_circles[1]
+            smaller_circle=ransac_circles[0]
+
+        self.assertAlmostEquals(larger_circle.center.X,45,delta=2)
+        self.assertAlmostEquals(larger_circle.center.Y,57,delta=2)
+        self.assertAlmostEquals(larger_circle.radius,28,delta=2)
+        self.assertGreaterEqual(len(larger_circle.inlier_points),120)
+
+        self.assertAlmostEquals(smaller_circle.center.X,65,delta=2)
+        self.assertAlmostEquals(smaller_circle.center.Y,31,delta=2)
+        self.assertAlmostEquals(smaller_circle.radius,20,delta=2)
+        self.assertGreaterEqual(len(smaller_circle.inlier_points),100)
+
+        for circle_result in range(0,len(ransac_circles)):
+            self.superimpose_resulting_circle(imagefilename="two_circles-side-by-side.png", resultfilename=f"two_circles-side-by-side.{circle_result}.superimposed.png",circle=ransac_circles[circle_result])
+
+    def test_with_2_simple_circles_inliers_mustbe_shared_and_ransacthresholdspike_stopping_criteria(self):
         all_black_points,width,height=self.read_test_image(filenameonly="two-simple-circles.png")
-        max_circle_results=3
-        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, max_models=max_circle_results, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder=RansacCircleFinder(pixels=all_black_points,width=width,height=height, nnd_threshold_factor=1,max_ransac_trials=200)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
         ransac_circles=finder.find()
 
         first_circle=ransac_circles[0]
