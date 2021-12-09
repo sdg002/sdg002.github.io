@@ -138,25 +138,23 @@ Installed miniconda because it has a smaller disk foot print
 - What do we end up with? - The image split into Patches and a collection of RANSAC lines from every Patch
 
 ## What do we detect first? Lines or circles
-TO BE DONE
+Do both. Do them separately
 
 ## How do we decide the size W of the patch square?
 TO BE DONE
 
 # Improving RANSAC
 
-# Stopping criteria - how many circles and lines to detect in a patch
-- Option 1 - Specify max circles or max lines. We are already doing this
-- Option 2 - When nearest neighbour distance increases to over 2 times the original value
-
 # Need a way to define density of Circle
 - Example - Define an arc as 1 degree of arc length. For every such arc, determine how many points are there in that arc. How many such arcs are occupied? (NOT NEEDED BECAUSE OF FUTURE SPLIT VIA CLUSTERING)
 
 # Add new property which gives the Arc of the circle
 
+# Resizing the image
+- Reducing to 0.5 of original worked well with both the methods rescale and resize
+- Reducing to 0.25 of original worked well with 
 
 # Future thoughts
 - Try reducing the image and do RANSAC on the entire image
 - This might give you the patches to focus 
-
-
+- You were experimenting with `downscale.py`

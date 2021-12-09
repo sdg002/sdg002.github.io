@@ -56,7 +56,9 @@ def read_image(model:RootModel):
 def find_circles(model:RootModel):
     circle_results:List[RansacCircleInfo]=[]
     for ransac_threshold_factor in model.RANSAC_THRESHOLD_FACTORS:
-        finder=RansacCircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height, max_models=model.MAX_CIRCLES , nnd_threshold_factor=ransac_threshold_factor , max_ransac_trials=model.MAX_RANSAC_TRIALS)
+        finder=RansacCircleFinder(pixels=model.black_pixels,width=model.image_width,height=model.image_height , nnd_threshold_factor=ransac_threshold_factor , max_ransac_trials=model.MAX_RANSAC_TRIALS)
+        finder.stopping_criteria=StoppingCriteria.RANSAC_THRESHOLD_SPIKE
+        finder.ransac_threshold_spike_factor=2
         circles= finder.find()
         circle_results.extend(circles)
     model.ransac_circles=circle_results
@@ -82,14 +84,14 @@ def process_file(filename:str):
 
     read_image(model)
 
-    # #Comment out the following to speed up
-    # find_circles(model) 
-    # find_circle_clusters(model)
-    # OutputGenerator.plot_clustered_circles_with_projections(model) 
+    #Comment out the following to speed up
+    find_circles(model) 
+    find_circle_clusters(model)
+    OutputGenerator.plot_clustered_circles_with_projections(model) 
     
     #Comment out the following to speed up
-    find_lines(model) 
-    OutputGenerator.plot_lines_with_projections(model=model)
+    #find_lines(model) 
+    #OutputGenerator.plot_lines_with_projections(model=model)
 
 
 
@@ -98,8 +100,8 @@ def process_file(filename:str):
 
 if (__name__ =="__main__"):
     print("Inside main")
-    #process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
+    process_file(filename='cubic.W=500.H=200.MAXD=8.SP=0.99.26.png')
     #process_file(filename='parabola.W=500.H=200.MAXD=8.SP=0.99.39.png')
     #process_file(filename='parabola.small.png')
-    process_file(filename='parabola.narrow.png')
+    #process_file(filename='parabola.narrow.png')
     #process_file(filename='parabola.patch1.png')
