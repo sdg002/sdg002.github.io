@@ -93,10 +93,18 @@ return spike
     </pre>
     <p>
         As we can see,the measure <strong>IsCurrentDayASpike</strong> relies on another measure <strong>Yesterday</strong> to calculate yesterday's date. 
+    </p>    
+
+    <h4>Yesterday measure</h4>
+    <p>
+        
         The code for the measure <strong>Yesterday</strong> is below. 
         Unfortunately, DAX does not provide a easy way to compute relative dates using a single date value. 
         The out of box DAX measure <a href="https://docs.microsoft.com/en-us/dax/dateadd-function-dax">DATEADD</a> is designed to operate on a dates table.
-    </p>
+        Therefore, I am taking a more straightforward approach as shown below
+        
+        
+       </p>
     <pre>
 Yesterday = 
 Var _SelectedDay = SELECTEDVALUE(Sales[date])
@@ -107,6 +115,8 @@ IF(
 )
 Return _Result
     </pre>
+    <img src="images/yesterday_date_measure.png" alt=""/>
+
     <h4>
         Step 2-Display a table visual to indicate which days had a spike
     </h4>
