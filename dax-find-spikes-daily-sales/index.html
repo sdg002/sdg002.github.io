@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>DAX  - Find spikes in daily sales</title>
+    <style>
+        body {
+            font-family: Arial
+        }
+
+        img.examples {
+            /*width:200px;height:200px;border-width:1px;border-style:solid;*/
+        }
+
+        hr {
+            height: 10px;
+        }
+    </style>
+    <script src="../auto-refresh.js"></script>
+</head>
+<body>
+    <h1>Count the occurences in spikes in daily sales data</h1>
+    <h1>Problem</h1>
+    <p>
+        Consider a sales dataset which records the daily sales logged by every sales person. The columns are:
+    </p>
+    <ol>
+        <li><strong>userid</strong> Unique id of the salesman</li>
+        <li><strong>date</strong> The date of the sales transaction</li>
+        <li><strong>sales</strong> The amount of sales</li>
+    </ol>
+    <img src="images/raw_sales_data.png" title="Sales dataset" alt=""/>
+
+    <p>
+        The bar chart of the daily sales per participant would appear as follows:
+    </p>
+    <h4>Daily sales for John</h4>
+    <img src="images/john_daily_barchart.png" title="daily barchart" alt="john"/>
+    <h4>Daily sales for Jane</h4>
+    <img src="images/jane_daily_barchart.png" title="daily barchart" alt="jane"/>
+    <p>        
+        We can easily notice that there is a spike in sales for both John and Jane
+
+        In this article we will arrive at a way to determine these "spikes" and also count their occurrences.
+    </p>
+
+    <h4>What is a spike?</h4>
+    <p>
+        A spike can be defined as an abnormal jump in daily sales. We could define our own threshold. E.g. A daily jump of 10 or above.
+    </p>
+    
+
+    <h4>Problem - Show the count of spikes for every sales person</h4>
+    <p>
+        We want to produce a table like the one below:<br />
+    <img src="images/problem_display_count_of_spikes.png" title="count of spikes" alt="count of spikes"/><br />
+        Also, show me a <strong>tooltip</strong> displaying the dates of the spikes.
+    </p>
+    <hr />
+
+    <h1>Approach</h1>
+    <p>
+
+        Consider sliding a 2 day wide kernel across the following bar chart across each of the days. 
+        In each position compute the difference between the sales on current day and the sales on previous day.
+        We will consider a spike if the <strong>&Delta;change is is greater than a certain threshold</strong>, say 10.
+    </p>
+        <img src="images/sliding_window_demo.png" alt=""/>
+
+    <hr />
+
+    <h1>Solution</h1>
+    <h4>
+        Step 1-Write a measure IsCurrentDayASpike to calculate if any 2 consecutive days of data for an user have a spike
+    </h4>
+    <pre>
+IsCurrentDayASpike = 
+//if delta change in sales exceeds this value, then we consider a spike
+VAR THRESHOLD=10
+var userid=SELECTEDVALUE(Sales[userid])
+var currentDate = SELECTEDVALUE(Sales[date])
+VAR prevDate=Sales[Yesterday]
+
+VAR salesOnCurentDateFilter=FILTER(ALL(Sales), Sales[date]=currentDate && Sales[userid]=userid)
+VAR salesPreviousDateFilter=FILTER(ALL(Sales), Sales[date]=prevDate && Sales[userid]=userid)
+var salesOnCurrentDate = CALCULATE(MAX(Sales[sales]),salesOnCurentDateFilter)
+var salesOnPreviousDate = CALCULATE(MAX(Sales[sales]),salesPreviousDateFilter)
+
+var isSpike = IF((salesOnCurrentDate-salesOnPreviousDate)>THRESHOLD, TRUE(), FALSE())
+var spike=  IF(ISBLANK(salesOnPreviousDate), BLANK(), isSpike)
+
+return spike
+    </pre>
+    <p>
+        As we can see,the measure <strong>IsCurrentDayASpike</strong> relies on another measure <strong>Yesterday</strong> to calculate yesterday's date. 
+    </p>    
+
+    <h4>Yesterday measure</h4>
+    <p>
+        
+        The code for the measure <strong>Yesterday</strong> is below. 
+        Unfortunately, DAX does not provide a easy way to compute relative dates using a single date value. 
+        The out of box DAX measure <a href="https://docs.microsoft.com/en-us/dax/dateadd-function-dax">DATEADD</a> is designed to operate on a dates table.
+        Therefore, I am taking a more straightforward approach as shown below
+        
+        
+       </p>
+    <pre>
+Yesterday = 
+Var _SelectedDay = SELECTEDVALUE(Sales[date])
+Var _PreviousDay = _SelectedDay - 1
+VAR _Result =
+IF(
+    HASONEVALUE(Sales[date]), _PreviousDay
+)
+Return _Result
+    </pre>
+    <img src="images/yesterday_date_measure.png" alt=""/>
+
+    <h4>
+        Step 2-Display a table visual to indicate which days had a spike
+    </h4>
+    <p>
+        <img src="images/jane_isspike_table.png" alt=""/>
+    </p>
+    <hr />
+
+    <h4>
+        Step 3-Write a measure CountOfSpikes to count all occurrences of IsCurrentDayASpike for given user
+    </h4>
+    <p>This measure will aggregate all rows per user and filter on the measure IsCurrentDayASpike</p>
+    <pre>
+CountOfSpikes = 
+
+VAR userid= SELECTEDVALUE(SalesPersons[userid])
+VAR filterOnSpikes=FILTER(ALL(Sales), SalesPersons[IsCurrentDayASpike]=TRUE() && Sales[userid]=userid)
+VAR countOfRows = COUNTROWS(filterOnSpikes)
+return IF(ISBLANK(countOfRows),0,countOfRows)
+    </pre>
+    <h4>
+        Step 4-Create a table Visual with the userid and COUNTSPIKES
+    </h4>
+    <img src="images/problem_display_count_of_spikes.png" title="count of spikes" alt="count of spikes"/><br />
+
+    <hr />
+    <h1>Accompanying files</h1>
+    <h4>Github</h4>
+    <p>
+        <a href="https://github.com/sdg002/sdg002.github.io/tree/master/dax-find-spikes-daily-sales">https://github.com/sdg002/sdg002.github.io/tree/master/dax-find-spikes-daily-sales</a>
+    </p>
+    
+    <h4>Sales.pbix</h4>
+    <p>The Power BI with worked out measures and visuals</p>
+
+    <h4>DummyData.xlsx</h4>
+    <p>
+        The Excel which drives the Power BI
+    </p>
+
+</body>
+
+</html>
