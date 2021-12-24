@@ -4,7 +4,7 @@
 
 ![headlines](images/headline.png)
 
-[DAX](https://docs.microsoft.com/en-us/dax/#:~:text=Data%20Analysis%20Expressions%20(DAX)%20is,Pivot%20in%20Excel%20data%20models.)  is a high level language designed exclusively by Microsoft to interface with **Sql Server Analysis Services Tabular engine** and **Power BI**.
+[DAX](https://docs.microsoft.com/en-us/dax/#:~:text=Data%20Analysis%20Expressions%20(DAX)%20is,Pivot%20in%20Excel%20data%20models.)  is a high level language designed exclusively by Microsoft to interface with `Sql Server Analysis Services Tabular engine` and `Power BI`.
 For most parts, DAX is not complex. But, there are these nuances which crop up time to time which rattles my confidence in DAX. In this article, 
 I present one such nuance involving measures and Table Visuals that gave me a lot of grief. The good news is that the solution turned out to be a 1 liner!
 
@@ -15,7 +15,7 @@ Look at this 1 liner DAX measure. This looks so harmless.
 ```
 MyConstantValue = 123
 ```
-What do we expect to happen if I add this measure to a Table visual? Depending on the table columns already present in the Table visual, a lot can go wrong!
+What do we expect if I add this measure to a Table visual? Depending on the table columns already present in the Table visual, a lot can go wrong!
 In my scenario, the presence of the measure `MyConstantValue` would cause new rows appear in the Table visual (see pic above).
 
 ## Inspiration for this article
@@ -23,6 +23,7 @@ The scenarion which introduced me to this challenge was to calculate the differe
 
 ![inspiration](images/inspiration_diff_from_mean_sales.png)
 
+---
 
 # Sample dataset
 I have created this abstracted dataset to better explain this problem.
@@ -32,7 +33,7 @@ I have created this abstracted dataset to better explain this problem.
 - Sales
 
 ## Relationship
-A simple 1-many relationship between **Users** and **Sales** tables
+A simple 1-many relationship between `Users` and `Sales` tables
 
 ![relationships](images/relationship.png)
 
@@ -42,6 +43,8 @@ A simple 1-many relationship between **Users** and **Sales** tables
 
 ### Sales
 ![sales](images/sales_table.png)
+
+---
 
 # Reproducing the problem
 We want a report that displays all the Sales transactions for the selected user.
@@ -55,14 +58,14 @@ This report would have the following:
 
 
 ## Step 1 - A Table visual with Sales and User Columns
-We want to display data from the **Sales** table and enrich with data from the **Users** table.
+We want to display data from the `Sales` table and enrich with data from the `Users` table.
 1. Sales[userid]
 1. Users[firstname] and Users[lastname]
 1. Sales[sales]
 
 ## Step 2 - A Slicer visual on Users
 
-We want to have the ability to see the Sales data of a specified User. Therefore, we need a Slicer which is wired to the **Users[firstname]** or **Users[lastname]** column.
+We want to have the ability to see the Sales data of a specified User. Therefore, we need a Slicer which is wired to the `Users[firstname]` or `Users[lastname]` column.
 
 ## Step 3 - Add the constant valued measure to the Table and  behold!!
 Create the following constant valued measure.
@@ -74,22 +77,24 @@ Add this measure to the Table visual.
 
 ![after adding constant valued measure](images/after_adding_constant_valued_measure.png)
 
-We can see that there is a problem. The **Sales[userid]** column in the Table visual has pulled in rows for both **Jane** and **John**, while the Slicer selection is on **John** only!
+We can see that there is a problem. The `Sales[userid]` column in the Table visual has pulled in rows for both `Jane` and `John`, while the Slicer selection is on `John` only!
 
+---
 
 # What is the reason for this bizarre behaviour?
-With some help from Power BI community, I have arrived at this explanation.  
+With some help from Power BI community, I have arrived at an explanation.  
 ## Without the constant valued measure
-When we have the columsn **Sales[userid]**,**Users[firstname]** and **Users[lastname]**, the Table visual has no problem in understanding the data relationship.
+When we have the columsn `Sales[userid]`,`Users[firstname]` and `Users[lastname]`, the Table visual has no problem in understanding the data relationship.
 
-- The Table visual sees the Tables **Sales** and **Users** and detects the presence of a 1-many relationship
-- For every row in Sales table, the Table visual resolves the **firstname** and **lastname** columns from the **Users** table
+- The Table visual sees the Tables `Sales` and `Users` and detects the presence of a 1-many relationship
+- For every row in Sales table, the Table visual resolves the `firstname` and `lastname` columns from the `Users` table
 
 ## With the constant valued measure
-When we add the measure **MyConstantValue** to the Table visual, the visual appears to get 'confused' about the relationships. 
-For lack of better words - the DAX row context is altered in a way that the Table visual is unable to make sense of any relationship between the measure column and the **Sales** table. 
-It ends up displaying all records from the **Sales** table.
+When we add the measure `MyConstantValue` to the Table visual, the visual appears to get 'confused' about the relationships. 
+For lack of better words - the DAX row context is altered in a way that the Table visual is unable to make sense of any relationship between the measure column and the `Sales` table. 
+It ends up displaying all records from the `Sales` table.
 
+---
 
 # How to solve this problem?
 We will make slight changes to our custom Measure. Let us create a new measure.
@@ -98,7 +103,7 @@ MyConstantValue2 =
 var userid=SELECTEDVALUE(Sales[userid])
 RETURN IF (ISBLANK(userid),BLANK(),123)
 ```
-We are now forcing the measure to emit a value only if there is a valid **userid** from the **Sales** table
+We are now forcing the measure to emit a value only if there is a valid `userid` from the `Sales` table
 
 
 
@@ -106,10 +111,11 @@ We are now forcing the measure to emit a value only if there is a valid **userid
 
 The Table visual correctly displays records for the user selected in the Slicer visual.
 
+---
 
-# A more meaningful Measure
+# A more meaningful scenario
 
-My original objective was to calculate the how far away every sales transaction is from the global mean amount per transaction.
+If you recall, my original objective was to calculate the how far away every sales transaction is from the global mean amount per transaction.
 
 ![inspiration](images/inspiration_diff_from_mean_sales.png)
 
