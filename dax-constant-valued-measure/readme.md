@@ -83,13 +83,13 @@ We can immediately see that there is a problem. The `Sales[userid]` column in th
 
 # What is the reason for this bizarre behaviour?
 With some help from Power BI community, I have arrived at an explanation.  
-##### Without the constant valued measure
+#### Without the constant valued measure
 When we have the columsn `Sales[userid]`,`Users[firstname]` and `Users[lastname]`, the Table visual has no problem in understanding the data relationship.
 
 - The Table visual sees the Tables `Sales` and `Users` and detects the presence of a 1-many relationship
 - For every row in Sales table, the Table visual resolves the `firstname` and `lastname` columns from the `Users` table
 
-##### With the constant valued measure
+#### With the constant valued measure
 When we add the measure `MyConstantValue` to the Table visual, the visual appears to get 'confused' about the relationships. 
 For lack of better words - the DAX row context is altered in a way that the Table visual is unable to make sense of any relationship between the measure column and the `Sales` table. 
 It ends up displaying all records from the `Sales` table.
@@ -150,7 +150,6 @@ return diff
 ```
 
 # Accompanying Power BI and Excel file
-to be done
 
 #### Github
 https://github.com/sdg002/sdg002.github.io/tree/master/dax-constant-valued-measure
