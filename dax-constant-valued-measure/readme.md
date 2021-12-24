@@ -9,7 +9,7 @@ For most parts, DAX is not complex. But, there are these nuances which crop up t
 I present one such nuance involving measures and Table Visuals that gave me a lot of grief. The good news is that the solution turned out to be a 1 liner!
 
 
-## What harm can this measure do?
+#### What harm can this measure do?
 
 Look at this 1 liner DAX measure. This looks so harmless. 
 ```
@@ -18,8 +18,8 @@ MyConstantValue = 123
 What do we expect if I add this measure to a Table visual? Depending on the table columns already present in the Table visual, a lot can go wrong!
 In my scenario, the presence of the measure `MyConstantValue` would cause new rows appear in the Table visual (see pic above).
 
-## Inspiration for this article
-The scenarion which introduced me to this challenge was to calculate the difference in the Sales of a transaction from the global mean sale per transaction.
+#### Inspiration for this article
+The scenario which introduced me to this challenge was to calculate the difference in the `sales of a transaction` from the `global mean sale per transaction`.
 
 ![inspiration](images/inspiration_diff_from_mean_sales.png)
 
@@ -28,20 +28,20 @@ The scenarion which introduced me to this challenge was to calculate the differe
 # Sample dataset
 I have created this abstracted dataset to better explain this problem.
 
-## List of tables
+#### List of tables
 - Users
 - Sales
 
-## Relationship
+#### Relationship
 A simple 1-many relationship between `Users` and `Sales` tables
 
 ![relationships](images/relationship.png)
 
-## Data in this dataset
-### Users
+#### Data in this dataset
+#### Users
 ![users](images/users_table.png)
 
-### Sales
+#### Sales
 ![sales](images/sales_table.png)
 
 ---
@@ -57,17 +57,17 @@ This report would have the following:
 
 
 
-## Step 1 - A Table visual with Sales and User Columns
+#### Step 1 - A Table visual with Sales and User Columns
 We want to display data from the `Sales` table and enrich with data from the `Users` table.
 1. Sales[userid]
 1. Users[firstname] and Users[lastname]
 1. Sales[sales]
 
-## Step 2 - A Slicer visual on Users
+#### Step 2 - A Slicer visual on Users
 
 We want to have the ability to see the Sales data of a specified User. Therefore, we need a Slicer which is wired to the `Users[firstname]` or `Users[lastname]` column.
 
-## Step 3 - Add the constant valued measure to the Table and  behold!!
+#### Step 3 - Add the constant valued measure to the Table and  behold!!
 Create the following constant valued measure.
 ```
 MyConstantValue = 123
@@ -77,19 +77,19 @@ Add this measure to the Table visual.
 
 ![after adding constant valued measure](images/after_adding_constant_valued_measure.png)
 
-We can see that there is a problem. The `Sales[userid]` column in the Table visual has pulled in rows for both `Jane` and `John`, while the Slicer selection is on `John` only!
+We can immediately see that there is a problem. The `Sales[userid]` column in the Table visual has pulled in rows for both `Jane` and `John`, while the Slicer selection is on `John` only!
 
 ---
 
 # What is the reason for this bizarre behaviour?
 With some help from Power BI community, I have arrived at an explanation.  
-## Without the constant valued measure
+##### Without the constant valued measure
 When we have the columsn `Sales[userid]`,`Users[firstname]` and `Users[lastname]`, the Table visual has no problem in understanding the data relationship.
 
 - The Table visual sees the Tables `Sales` and `Users` and detects the presence of a 1-many relationship
 - For every row in Sales table, the Table visual resolves the `firstname` and `lastname` columns from the `Users` table
 
-## With the constant valued measure
+##### With the constant valued measure
 When we add the measure `MyConstantValue` to the Table visual, the visual appears to get 'confused' about the relationships. 
 For lack of better words - the DAX row context is altered in a way that the Table visual is unable to make sense of any relationship between the measure column and the `Sales` table. 
 It ends up displaying all records from the `Sales` table.
@@ -119,7 +119,7 @@ If you recall, my original objective was to calculate the how far away every sal
 
 ![inspiration](images/inspiration_diff_from_mean_sales.png)
 
-## GlobalMeanSalesPerTxn
+#### GlobalMeanSalesPerTxn
 Calculates the mean sales amount per transaction across all the sales
 ```
 GlobalMeanSalesPerTxn = 
@@ -129,7 +129,7 @@ var overallMean = totalSales
 return overallMean
 ```
 
-## GlobalMeanSalesPerTxnWithFix
+#### GlobalMeanSalesPerTxnWithFix
 Applies the "fix" we discussed above.
 ```
 GlobalMeanSalesPerTxnWithFix = 
@@ -139,7 +139,7 @@ VAR userid = SELECTEDVALUE(Sales[userid])
 return IF(ISBLANK(userid), BLANK(), salesperuser)   #The fix!
 ```
 
-## DifferenceFromGlobalMeanPerTxn
+#### DifferenceFromGlobalMeanPerTxn
 Calculates the difference between the current row sales and the global mean sales.
 ```
 DifferenceFromGlobalMeanPerTxn = 
@@ -152,13 +152,13 @@ return diff
 # Accompanying Power BI and Excel file
 to be done
 
-## Github
+#### Github
 https://github.com/sdg002/sdg002.github.io/tree/master/dax-constant-valued-measure
 
-## DummySales.pbix
+#### DummySales.pbix
 The Power BI with worked out measures and visuals
 
-## DummyData.xlsx
+#### DummyData.xlsx
 The Excel which drives the Power BI
 
 
