@@ -113,6 +113,23 @@ The Table visual correctly displays records for the user selected in the Slicer 
 
 ---
 
+# Can this be solved by adding Users[userid] instead of Sales[userid]?
+
+#### Try adding Users[userid]
+The first response on Power BI community was to try this out. So, I did. This does not work.
+You can see in the following example that sales for John have also got displayed.
+
+![users userid column does not solve the problem](images/users[userid]_column_doesnot_solve_the_problem.png)
+
+#### Try adding both Users[userid] and Sales[userid]
+
+This did not help either!
+![users userid column does not solve the problem](images/users[userid]_and_sales[userid]_column_doesnot_solve_the_problem.png)
+
+
+
+---
+
 # A more meaningful scenario
 
 If you recall, my original objective was to calculate the how far away every sales transaction is from the global mean amount per transaction.
