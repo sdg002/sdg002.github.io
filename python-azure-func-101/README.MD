@@ -8,6 +8,7 @@
 - Look into the desired folder strucutre
 - Create a skeletal working Azure function
 - Add trigger to add 2 numbers
+- Test the trigger locally
 - Structure the folder to keep the Math lib outside
 - Write some unit tests
 - Deploy to Azure
