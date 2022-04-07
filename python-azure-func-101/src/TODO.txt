@@ -1,1 +1,0 @@
-Run the func tool to create the Azure function here
