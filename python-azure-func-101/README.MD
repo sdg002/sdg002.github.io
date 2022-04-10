@@ -178,3 +178,31 @@ Sample output as of April 2022:
   ]
 }
 ```
+
+## Why is it neccessry to set the PYTHONPATH environment variable ?
+You have re-usable classes under the folder **shared_code**. You have unit tests which are outside the **shared_code** hierarchy. How do the unit tests recognize modules inside the **shared_code** folder? 
+
+```
+<project_root>/
+ | - my_first_function/
+ | | - __init__.py
+ | | - function.json
+ | | - example.py
+ | - my_second_function/
+ | | - __init__.py
+ | | - function.json
+ | - shared_code/
+ | | - __init__.py
+ | | - my_first_helper_function.py
+ | | - my_second_helper_function.py
+ | - tests/
+ | | - test_my_second_function.py
+ 
+```
+```bash
+set PYTHONPATH=<absolute folder of project_root>
+```
+Unit tests should have the following imports
+```python
+from shared_code import my_first_helper_function
+```
