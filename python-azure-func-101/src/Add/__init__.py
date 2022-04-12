@@ -13,4 +13,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     
     sum=Math.add(num1,num2)
     logging.info(f"Result of addition is {sum}")
-    return func.HttpResponse(f"Hello, sum={sum}. This HTTP triggered function executed successfully. Current time ={datetime.datetime.now()} . Version=v1")
+    return func.HttpResponse(f"Hello, sum={sum}. This HTTP triggered function executed successfully. Current time ={datetime.datetime.now()} . Version=v2")

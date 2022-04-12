@@ -1,11 +1,102 @@
+# Developing and deploying a Python Azure Function - Step by step
+---
+
+# Why did I write this?
+I wanted to come to terms with developing and deploying a Python Azure Function. I have been working with C# Azure Functions for a quite a while now. Phython development is different from C#. Python has its nuances. In this article, I have documented the steps I took to build and deploy a simple "Hello world" Python Azure Function. In the accompanying code, I have demonstrated a simple REST end point (also known as  Http trigger)
+
+---
+
+# What was my business scenario?
+I am working with a team of quantitative analysts who were looking for ways to migrate their free standing python web scraper scripts from on premise servers to Azure. These are scripts which run periodically,every few hours and scrape financial information from web sites. This information is dumped out into CSV files. I considered the following options:
+1. Continous Azure Web job
+1. Docker
+1. Http trigger in an Azure function (orchestrated by a Azure Data Factory pipeline)
+
+---
+
+# Python Azure Functions - What is the big picture?
+
+![flowchart](docs/images/flow_chart.png)
+
+You will need the following tools. All of which are freely downloadable from Microsoft
+- Visual Studio Code
+- Azure Functions Core Tools
+- Visual Studio Extensions for Azure Functions
+- PowerShell Core
+- Visual Studio Extensions for PowerShell
+- Azure CLI
+- Azure PowerShell modules (Az.Accounts,Az.Functions)
+
+---
+# Understanding Azure Function Core Tools
+
+<<What is this tool? Why is it neccessary? How to download? Show a picture>>
+
+---
+# What should be the overall folder structure?
+
+<<show a pic of the folder tree, with explanation of what goes where>>
+
+---
+# How does a Python function end point work?
+
+<< explain the structure of a single end point, with folder view>>
+
+---
+# Step 0 - Determine which Python runtime to support 
+
+You are limited by what Azure has to offer!
+to be done
+
+# Step 1 - Using Azure Function Core Tools to create the skeletal structure
+to be done
+
+---
+# Step 2 - Using Azure Function Core Tools to add a Http function end point
+
+to be done
+
+---
+
+# Step 3 - Debugging the Python function using Azure Function Core Tools
+to be done
+
+---
+
+# Step 4- Using PowerShell and Azure to CLI to deploy the Python function to an Azure functionapp
+
+<<show a picture of the deployment, show arrows, which PowerShell does what >>
+
+---
+# Step 5 - Ensuring that Unit tests are discovered
+
+<< Talk about PYTHONPATH, show a picture of Test explorer with and without PYTHONPATH, how would you solve this>>
+---
+
+# References to docs on Microsoft
+to be done
+
+---
+
+# Appendix
+---
+
+
+---
+
+-----
 # Overview
 - Demonstrates a Python Azure Function
 - Demonstrates a Infrastructure script to deploy the Azure function to the cloud
 - We are not doing the CI configuration using Jenkins or Azure Devops, however we intend to have a single PowerShell script ready for CI
 
 ---
+# Current deployment
+- https://pythonfunc001.azurewebsites.net/api/HttpTrigger1?name=john
+- https://pythonfunc001.azurewebsites.net/api/Add?num1=100&num2=300.55
+---
 
-# Tasks
+# Pending Tasks
 - ~~Look into the desired folder strucutre~~
 - ~~Create a skeletal working Azure function~~
 - ~~Add trigger to add 2 numbers~~
@@ -16,15 +107,6 @@
 ~~- How to set configuration settings on Azure?~~
 - Write a PowerShell script to run the unit tests and run PEP8 (under build folder)
 - 
-
-# You were addressing the problem about the deployment in progress
-```
-Performing remote build for functions project.
-Deleting the old .python_packages directory
-Uploading 7.91 KB [###############################################################################]
-Error Uploading archive... (Conflict).
-Server Response: There is a deployment currently in progress. Please try again when it completes.
-```
 
 ---
  
@@ -53,6 +135,8 @@ As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-fu
  | - requirements.txt
  | - Dockerfile
 ```
+---
+
 # Steps for creating a skeletal Azure Function
 - Ensure you have the **[Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)** tool installed
 - Ensure you have the **Azure Functions Extensions** for Visual Studio Code installed
@@ -72,28 +156,30 @@ As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-fu
 - 
 - 
 
+---
 
-# How to deploy?
+# How to deploy the Azure Function?
+## Python is different from .NET or NodeJS
 In case of Python, there is no build command (unlike C# or NodeJS). Therefore you will need to publish the raw contents. But,we must remember that the project directory has lots of files which are not to be deployed. E.g. the `.venv` directory.
 
 ## The publish command
 You will need to use the Azure Function Core tool as follows:
-```
+```powershell
 func azure functionapp publish [name of the function app]
 ```
 The function app should have been created prior to the above step using methods like `az functionapp plan create` and `az functionapp create`
 
-## Setting the Azure Context correctly
+## Setting the Azure Context correctly (add to Appendix)
 Before you run the publish command, the Azure subscription must have been set correctly. This is neccessary for Azure Function Core tool to detect the function app.  Run the following commands to ensure you are console is pointing to the right subscription. 
-```
+```powershell
 az account show
 ```
 
-```
+```powershell
 Get-AzContext
 ```
 
-## Further reference
+## Further reference on Azure Function Core tools
 Follow [this link](https://docs.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish) for more details on how to use the **Func** tool
 
 ---
@@ -111,7 +197,7 @@ func azure functionapp publish  --list-ignored-files
 # Appendix
 ## How to set Configuration parameters on Azure?
 Example snippet below:
-```
+```powershell
     $settings=@{"name1"="value1"; "name2"="blah2"; "name3"="blah3"}
     Update-AzFunctionAppSetting -ResourceGroupName  $ResourceGroup -Name $FunctionApp -AppSetting $settings
 ```
@@ -120,17 +206,17 @@ Refer [documentation](https://docs.microsoft.com/en-us/azure/azure-functions/fun
 
 ## How to specify the Python version of the Azure function app?
 The commandline option `functions-version` of `az functionapp create` specifies the Python engine version
-```
+```powershell
 az functionapp create --name $FunctionApp --resource-group $ResourceGroup --plan $FunctionAppPlan --storage-account $FunctionStorageAccount --runtime python --runtime-version 3.8 --functions-version 3 --disable-app-insights
 ```
 
 # How to find the supported Python versions on Azure?
 Why is this important? Your local development environment is restricted by the runtimes supported on Azure.
-```
+```powershell
 az webapp list-runtimes 
 ```
 Sample output as of April 2022:
-```
+```json
 {
   "linux": [
     "DOTNETCORE:6.0",    
@@ -181,6 +267,9 @@ Sample output as of April 2022:
 
 ## Why is it neccessry to set the PYTHONPATH environment variable ?
 You have re-usable classes under the folder **shared_code**. You have unit tests which are outside the **shared_code** hierarchy. How do the unit tests recognize modules inside the **shared_code** folder? 
+
+- You need to set this before launching VS code
+- VS Code must inherit this variable
 
 ```
 <project_root>/
