@@ -21,40 +21,89 @@ I am working with a team of quantitative analysts who were looking for ways to m
 You will need the following tools. All of which are freely downloadable from Microsoft
 - Visual Studio Code
 - Azure Functions Core Tools
-- Visual Studio Extensions for Azure Functions
+- Visual Studio Code Extensions for Azure Functions
 - PowerShell Core
-- Visual Studio Extensions for PowerShell
+- Visual Studio Code Extensions for PowerShell
 - Azure CLI
 - Azure PowerShell modules (Az.Accounts,Az.Functions)
 
 ---
 # Understanding Azure Function Core Tools
 
-<<What is this tool? Why is it neccessary? How to download? Show a picture>>
+This is a free command line application made available by Microsoft. Azure Functions Core Tools lets you develop and test your functions on your local computer from the command prompt or terminal. Your local functions can connect to live Azure services, and you can debug your functions on your local computer using the full Functions runtime. You can even deploy a function app to your Azure subscription.
 
+Example: To debug a function app locally, we would run the following command:
+
+```bash
+func host start
+```
 ---
 # What should be the overall folder structure?
 
-<<show a pic of the folder tree, with explanation of what goes where>>
+As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python?tabs=asgi%2Cazurecli-linux%2Capplication-level#folder-structure),
+
+```
+ <project_root>/
+ | - .venv/
+ | - .vscode/
+ | - my_first_function/
+ | | - __init__.py
+ | | - function.json
+ | | - example.py
+ | - my_second_function/
+ | | - __init__.py
+ | | - function.json
+ | - shared_code/
+ | | - __init__.py
+ | | - my_first_helper_function.py
+ | | - my_second_helper_function.py
+ | - tests/
+ | | - test_my_second_function.py
+ | - .funcignore
+ | - host.json
+ | - local.settings.json
+ | - requirements.txt
+ | - Dockerfile
+```
 
 ---
-# How does a Python function end point work?
 
-<< explain the structure of a single end point, with folder view>>
+# What is the significance of the various files in the folder structure?
+
+![folder-structure](docs/images/functon_folder_structure.png)
+- Every function end point has it's own folder (http, message trigger, cosmos trigger, etc)
+- The function runs under a Python virtual environment (venv)
+- Azure Functions Core tools (func.exe) is what you would use for local debugging (launced from the root of the source directory)
 
 ---
 # Step 0 - Determine which Python runtime to support 
 
-You are limited by what Azure has to offer!
-to be done
+Before we begin development of a Python Azure Function that we are limited by what Azure has to offer! You should run the following command:
+```dos
+az webapp list-runtimes 
+```
+**Example**: Python versions 3.7, 3.8 and 3.9 are supported as April 2022
 
-# Step 1 - Using Azure Function Core Tools to create the skeletal structure
-to be done
+This is one of the main factors which is likely to influence your go-no go decision for Azure Functions. If your needs are custom, then there is Docker to fall back on.
 
+
+# Step 1 - Using Visual Studio Code to create the skeletal structure
+
+- Ensure you have the **[Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)** tool installed
+- Ensure you have the **Azure Functions Extensions** for Visual Studio Code installed
+- Click on the **New Project** icon and respond to the questions from the wizard
+
+#### First step - Create the project
+![New Azure Function](docs/images/vscode_new_azurefunc.png)
+
+### Final step - Create a skeletal trigger function
+![vscode_new_project](docs/images/vscode_select_http_trigger.png)
+
+After completing the above steps you should end up with a folder structure similar to the one descibed in earlier sections
 ---
-# Step 2 - Using Azure Function Core Tools to add a Http function end point
+# Step 2 - Using Visual Studio Code to add a Http function end point
 
-to be done
+![vscode_new_trigger](docs/images/vscode_new_trigger.png)
 
 ---
 
@@ -71,6 +120,14 @@ to be done
 # Step 5 - Ensuring that Unit tests are discovered
 
 << Talk about PYTHONPATH, show a picture of Test explorer with and without PYTHONPATH, how would you solve this>>
+
+# What just happened?
+
+to be done
+- Show a picture of the deployed Azure function
+- Show the picture of App settings (with arrows)
+
+![config settings](docs/images/azure_appsettings.png) 
 ---
 
 # References to docs on Microsoft
@@ -110,39 +167,10 @@ to be done
 
 ---
  
-# Recommended folder structure by Microsoft
-As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python?tabs=asgi%2Cazurecli-linux%2Capplication-level#folder-structure),
-```
- <project_root>/
- | - .venv/
- | - .vscode/
- | - my_first_function/
- | | - __init__.py
- | | - function.json
- | | - example.py
- | - my_second_function/
- | | - __init__.py
- | | - function.json
- | - shared_code/
- | | - __init__.py
- | | - my_first_helper_function.py
- | | - my_second_helper_function.py
- | - tests/
- | | - test_my_second_function.py
- | - .funcignore
- | - host.json
- | - local.settings.json
- | - requirements.txt
- | - Dockerfile
-```
+
 ---
 
 # Steps for creating a skeletal Azure Function
-- Ensure you have the **[Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)** tool installed
-- Ensure you have the **Azure Functions Extensions** for Visual Studio Code installed
-- Click on the **New Project** icon and respond to the questions from the wizard
-- 
-![New Azure Function](docs/images/vscode_new_azurefunc.png)
 
 ---
 
@@ -294,4 +322,8 @@ set PYTHONPATH=<absolute folder of project_root>
 Unit tests should have the following imports
 ```python
 from shared_code import my_first_helper_function
+```
+## How to install PowerShell modules?
+```PowerShell
+Install-Module -Scope CurrentUser -Name Az.Accounts
 ```
