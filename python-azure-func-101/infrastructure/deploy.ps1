@@ -7,7 +7,16 @@ $FunctionAppPlan="MyDemoPythonFunctionAppPlan"
 $FunctionSku="B1"  #Y1 was not allowed
 $FunctionApp="PythonFunc001"
 $FunctionStorageAccount="mypythonfunctionapp001"
+$SleepBeforeFileDeploymentMs=30000
 
+function EnsureAzCliSubscriptionAndPowerShellSubscriptionAreSame()
+{
+    Write-Host ("Current subscription is '{0}'" -f $ctx.Subscription.Name)
+    $ctx=Get-AzContext
+    az account set --subscription $ctx.Subscription.Id
+    $azSub=az account show | ConvertFrom-Json
+    Write-Host ("Az CLI subscription is now set to '{0}'" -f $azSub.name)
+}
 function CreateResourceGroup()
 {
     Write-Host "Creating resource group $ResourceGroup"
@@ -29,11 +38,18 @@ function CreateFuntionApp()
 function DeployFunctionApp()
 {
     Write-Host "Deploying file to the function app"
+    Write-Host "Going to stop the Azure function app. Works better!"
+    & az functionapp stop --name $FunctionApp --resource-group $ResourceGroup
+    Start-Sleep -Milliseconds $SleepBeforeFileDeploymentMs  #Reduces the chances of failure when calling "func azure functionapp publish"
+
     $scriptFolder=$PSScriptRoot
     $srcFolder=Join-Path -Path $scriptFolder -ChildPath "..\src\"
     Push-Location -Path $srcFolder
     & func azure functionapp publish $FunctionApp
     Pop-Location
+
+    Write-Host "Going to start the Azure function app. Works better!"
+    & az functionapp start --name $FunctionApp --resource-group $ResourceGroup
 }
 
 function SetConfigurationSettings()
@@ -43,6 +59,7 @@ function SetConfigurationSettings()
     Update-AzFunctionAppSetting -ResourceGroupName  $ResourceGroup -Name $FunctionApp -AppSetting $settings
 }
 
+EnsureAzCliSubscriptionAndPowerShellSubscriptionAreSame
 CreateResourceGroup
 CreateFuntionAppPlan
 CreateFuntionApp

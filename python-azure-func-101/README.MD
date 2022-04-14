@@ -103,18 +103,60 @@ After completing the above steps you should end up with a folder structure simil
 ---
 # Step 2 - Using Visual Studio Code to add a Http function end point
 
+#### Launch the new end point Wizard
 ![vscode_new_trigger](docs/images/vscode_new_trigger.png)
 
+#### Select the type of the trigger
+We are using **HttpTrigger** for this exercise
+![vscoe_new_trigger_type](docs/images/vscode_new_trigger_type.png)
+
+#### Select the security model for this end point
+![vscode_new_trigger_security](docs/images/vscode_new_trigger_security.png)
 ---
 
 # Step 3 - Debugging the Python function using Azure Function Core Tools
-to be done
+ - Place your break point in the  **main** function of **__init__.py**
+ - Press **F5** to launch the debugger
+ - Visual Studio Code will setup a local web server and attach the debugger (Azure Functions )
+ - You should be able to hit the server using your browser or POSTMAN
+![vscode_debugger](docs/images/vscode_debugger.png)
+
+**Caveat about debugging** - It is not enought to have Azure Functions   Tool. VS Code must have the right files which help in launching the func.exe process and also attaching to it. I believe this happens through the combination of the files *tasks.json* and *launch.json* under the *.vscode* folder. 
 
 ---
 
 # Step 4- Using PowerShell and Azure to CLI to deploy the Python function to an Azure functionapp
 
-<<show a picture of the deployment, show arrows, which PowerShell does what >>
+I have used **Azure PowerShell** and **Azure CLI** to script the deployment of the Azure Function. Having a single script  serves me two purposes:
+#### Deploy from local workstation
+I can develop and debug the script from the comfort of my workstation. I can use an IDE like VS Code with Powershell extensions to debug the script. I get rapid feedback.
+
+#### Ability to re-use the script for a CI/CD solution
+The same script can then be used via an automated deployment mechanism like Azure Devops or Octopus
+
+#### Where is the deployment script?
+```
+[root]
+    |
+    |--infrastructure
+    |    |
+    |    |
+    |    |--deploy.ps1
+    |    |
+    |    |
+    |
+    |
+```
+
+#### How to deploy.ps1
+- Launch a session of PowerShell Core
+- Navigate to the **infrastructure** folder
+- **Attention** - Before running any Azure Cmdlet or CLI command, ensure you have set the context correctly (Refer appendix)
+
+![azure_remote_build](docs/images/azure_remote_build_progress.png)
+
+#### Azure doing a PIP install!!
+![azure_remote_build](docs/images/azure_remote_build_pip_install.png)
 
 ---
 # Step 5 - Ensuring that Unit tests are discovered
@@ -129,6 +171,14 @@ to be done
 
 ![config settings](docs/images/azure_appsettings.png) 
 ---
+
+# How does Azure handle Python dependencies?
+
+to be done. Talk about the deployment that happens online
+
+# Understanding the code
+
+<<to be done>>
 
 # References to docs on Microsoft
 to be done
