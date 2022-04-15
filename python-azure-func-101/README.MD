@@ -152,7 +152,11 @@ The same script can then be used via an automated deployment mechanism like Azur
     |
 ```
 
-#### How to deploy.ps1
+#### What happens inside deploy.ps1
+
+![deployment_flow](docs/images/deployment_flow.png)
+
+#### How to run deploy.ps1
 - Launch a session of PowerShell Core
 - Navigate to the **infrastructure** folder
 - **Attention** - Before running any Azure Cmdlet or CLI command, ensure you have set the context correctly (Refer appendix)
@@ -162,8 +166,32 @@ The same script can then be used via an automated deployment mechanism like Azur
 #### Azure doing a PIP install!!
 ![azure_remote_build](docs/images/azure_remote_build_pip_install.png)
 
+
+#### What if I want a higher performing App Plan on production environment?
+The most likely scenario is as follows:
+- A consumption function app plan on DEV
+- A premium function app plan on UAT and PROD
+
+How would you code **deploy.ps1** to handle such a deployment?
+
+The CI/CD system (Azure Devops or Octopus, etc.) should inject an environment variable (e.g. "environment" set to DEV or UAT or PROD)  which will be picked up by the deployment script.
+
+```powershell
+$deploymentenv=$env:environment
+$sku="B1"
+if (($deploymentenv -eq "PROD") || ($deploymentenv -eq "UAT"))
+{
+    $sku="EP1"
+}
+az functionapp plan create --name $FunctionAppPlan --location $Location --resource-group $ResourceGroup  --sku $sku --min-instances 2  --is-linux $true | Out-Null
+
+```
+
+Refer this [MS documentation](https://docs.microsoft.com/en-us/azure/azure-functions/functions-premium-plan?tabs=portal) for information about function app plans.
+
 ---
-# Step 5 - Ensuring that Unit tests are discovered
+# Step 5 - Ensuring that Unit tests are discovered by VS Code
+
 #### How to configure VS Code for python unit tests?
 
 Ensure that the **.vscode\settings.json** has the following elements. This will enable **Pytest**.
@@ -217,130 +245,79 @@ Is there a better solution? I would rather rely on relative folders instead of h
 
 # What just happened?
 
-to be done
-- Show a picture of the deployed Azure function
-- Show the picture of App settings (with arrows)
+#### View of assets in the Resource Group
+![azure_portal_resourcegroup_view](docs/images/azure_portal_resourcegroup_view.png)
+
+#### View of the App settings of the function app
 
 ![config settings](docs/images/azure_appsettings.png) 
+
+#### Invoking the Azure Function end point 
+
+![edge_browser](docs/images/edge_browser_view.png)
+
 ---
 
 # How does Azure handle Python dependencies?
 
 to be done. Talk about the deployment that happens online
 
-# Understanding the code
+# Where can I find the source code?
 
-<<to be done>>
+The code accompanying this article including the deployment script can be found in [this Github repo](https://github.com/sdg002/sdg002.github.io/tree/master/python-azure-func-101).
 
 # References to docs on Microsoft
-to be done
 
----
-
-# Appendix
----
-
-
----
-
------
-# Overview
-- Demonstrates a Python Azure Function
-- Demonstrates a Infrastructure script to deploy the Azure function to the cloud
-- We are not doing the CI configuration using Jenkins or Azure Devops, however we intend to have a single PowerShell script ready for CI
-
----
-# Current deployment
-- https://pythonfunc001.azurewebsites.net/api/HttpTrigger1?name=john
-- https://pythonfunc001.azurewebsites.net/api/Add?num1=100&num2=300.55
----
-
-# Pending Tasks
-- ~~Look into the desired folder strucutre~~
-- ~~Create a skeletal working Azure function~~
-- ~~Add trigger to add 2 numbers~~
-- ~~Test the trigger locally~~
-- ~~Structure the folder to keep the Math lib outside~~
-- ~~Deploy to Azure~~
-- Write some unit tests
-~~- How to set configuration settings on Azure?~~
-- Write a PowerShell script to run the unit tests and run PEP8 (under build folder)
-- 
-
----
- 
-
----
-
-# Steps for creating a skeletal Azure Function
-
----
-
-# References
 - [Quickstart: Create a Python function in Azure from the command line](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=azure-cli%2Cbash%2Cbrowser)
 - [Quickstart: Create a function in Azure with Python using Visual Studio Code](https://docs.microsoft.com/en-us/azure/azure-functions/create-first-function-vs-code-python)
 - [Configure a Linux Python app for Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/configure-language-python)
-- ??
 - [Azure Functions Python developer guide](https://docs.microsoft.com/en-us/azure/azure-functions/functions-reference-python)
-- ??
-- 
-- 
-
+- [Develop Azure Functions by using VS Code](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code?tabs=python)
+- [How does VS Code launch tasks during debugging or for any custom purpose?](https://stackoverflow.com/questions/41483477/what-is-the-difference-between-launch-json-and-task-json-in-visual-studio-code)
+- [Zip push deployment for Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/deployment-zip-push#cli)
 ---
 
-# How to deploy the Azure Function?
-## Python is different from .NET or NodeJS
-In case of Python, there is no build command (unlike C# or NodeJS). Therefore you will need to publish the raw contents. But,we must remember that the project directory has lots of files which are not to be deployed. E.g. the `.venv` directory.
+# Appendix 1
 
-## The publish command
-You will need to use the Azure Function Core tool as follows:
-```powershell
-func azure functionapp publish [name of the function app]
+#### How to install PowerShell modules?
+I prefer using the *CurrentUser* scope. Does not require admin privileges.
+
+```PowerShell
+Install-Module -Scope CurrentUser -Name Az.Accounts
 ```
-The function app should have been created prior to the above step using methods like `az functionapp plan create` and `az functionapp create`
 
-## Setting the Azure Context correctly (add to Appendix)
+#### Setting the Azure Context correctly (add to Appendix)
 Before you run the publish command, the Azure subscription must have been set correctly. This is neccessary for Azure Function Core tool to detect the function app.  Run the following commands to ensure you are console is pointing to the right subscription. 
-```powershell
+
+```
 az account show
 ```
 
 ```powershell
 Get-AzContext
+Set-AzContext -Subscription "<name of your subscription>>"
+$ctx=Get-AzContext
+az account set --subscription $ctx.Subscription.Id
+
 ```
 
-## Further reference on Azure Function Core tools
-Follow [this link](https://docs.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish) for more details on how to use the **Func** tool
-
----
-
-You were reading this https://docs.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-fetch-app-settings
-
-You were trying the following, it did not work, needs functionapp names
-```
-func azure functionapp publish  --list-ignored-files
-```
-
----
 
 
-# Appendix
-## How to set Configuration parameters on Azure?
+#### How to set Configuration parameters on Azure?
 Example snippet below:
 ```powershell
     $settings=@{"name1"="value1"; "name2"="blah2"; "name3"="blah3"}
     Update-AzFunctionAppSetting -ResourceGroupName  $ResourceGroup -Name $FunctionApp -AppSetting $settings
 ```
-
 Refer [documentation](https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings?tabs=azure-powershell#settings) from Microsoft
 
-## How to specify the Python version of the Azure function app?
-The commandline option `functions-version` of `az functionapp create` specifies the Python engine version
-```powershell
-az functionapp create --name $FunctionApp --resource-group $ResourceGroup --plan $FunctionAppPlan --storage-account $FunctionStorageAccount --runtime python --runtime-version 3.8 --functions-version 3 --disable-app-insights
-```
+#### Is the Azure Function described in this article deployed anywhere?
 
-# How to find the supported Python versions on Azure?
+- https://pythonfunc001.azurewebsites.net/api/HttpTrigger1?name=john
+- https://pythonfunc001.azurewebsites.net/api/Add?num1=100&num2=300.55
+
+
+#### How to find the supported Python versions on Azure?
 Why is this important? Your local development environment is restricted by the runtimes supported on Azure.
 ```powershell
 az webapp list-runtimes 
@@ -394,6 +371,46 @@ Sample output as of April 2022:
   ]
 }
 ```
+#### How to specify the Python version of the Azure function app?
+The commandline option `functions-version` of `az functionapp create` specifies the Python engine version
+```powershell
+az functionapp create --name $FunctionApp --resource-group $ResourceGroup --plan $FunctionAppPlan --storage-account $FunctionStorageAccount --runtime python --runtime-version 3.8 --functions-version 3 --disable-app-insights
+```
+
+
+-----
+
+# Appendix 2 - How to deploy the Azure Function?
+#### How is Python different from .NET or NodeJS?
+In case of Python, there is no build command (unlike C# or NodeJS). Therefore you will need to publish the raw contents. But,we must remember that the project directory has lots of files which are not to be deployed. E.g. the `.venv` directory.
+
+#### How to use the publish command of Azure Functions Core Tools
+You will need to use the Azure Function Core tool as follows:
+
+```
+func azure functionapp publish [name of the function app]
+```
+The function app should have been created prior to the above step using methods like `az functionapp plan create` and `az functionapp create`
+
+
+#### Further reference on Azure Function Core tools
+Follow [this link](https://docs.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish) for more details on how to use the **Func** tool
+
+
+
+---
+
+---
+
+
+
+
+
+
+# Appendix - old
+
+
+
 
 ## Why is it neccessry to set the PYTHONPATH environment variable ?
 You have re-usable classes under the folder **shared_code**. You have unit tests which are outside the **shared_code** hierarchy. How do the unit tests recognize modules inside the **shared_code** folder? 
@@ -424,8 +441,4 @@ set PYTHONPATH=<absolute folder of project_root>
 Unit tests should have the following imports
 ```python
 from shared_code import my_first_helper_function
-```
-## How to install PowerShell modules?
-```PowerShell
-Install-Module -Scope CurrentUser -Name Az.Accounts
 ```
