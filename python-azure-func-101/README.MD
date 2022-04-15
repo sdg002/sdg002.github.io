@@ -76,6 +76,7 @@ As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-fu
 - Azure Functions Core tools (func.exe) is what you would use for local debugging (launced from the root of the source directory)
 
 ---
+
 # Step 0 - Determine which Python runtime to support 
 
 Before we begin development of a Python Azure Function that we are limited by what Azure has to offer! You should run the following command:
@@ -86,6 +87,7 @@ az webapp list-runtimes
 
 This is one of the main factors which is likely to influence your go-no go decision for Azure Functions. If your needs are custom, then there is Docker to fall back on.
 
+---
 
 # Step 1 - Using Visual Studio Code to create the skeletal structure
 
@@ -102,6 +104,7 @@ This is one of the main factors which is likely to influence your go-no go decis
 After completing the above steps you should end up with a folder structure similar to the one descibed in earlier sections
 ---
 # Step 2 - Using Visual Studio Code to add a Http function end point
+---
 
 #### Launch the new end point Wizard
 ![vscode_new_trigger](docs/images/vscode_new_trigger.png)
@@ -112,6 +115,7 @@ We are using **HttpTrigger** for this exercise
 
 #### Select the security model for this end point
 ![vscode_new_trigger_security](docs/images/vscode_new_trigger_security.png)
+
 ---
 
 # Step 3 - Debugging the Python function using Azure Function Core Tools
@@ -160,8 +164,56 @@ The same script can then be used via an automated deployment mechanism like Azur
 
 ---
 # Step 5 - Ensuring that Unit tests are discovered
+#### How to configure VS Code for python unit tests?
 
-<< Talk about PYTHONPATH, show a picture of Test explorer with and without PYTHONPATH, how would you solve this>>
+Ensure that the **.vscode\settings.json** has the following elements. This will enable **Pytest**.
+```json
+
+{
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
+```
+#### Where should we place the unit tests?
+In the accompanying code, I  have created a skeletal unit test under the '**tests**' folder.
+
+![vs_code_test_view](docs/images/vscode_view_of_tests.png)
+
+#### What does a basic Python unit test look like?
+The Python file **test_Math.py** has the following class:
+
+```python
+import unittest
+from shared_code import Math
+
+
+class MathTests(unittest.TestCase):
+    """Tests for MathTests."""
+    def test_add_method(self):
+        m=Math()
+        result=m.add(100.1,0.2)
+        self.assertEqual(100.3, result, 'The Add method should sump up')
+        pass
+
+```
+
+#### Challenges faced
+I faced the problem of VS Code not discovering the unit tests. This was primarily because VS Code was unable to resolve the references to the **Math** module
+
+![vscode_unittests_notdiscovered](docs/images/vscode_unittests_failed_discovery.png)
+
+#### How did I solve the issue of test discovery?
+For "**VS Code**" test discovery to work, I did the following:
+- Launch a CMD
+- Set the environment variable "**PYTHONPATH**" to a path that points to the top level folder containing the source code. The folder 'shared_code' is a subfolder under here `set PYTHONPATH=C:\work\python-azure-func-101\src`
+- Launch **VS Code** from this CMD console
+
+![vscode_unittests_success](docs/images/vscode_unittests_success_discovery.png)
+
+Is there a better solution? I would rather rely on relative folders instead of having to set PYTHONPATH externally.
 
 # What just happened?
 
