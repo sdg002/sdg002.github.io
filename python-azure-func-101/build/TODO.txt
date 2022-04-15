@@ -1,0 +1,8 @@
+PowerShell script to do the folllowing:
+- run the unit tests
+- run PEP8
+- Zip up the python source folder
+
+Check for special environment variables
+- Path to source code $(build.sourcesdirectory)
+- Path to output folder $(build.artifactstagingdirectory)
