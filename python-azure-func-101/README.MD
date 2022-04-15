@@ -2,12 +2,12 @@
 ---
 
 # Why did I write this?
-I wanted to come to terms with developing and deploying a Python Azure Function. I have been working with C# Azure Functions for a quite a while now. Phython development is different from C#. Python has its nuances. In this article, I have documented the steps I took to build and deploy a simple "Hello world" Python Azure Function. In the accompanying code, I have demonstrated a simple REST end point (also known as  Http trigger)
+I wanted to come to terms with developing and deploying a Python Azure Function. I have been working with C# Azure Functions for a quite a while now. Python development is different from C#. The first big difference is the absence of the mighty Visual Studio .NET. This forces us to rely on a myriad of tools. Python has its nuances. In this article, I have documented the steps I took to build and deploy a simple "Hello world" Python Azure Function. In the accompanying code, I have demonstrated a simple REST end point (also known as  Http trigger). 
 
 ---
 
 # What was my business scenario?
-I am working with a team of quantitative analysts who were looking for ways to migrate their free standing python web scraper scripts from on premise servers to Azure. These are scripts which run periodically,every few hours and scrape financial information from web sites. This information is dumped out into CSV files. I considered the following options:
+I am working with a team of quantitative analysts who were looking for ways to migrate their free standing python web scraper scripts from on premise servers to Azure. These are scripts which run periodically,every few hours and scrape financial information from web sites. This information is dumped out into CSV files. I considered the following options and chose Azure Functions to start with.
 1. Continous Azure Web job
 1. Docker
 1. Http trigger in an Azure function (orchestrated by a Azure Data Factory pipeline)
@@ -79,7 +79,8 @@ As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-fu
 
 # Step 0 - Determine which Python runtime to support 
 
-Before we begin development of a Python Azure Function that we are limited by what Azure has to offer! You should run the following command:
+Before we begin development of a Python Azure Function, we should be aware that we are limited by the Python engine(s) that Azure has to offer! You should run the following command to find all the versions of Python that are currently supported:
+
 ```dos
 az webapp list-runtimes 
 ```
@@ -102,18 +103,21 @@ This is one of the main factors which is likely to influence your go-no go decis
 ![vscode_new_project](docs/images/vscode_select_http_trigger.png)
 
 After completing the above steps you should end up with a folder structure similar to the one descibed in earlier sections
+
 ---
 # Step 2 - Using Visual Studio Code to add a Http function end point
 ---
 
-#### Launch the new end point Wizard
+#### 1.Launch the new end point Wizard
 ![vscode_new_trigger](docs/images/vscode_new_trigger.png)
 
-#### Select the type of the trigger
+#### 2.Select the type of the trigger
 We are using **HttpTrigger** for this exercise
+
 ![vscoe_new_trigger_type](docs/images/vscode_new_trigger_type.png)
 
-#### Select the security model for this end point
+#### 3.Select the security model for this end point
+
 ![vscode_new_trigger_security](docs/images/vscode_new_trigger_security.png)
 
 ---
@@ -125,7 +129,7 @@ We are using **HttpTrigger** for this exercise
  - You should be able to hit the server using your browser or POSTMAN
 ![vscode_debugger](docs/images/vscode_debugger.png)
 
-**Caveat about debugging** - It is not enought to have Azure Functions   Tool. VS Code must have the right files which help in launching the func.exe process and also attaching to it. I believe this happens through the combination of the files *tasks.json* and *launch.json* under the *.vscode* folder. 
+**Caveat about debugging** - It is not enough to have the Azure Functions Tool. VS Code must have the right supporting files which help in launching the func.exe process and also attaching to it. I believe this happens through the combination of the files *tasks.json* and *launch.json* under the *.vscode* folder. 
 
 ---
 
@@ -160,10 +164,11 @@ The same script can then be used via an automated deployment mechanism like Azur
 - Launch a session of PowerShell Core
 - Navigate to the **infrastructure** folder
 - **Attention** - Before running any Azure Cmdlet or CLI command, ensure you have set the context correctly (Refer appendix)
+- Run **.\deploy.ps1**
 
 ![azure_remote_build](docs/images/azure_remote_build_progress.png)
 
-#### Azure doing a PIP install!!
+#### Here is Azure doing a PIP install on the server!!
 ![azure_remote_build](docs/images/azure_remote_build_pip_install.png)
 
 
@@ -241,7 +246,7 @@ For "**VS Code**" test discovery to work, I did the following:
 
 ![vscode_unittests_success](docs/images/vscode_unittests_success_discovery.png)
 
-Is there a better solution? I would rather rely on relative folders instead of having to set PYTHONPATH externally.
+Is there a better solution to fix the test discovery? I would like to hear from you. I would rather rely on relative folders instead of having to set PYTHONPATH externally.
 
 # What just happened?
 
@@ -396,49 +401,6 @@ The function app should have been created prior to the above step using methods 
 #### Further reference on Azure Function Core tools
 Follow [this link](https://docs.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish) for more details on how to use the **Func** tool
 
-
-
----
-
 ---
 
 
-
-
-
-
-# Appendix - old
-
-
-
-
-## Why is it neccessry to set the PYTHONPATH environment variable ?
-You have re-usable classes under the folder **shared_code**. You have unit tests which are outside the **shared_code** hierarchy. How do the unit tests recognize modules inside the **shared_code** folder? 
-
-- You need to set this before launching VS code
-- VS Code must inherit this variable
-
-```
-<project_root>/
- | - my_first_function/
- | | - __init__.py
- | | - function.json
- | | - example.py
- | - my_second_function/
- | | - __init__.py
- | | - function.json
- | - shared_code/
- | | - __init__.py
- | | - my_first_helper_function.py
- | | - my_second_helper_function.py
- | - tests/
- | | - test_my_second_function.py
- 
-```
-```bash
-set PYTHONPATH=<absolute folder of project_root>
-```
-Unit tests should have the following imports
-```python
-from shared_code import my_first_helper_function
-```
