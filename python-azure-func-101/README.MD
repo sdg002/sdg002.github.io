@@ -2,15 +2,15 @@
 ---
 
 # Why did I write this?
-I wanted to come to terms with developing and deploying a Python Azure Function. I have been working with C# Azure Functions for a quite a while now. Python development is different from C#. The first big difference is the absence of the mighty Visual Studio .NET. This forces us to rely on a myriad of tools. Python has its nuances. In this article, I have documented the steps I took to build and deploy a simple "Hello world" Python Azure Function. In the accompanying code, I have demonstrated a simple REST end point (also known as  Http trigger). 
+I wanted to come to terms with developing and deploying a Python Azure Function. I have been working with C# Azure Functions for a quite a while now. Python development is different from C#. The first big difference is the absence of the mighty Visual Studio .NET. This forces us to rely on a myriad of tools. Python has its nuances. In this article, I have documented my journey and lessons learnt while building and deploying a simple "Hello world" Python Azure Function. The accompanying code demonstrates a simple REST end point (also known as  Http trigger). 
 
 ---
 
 # What was my business scenario?
-I am working with a team of quantitative analysts who were looking for ways to migrate their free standing python web scraper scripts from on premise servers to Azure. These are scripts which run periodically,every few hours and scrape financial information from web sites. This information is dumped out into CSV files. I considered the following options and chose Azure Functions to start with.
-1. Continous Azure Web job
+I am working with a team of quantitative analysts who were looking for ways to migrate their free-standing python web scraper scripts from on premise servers to Azure. These are scripts which run periodically, every few hours and scrape financial information from web sites. This information is dumped out into CSV files. I considered the following options and chose Azure Functions to start with.
+1. Continuous Azure Web job
 1. Docker
-1. Http trigger in an Azure function (orchestrated by a Azure Data Factory pipeline)
+1. Http trigger in an Azure function (orchestrated by an Azure Data Factory pipeline)
 
 ---
 
@@ -25,7 +25,7 @@ You will need the following tools. All of which are freely downloadable from Mic
 - PowerShell Core
 - Visual Studio Code Extensions for PowerShell
 - Azure CLI
-- Azure PowerShell modules (Az.Accounts,Az.Functions)
+- Azure PowerShell modules (Az.Accounts, Az.Functions)
 
 ---
 # Understanding Azure Function Core Tools
@@ -71,9 +71,9 @@ As per [guidance from Microsoft](https://docs.microsoft.com/en-us/azure/azure-fu
 # What is the significance of the various files in the folder structure?
 
 ![folder-structure](docs/images/functon_folder_structure.png)
-- Every function end point has it's own folder (http, message trigger, cosmos trigger, etc)
+- Every function end point has its own folder (http, message trigger, cosmos trigger, etc)
 - The function runs under a Python virtual environment (venv)
-- Azure Functions Core tools (func.exe) is what you would use for local debugging (launced from the root of the source directory)
+- Azure Functions Core tools (func.exe) is what you would use for local debugging (launched from the root of the source directory)
 
 ---
 
@@ -96,13 +96,12 @@ This is one of the main factors which is likely to influence your go-no go decis
 - Ensure you have the **Azure Functions Extensions** for Visual Studio Code installed
 - Click on the **New Project** icon and respond to the questions from the wizard
 
-#### First step - Create the project
+Create the project by clicking on the "New project" icon
+
 ![New Azure Function](docs/images/vscode_new_azurefunc.png)
 
-### Final step - Create a skeletal trigger function
-![vscode_new_project](docs/images/vscode_select_http_trigger.png)
 
-After completing the above steps you should end up with a folder structure similar to the one descibed in earlier sections
+After completing the above steps, you should end up with a folder structure similar to the one described in earlier sections
 
 ---
 # Step 2 - Using Visual Studio Code to add a Http function end point
@@ -125,7 +124,7 @@ We are using **HttpTrigger** for this exercise
 # Step 3 - Debugging the Python function using Azure Function Core Tools
  - Place your break point in the  **main** function of **__init__.py**
  - Press **F5** to launch the debugger
- - Visual Studio Code will setup a local web server and attach the debugger (Azure Functions )
+ - Visual Studio Code will setup a local web server and attach the debugger (Azure Functions)
  - You should be able to hit the server using your browser or POSTMAN
 ![vscode_debugger](docs/images/vscode_debugger.png)
 
@@ -137,7 +136,7 @@ We are using **HttpTrigger** for this exercise
 
 I have used **Azure PowerShell** and **Azure CLI** to script the deployment of the Azure Function. Having a single script  serves me two purposes:
 #### Deploy from local workstation
-I can develop and debug the script from the comfort of my workstation. I can use an IDE like VS Code with Powershell extensions to debug the script. I get rapid feedback.
+I can develop and debug the script from the comfort of my workstation. I can use an IDE like VS Code with PowerShell extensions to debug the script. I get rapid feedback.
 
 #### Ability to re-use the script for a CI/CD solution
 The same script can then be used via an automated deployment mechanism like Azure Devops or Octopus
@@ -179,7 +178,7 @@ The most likely scenario is as follows:
 
 How would you code **deploy.ps1** to handle such a deployment?
 
-The CI/CD system (Azure Devops or Octopus, etc.) should inject an environment variable (e.g. "environment" set to DEV or UAT or PROD)  which will be picked up by the deployment script.
+The CI/CD system (Azure Devops or Octopus, etc.) should inject an environment variable (e.g., variable "environment" set to DEV or UAT or PROD)  which will be picked up by the deployment script.
 
 ```powershell
 $deploymentenv=$env:environment
@@ -292,7 +291,7 @@ Install-Module -Scope CurrentUser -Name Az.Accounts
 ```
 
 #### Setting the Azure Context correctly (add to Appendix)
-Before you run the publish command, the Azure subscription must have been set correctly. This is neccessary for Azure Function Core tool to detect the function app.  Run the following commands to ensure you are console is pointing to the right subscription. 
+Before you run the publish command, the Azure subscription must have been set correctly. This is necessary for Azure Function Core tool to detect the function app.  Run the following commands to ensure you are console is pointing to the right subscription. 
 
 ```
 az account show
@@ -377,7 +376,7 @@ Sample output as of April 2022:
 }
 ```
 #### How to specify the Python version of the Azure function app?
-The commandline option `functions-version` of `az functionapp create` specifies the Python engine version
+The command line option `functions-version` of `az functionapp create` specifies the Python engine version
 ```powershell
 az functionapp create --name $FunctionApp --resource-group $ResourceGroup --plan $FunctionAppPlan --storage-account $FunctionStorageAccount --runtime python --runtime-version 3.8 --functions-version 3 --disable-app-insights
 ```
@@ -387,7 +386,7 @@ az functionapp create --name $FunctionApp --resource-group $ResourceGroup --plan
 
 # Appendix 2 - How to deploy the Azure Function?
 #### How is Python different from .NET or NodeJS?
-In case of Python, there is no build command (unlike C# or NodeJS). Therefore you will need to publish the raw contents. But,we must remember that the project directory has lots of files which are not to be deployed. E.g. the `.venv` directory.
+In case of Python, there is no build command (unlike C# or NodeJS). Therefore, you will need to publish the raw contents. But, we must remember that the project directory has lots of files which are not to be deployed. E.g. the `.venv` directory.
 
 #### How to use the publish command of Azure Functions Core Tools
 You will need to use the Azure Function Core tool as follows:
