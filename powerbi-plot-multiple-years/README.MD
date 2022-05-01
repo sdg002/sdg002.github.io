@@ -1,81 +1,104 @@
-# Power BI - A line chart with multiple years of Sales/Time series Data - So many options!
+# Power BI line chart with multiple years of Sales/Time series Data - So many options!
 
 # Problem statement
-<< show a picture of a PBI line visual which describes what we want to visualize >>
-<< to be done >>
-Describe the problem. Looks so simple, but gets complex with increasing functional complexity
-Something about the domain here - Commodity price
-
-What does the data analyst want  - *Give me the best way to visualize the data so that I can easily spot trends and make projections*
+![objective](docs/images/objective.png)
+I have 5 years of daily sales data (or any time series data). How do I make the best use of Power BI to spot trends and make projections?
+Why am I writing about this? Doesn't Power BI already handle this out of box? The problem is deceptively simple. Yes - Power BI can handle this out of box but there are myriad options and switches that once could toggle. 
+I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and then adding more features along the way.
 
 
 # About the data
-<< describe the data >>
-Show a partial table, screen grab from Power BI
-Mention that this was synthetic
-Describe the columns
-- Date column is ISO
-- The Commodity price column is 
+![excel_data_view](docs/images/excel_data_view.png)
 
-# About the data used in this exercise?
-Talk about the accompanying Python Code
-<< to be done >>
+This data has been synthetically generated over a 5 year period using a Python script. This has just 2 columns: Date and Sales.
 
 
 # Data intro sheet
-- Show a table with all years
-- Have 2 columns. For every year show Min and Max dates (this will bring up missing dates)
-- Have 1 column. Display total count of records in every year 
+![overview_of_data](docs/images/data_overview.png)
+We can see that we have 
+- 1800 days of data
+- Starting from 17 May 2012 
+- Ending on 20 April 2017
+- Min sales is 19,791
+- Max sales is 23,859
 
-# Iteration 1 - Multiple visuals - 1 visual for every year  (IGNORE FOR NOW, BEGIN WITH MULTIPLE)
-In a single report, there will be multiple visuals (1 per year)
-stacked vertically
-- Set the Start and End date values on the X axis manually for each visual
-- Set the Title property manually
-- Set the Y axis lower and upper limits to some hard code values
+I have turned off the out of box date hierarchy creation form the  "Date and time intelligence" settings. In late stages we will create this hierarchy through custom calculated columns.
+![time_intelligence_options](docs/images/time_intelligence.png)
 
-Make sure all Y axis have the same scale
-
-<< to be done>>
-
-# Iteration 1.1 -Multiple visuals - 1 visual for every year (master-detail) (IGNORE FOR NOW, BEGIN WITH MULTIPLE)
-Similar to Iteration 1 , but right click and drill through on a Visual and jump to a sheet with a larger view
-- A single detail sheet
-- Use measures to customize the Title property
-- Show tooltips on the Visual
-- Set the Y axis lower and upper limits to a Measure which returns hard coded values
-
-# Iterarion 1.2 - Multiple visuals - Handle missing dates (IGNORE FOR NOW, BEGIN WITH MULTIPLE)
-- The first year of the series 
-# Iteration 1.5 -1 visual - Aggregate by Month (NOT SURE IF THIS FITS IN HERE)
-
-to be done
-<< here we are putting all Years in a single visual>>
-this is similar to previous Iteration, but for the added drill down capability
+Refer accompanying PBIX "data_overview.pbix"
 
 
-YOU WERE HERE, CHANGE TO MONTH TEXT FROM MONTH NUMBER
+# All years in a single line - Most basic 
+- We have not added any legend
+- We have added a zoom slider
+- X axis displays the "Date" column in a Continuous fashion
+- Y axis displays the "Median Sales" column
+
+![most_basic](docs/images/single_line_most_basic.png)
 
 
+# All years in a single line - Most basic  (Categorical behaviour)
+- We have not added any legend
+- We have added a zoom slider
+- X axis displays the "Date" column in a Categorical fashion
+- Y axis displays the "Median Sales" column
 
-# Iteration 2.0 - All years in a single visual (single curve)
-<< use a zoom slider >>
+![most_basic_categorical](docs/images/single_line_most_basic_categorical.png)
+Changing to "Categorical" from "Continuous" has radically altered the behaviour of the X-axis.
+#### Advantage of Categorical
+You get to analyze the data at a very micro level
 
-- We are sliding from start to end
-- Continuous view
-- Possibility of a zoom slider
-- Do not set any upper and lower limits to the Y axis
+#### Disadvantage of Categorical
+You lose the ability to zoom into the data gradually. You want to a higher level view of the data first.
 
-# Iteration 2.1 - All years in a single visual - Fill missing trailing and leading dates (single curve, )
-- Explain the problem of the missing dates
-- Set the Y axis lower and upper limits to a Measure which returns hard coded values
-- Use 2 measures to set the lower and upper limits of the X axis
 
-# Iteration 2.2 - All years in a single visual - Select the Year(s)
+# All years in a single visual (single curve) - Add a Legend on Year
+Our "out of box" approach so far is good, but suffers from a few challenges. Namely:
+- Difficult to distinguish the Years visually
+- Lack of a legend
+
+#### Adding time intelligence
+We decided against using the out of box date hierarchy. Lets add some calculated columns to the "Sales" table
+
+```dax
+Year = YEAR([date])
+
+MonthNumber = MONTH([Date])
+
+MonthText = FORMAT([Date],"mmmm")
+
+DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY ) + 1
+```
+![calculate_columns](docs/images/custom_date_calculated_columns.png)
+
+#### Ensuring MonthText is correctly sorted
+
+![sort_column](docs/images/month_text_sorty_column.png)
+
+
+##### Finally adding the legend
+
+![single_line_legend](docs/images/single_line_legend.png)
+
+
+# Iteration 2.2 - All years in a single visual (single curve) - Select the Year(s)
 - The need to turn off/on selective years
 - A legend with years
-- We are using the custom measures to fill in gaps along X axis
-- 
+- Slicer with years
+
+# Iteration 2.3 - All years in a single visual (single curve) - Fill missing dates on X axis
+shifting
+- We are using the custom measures to fill in gaps along X axis (Min and Max values of X axis are provided by a measure)
+
+# Iteration 2.4 - All years in a single visual (single curve) - Fill missing trailing and leading dates
+- Explain the problem of the missing dates
+- Problem - The first year and the last year do not have all the days of data. Hence the limts of the X axis keep changing as we select/de-select years 
+
+# Iteration 2.5 - Steady Y axis
+- Explain the problem. The Y axis keeps jumping
+Set the Y axis lower and upper limits to a Measure which returns hard coded values
+- Use 2 measures to set the lower and upper limits of the X axis
+
 
 # Iteration 3 - All years in a single visual (1 curve for every year)
 - The need to turn off/on selective years
@@ -107,4 +130,6 @@ Explain the repo structure
 << to be done >>
 
 # To be done
-- Improve the synthetic data generation (slowly risising, with some randomness)
+- ~~Improve the synthetic data generation (slowly risising, with some randomness)~~
+- Can we rest the view when using Zoom sliders?
+- 

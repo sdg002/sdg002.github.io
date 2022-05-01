@@ -35,9 +35,10 @@ def generate_date(start_date:datetime.datetime, days:int):
         day_index+=1
         f.write(line)
     f.close()
+    print(f"Generated {day_index} days of data")
 
 if __name__ == "__main__":
     start_date=datetime.datetime(2012, 5, 17)
-    num_months=30
+    num_months=60
     generate_date(start_date=start_date, days=num_months*30)
 
