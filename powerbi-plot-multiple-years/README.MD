@@ -98,10 +98,9 @@ How do you go back to the default position in a single click? For those who have
 In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
 
 ---
-# Iteration 2.2 - All years in a single visual (single curve) - Select the Year(s)
-- The need to turn off/on selective years
-- A legend with years
-- Slicer with years
+# Select one or more year(s) of data
+The user of the report may not want to handle all 5 years at once. A legend is good to point and select the year of interest. However, we need to use a Slicer if we want to be selective about the data
+![slicer_year](docs/images/slicer_year.png)
 
 ---
 
