@@ -12,6 +12,8 @@ I decided to write a step-by-step article so that I could present my journey - s
 
 This data has been synthetically generated over a 5 year period using a Python script. This has just 2 columns: Date and Sales.
 
+# Which version of Power BI Desktop?
+All visuals in this article were carried out using Power BI Desktop version 2.104.941
 
 # Data intro sheet
 ![overview_of_data](docs/images/data_overview.png)
@@ -36,8 +38,9 @@ Refer accompanying PBIX "data_overview.pbix"
 
 ![most_basic](docs/images/single_line_most_basic.png)
 
+---
 
-# All years in a single line - Most basic  (Categorical behaviour)
+# All years in a single line - Most basic  (Categorical X axis)
 - We have not added any legend
 - We have added a zoom slider
 - X axis displays the "Date" column in a Categorical fashion
@@ -51,6 +54,7 @@ You get to analyze the data at a very micro level
 #### Disadvantage of Categorical
 You lose the ability to zoom into the data gradually. You want to a higher level view of the data first.
 
+---
 
 # All years in a single visual (single curve) - Add a Legend on Year
 Our "out of box" approach so far is good, but suffers from a few challenges. Namely:
@@ -80,25 +84,45 @@ DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY )
 
 ![single_line_legend](docs/images/single_line_legend.png)
 
+---
+# How to reset the Zoom sliders back to their default state (a Home button)?
+Zoom sliders are great. They let you quickly narrow down on a region of interest.
+![zoom_slider_before](docs/images/zoom_slider_before.png)
 
+How do you go back to the default position in a single click? For those who have used Matplotlib, you would be familiar with the "Home" button.
+
+![matplotlib_toolbar](docs/images/matplotlib_toolbar.png)
+
+![zoom_slider_with_home_button](docs/images/zoom_slider_with_home_button.png)
+
+In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
+
+---
 # Iteration 2.2 - All years in a single visual (single curve) - Select the Year(s)
 - The need to turn off/on selective years
 - A legend with years
 - Slicer with years
 
+---
+
 # Iteration 2.3 - All years in a single visual (single curve) - Fill missing dates on X axis
 shifting
 - We are using the custom measures to fill in gaps along X axis (Min and Max values of X axis are provided by a measure)
 
+---
+
 # Iteration 2.4 - All years in a single visual (single curve) - Fill missing trailing and leading dates
 - Explain the problem of the missing dates
 - Problem - The first year and the last year do not have all the days of data. Hence the limts of the X axis keep changing as we select/de-select years 
+
+---
 
 # Iteration 2.5 - Steady Y axis
 - Explain the problem. The Y axis keeps jumping
 Set the Y axis lower and upper limits to a Measure which returns hard coded values
 - Use 2 measures to set the lower and upper limits of the X axis
 
+---
 
 # Iteration 3 - All years in a single visual (1 curve for every year)
 - The need to turn off/on selective years
@@ -106,10 +130,13 @@ Set the Y axis lower and upper limits to a Measure which returns hard coded valu
 << Talk about the need for additional column DayNoOfYear >>
 << Multiple lines >>
 
+---
 
 # Iteration 3.1 - Zoom sliders (investigate)
 - How to restore to non-zoom
 - 
+
+---
 
 # Iteration 3.2 - Changing from continuous to categorical
 << to be done, continuation of I3>>
