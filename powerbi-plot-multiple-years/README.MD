@@ -104,9 +104,52 @@ The user of the report may not want to handle all 5 years at once. A legend is g
 
 ---
 
-# Iteration 2.3 - All years in a single visual (single curve) - Fill missing dates on X axis
-shifting
-- We are using the custom measures to fill in gaps along X axis (Min and Max values of X axis are provided by a measure)
+# Keeping the X and Y axis steady while we use the slicer
+
+#### What problem are we discussing ?
+Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013
+![steady1](docs/images/steady-axis-problem-1.png)
+
+In the following configuration, we have selected 2012 only
+![steady1](docs/images/steady-axis-problem-2.png)
+
+By design, Power BI line charts are designed to display only the selected band on the X axis and Y axis. Therefore, the scale of the X axis considerably changes when we alter the Year selection in the Slicer.
+
+#### Is this a problem that needs to be solved?
+Depends. Quite often I liked to have a steady reference while slicing an dicing the data using Slicers. If the scale of the visuals alter too much then I might be unable to build a mental model of the trend
+
+#### How do we fix this?
+
+Power BI lets us specify a measure to set the lower and upper bounds of X and Y axis.
+
+#### Fixing the X axis
+```dax
+EarliestSalesDate = CALCULATE(MIN(sales[date]),ALL(sales))
+MotRecentSalesDate = CALCULATE(MAX(sales[date]),ALL(sales))
+```
+
+Create the measures as shown above and assign them to the "Minimum" and "Maximum" of the X axis.
+
+![steady-axis-solution-xaxis](docs/images/steady-axis-solution-xaxis.png)
+
+#### Fixing the Y axis
+
+```dax
+LowestSalesValue = CALCULATE(MIN(sales[sales]),ALL(sales))
+HighesSalesValue = CALCULATE(MAX(sales[sales]),ALL(sales))
+```
+
+Create the measures as shown above and assign them to the "Minimum" and "Maximum" of the Y axis.
+
+![steady-axis-solution-xaxis](docs/images/steady-axis-solution-yaxis.png)
+
+#### The nex X and Y axis with measures applied
+
+
+![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution.png)
+
+We can see that the X axis is stretching right up to 2015. This is inspite of the year "2017" not being selected in the slicer.
+
 
 ---
 
