@@ -4,7 +4,7 @@
 
 # Problem statement
 ![objective](docs/images/objective.png)
-I have 5 years of daily sales data (or any time series data). How do I make the best use of Power BI to spot trends and make projections?
+I have 5 years of daily sales data (or any time series data) lying around in a simple CSV file. How do I make the best use of Power BI to spot trends and make projections?
 Why am I writing about this? Doesn't Power BI already handle this out of box? The problem is deceptively simple. Yes - Power BI can handle this out of box but there are myriad options and switches that once could toggle. 
 I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and then adding more features along the way.
 
@@ -96,7 +96,6 @@ DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY )
 Zoom sliders are great. They let you quickly narrow down on a region of interest. They are turned off by default. 
 ![zoom_slider_before](docs/images/zoom_slider_before.png)
 
-**to be done  Pin point the zoom slider, stress on dragging back the slider**
 
 How do you go back to the default position in a single click? For those who have used Matplotlib, you would be familiar with the "Home" button.
 
@@ -120,6 +119,7 @@ The user of the report may not want to handle all 5 years at once. A legend is g
 #### Understanding the problem ?
 Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013. Pay attention to the lower and upper limits of the X axis. (lower=July 2012, upper=Oct 2013)
 ![steady1](docs/images/steady-axis-problem-1.png)
+
 
 In the following configuration, we have selected 2012 only. Pay attention to the lower and upper limits of the X axis once again (lower=June 2012, upper=Dec 2012)
 ![steady1](docs/images/steady-axis-problem-2.png)
@@ -161,6 +161,7 @@ Create the measures as shown above and assign them to the "Minimum" and "Maximum
 
 We can see that the X axis is stretching right up to 2015. This is inspite of the year "2017" not being selected in the slicer.
 
+**to be done -- Show a tooltip kind of image. 2 images. With and without some years. Demonstrate steady Y - axis**
 
 ---
 
@@ -170,24 +171,15 @@ We can see that the X axis is stretching right up to 2015. This is inspite of th
 
 ---
 
-# Iteration 2.5 - Steady Y axis
-- Explain the problem. The Y axis keeps jumping
-Set the Y axis lower and upper limits to a Measure which returns hard coded values
-- Use 2 measures to set the lower and upper limits of the X axis
 
----
 
-# Iteration 3 - All years in a single visual (1 curve for every year)
+# Iteration 3 - Multiple curves in a single visual (1 curve for every year)
 - The need to turn off/on selective years
 - A legend with years
 << Talk about the need for additional column DayNoOfYear >>
 << Multiple lines >>
 
----
 
-# Iteration 3.1 - Zoom sliders (investigate)
-- How to restore to non-zoom
-- 
 
 ---
 
@@ -208,6 +200,14 @@ Set the Y axis lower and upper limits to a Measure which returns hard coded valu
 Provide link to Github
 Explain the repo structure
 << to be done >>
+
+# Misc
+- Grid lines
+- Series labels
+- Markers
+- 
+# Customize the title by using a measure
+to be done
 
 # To be done
 - ~~Improve the synthetic data generation (slowly risising, with some randomness)~~
