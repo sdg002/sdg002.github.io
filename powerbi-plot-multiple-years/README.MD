@@ -1,22 +1,28 @@
 # Power BI line chart with multiple years of Sales/Time series Data - So many options!
 
+---
+
 # Problem statement
 ![objective](docs/images/objective.png)
 I have 5 years of daily sales data (or any time series data). How do I make the best use of Power BI to spot trends and make projections?
 Why am I writing about this? Doesn't Power BI already handle this out of box? The problem is deceptively simple. Yes - Power BI can handle this out of box but there are myriad options and switches that once could toggle. 
 I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and then adding more features along the way.
 
+---
 
 # About the data
 ![excel_data_view](docs/images/excel_data_view.png)
 
 This data has been synthetically generated over a 5 year period using a Python script. This has just 2 columns: Date and Sales.
 
+---
+
 # Which version of Power BI Desktop?
 All visuals in this article were carried out using Power BI Desktop version 2.104.941
 
-# Data intro sheet
+
 ![overview_of_data](docs/images/data_overview.png)
+
 We can see that we have 
 - 1800 days of data
 - Starting from 17 May 2012 
@@ -29,6 +35,7 @@ I have turned off the out of box date hierarchy creation form the  "Date and tim
 
 Refer accompanying PBIX "data_overview.pbix"
 
+---
 
 # All years in a single line - Most basic 
 - We have not added any legend
@@ -86,8 +93,10 @@ DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY )
 
 ---
 # How to reset the Zoom sliders back to their default state (a Home button)?
-Zoom sliders are great. They let you quickly narrow down on a region of interest.
+Zoom sliders are great. They let you quickly narrow down on a region of interest. They are turned off by default. 
 ![zoom_slider_before](docs/images/zoom_slider_before.png)
+
+**to be done  Pin point the zoom slider, stress on dragging back the slider**
 
 How do you go back to the default position in a single click? For those who have used Matplotlib, you would be familiar with the "Home" button.
 
@@ -95,10 +104,12 @@ How do you go back to the default position in a single click? For those who have
 
 ![zoom_slider_with_home_button](docs/images/zoom_slider_with_home_button.png)
 
+**to be done Pint point that this is a button whose action is wired to a tooltip**
+
 In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
 
 ---
-# Select one or more year(s) of data
+# Using a Slicer to select one or more year(s) of data
 The user of the report may not want to handle all 5 years at once. A legend is good to point and select the year of interest. However, we need to use a Slicer if we want to be selective about the data
 ![slicer_year](docs/images/slicer_year.png)
 
@@ -106,19 +117,19 @@ The user of the report may not want to handle all 5 years at once. A legend is g
 
 # Keeping the X and Y axis steady while we use the slicer
 
-#### What problem are we discussing ?
-Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013
+#### Understanding the problem ?
+Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013. Pay attention to the lower and upper limits of the X axis. (lower=July 2012, upper=Oct 2013)
 ![steady1](docs/images/steady-axis-problem-1.png)
 
-In the following configuration, we have selected 2012 only
+In the following configuration, we have selected 2012 only. Pay attention to the lower and upper limits of the X axis once again (lower=June 2012, upper=Dec 2012)
 ![steady1](docs/images/steady-axis-problem-2.png)
 
 By design, Power BI line charts are designed to display only the selected band on the X axis and Y axis. Therefore, the scale of the X axis considerably changes when we alter the Year selection in the Slicer.
 
 #### Is this a problem that needs to be solved?
-Depends. Quite often I liked to have a steady reference while slicing an dicing the data using Slicers. If the scale of the visuals alter too much then I might be unable to build a mental model of the trend
+Depends. Quite often I like to have a steady reference while slicing an dicing the data using Slicers. If the scale of the visuals alter too much then I find myself unable to build a mental model of the trends in the data. 
 
-#### How do we fix this?
+#### How do we address this?
 
 Power BI lets us specify a measure to set the lower and upper bounds of X and Y axis.
 
