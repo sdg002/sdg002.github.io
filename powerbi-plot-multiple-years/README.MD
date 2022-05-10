@@ -103,14 +103,16 @@ How do you go back to the default position in a single click? For those who have
 
 ![zoom_slider_with_home_button](docs/images/zoom_slider_with_home_button.png)
 
-**to be done Pint point that this is a button whose action is wired to a tooltip**
 
 In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
 
 ---
+
 # Using a Slicer to select one or more year(s) of data
 The user of the report may not want to handle all 5 years at once. A legend is good to point and select the year of interest. However, we need to use a Slicer if we want to be selective about the data
+
 ![slicer_year](docs/images/slicer_year.png)
+
 
 ---
 
@@ -120,8 +122,10 @@ The user of the report may not want to handle all 5 years at once. A legend is g
 Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013. Pay attention to the lower and upper limits of the X axis. (lower=July 2012, upper=Oct 2013)
 ![steady1](docs/images/steady-axis-problem-1.png)
 
+**to be done Show tooltips before and after to hilight the shifting Axes**
 
 In the following configuration, we have selected 2012 only. Pay attention to the lower and upper limits of the X axis once again (lower=June 2012, upper=Dec 2012)
+
 ![steady1](docs/images/steady-axis-problem-2.png)
 
 By design, Power BI line charts are designed to display only the selected band on the X axis and Y axis. Therefore, the scale of the X axis considerably changes when we alter the Year selection in the Slicer.
@@ -157,11 +161,13 @@ Create the measures as shown above and assign them to the "Minimum" and "Maximum
 #### The nex X and Y axis with measures applied
 
 
-![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution.png)
+![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution-part1.png)
+Now change the selection of the Years in the slicer
 
-We can see that the X axis is stretching right up to 2015. This is inspite of the year "2017" not being selected in the slicer.
+![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution-part2.png)
 
-**to be done -- Show a tooltip kind of image. 2 images. With and without some years. Demonstrate steady Y - axis**
+
+
 
 ---
 
