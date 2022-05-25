@@ -37,7 +37,7 @@ Refer accompanying PBIX **data_overview.pbix**
 
 ---
 
-# Version 0 - All years in a single line - Most basic 
+# Version 1.0 - All years in a single line - Most basic 
 - We have not added any legend
 - We have added a zoom slider
 - X axis displays the **Date** column in a Continuous fashion
@@ -45,18 +45,17 @@ Refer accompanying PBIX **data_overview.pbix**
 
 ![most_basic](docs/images/single_line_most_basic.png)
 
-(Refer sheet **Most basic** in the accompanying file **single_line_for_all_years-most-basic.pbix**)
+(Refer sheet **V1.0-Most basic** in the accompanying file **v1-single_line_for_all_years-most-basic.pbix**)
 
 ---
 
-# Version 1 - All years in a single line - Most basic  (Categorical X axis)
+# Version 1.1 - All years in a single line - Most basic  (Categorical X axis)
 - We have not added any legend
 - We have added a zoom slider
 - X axis displays the **Date** column in a Categorical fashion
 - Y axis displays the **Median Sales** column
 
 ![most_basic_categorical](docs/images/single_line_most_basic_categorical.png)
-(Refer sheet **Most basic - Categorical** in accompanying file **single_line_for_all_years-most-basic.pbix**)
 
 Changing the X-axis to **Categorical** from **Continuous** has radically altered the behaviour of the axis.
 
@@ -66,9 +65,11 @@ You get to analyze the data at a very micro level
 #### Disadvantage of Categorical
 You lose the ability to zoom into the data gradually. You want to a higher level view of the data first. You need to scroll a much larger distance horizontally.
 
+(Refer sheet **V1.1-Most basic - Categorical** in accompanying file **V1-single_line_for_all_years-most-basic.pbix**)
+
 ---
 
-# Version 2 - All years in a single visual (single curve) - Add a Legend on Year
+# Version 2.1 - All years in a single visual (single curve) - Add a Legend on Year
 Our "**out of box**" approach so far is good, but suffers from a few challenges. Namely:
 - Difficult to distinguish the Years visually
 - Lack of a legend
@@ -95,43 +96,45 @@ DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY )
 ##### Finally adding the legend
 
 ![single_line_legend](docs/images/single_line_legend.png)
-(Refer sheet **Legend** in the accompanying file **single_line_for_all_years-legend.pbix**)
+(Refer sheet **v2.1-Legend** in the accompanying file **single_line_for_all_years-legend.pbix**)
 
 ---
-# Version 3 - How to reset the Zoom sliders back to their default state (a Home button)?
+# Version 2.2 - How to reset the Zoom sliders back to their default state (a Home button)?
 Zoom sliders are great. They let you quickly narrow down on a region of interest. They are turned off by default. 
 ![zoom_slider_before](docs/images/zoom_slider_before.png)
 
 
-How do you go back to the default position in a single click? For those who have used Matplotlib, you would be familiar with the "Home" button.
+_How do you go back to the default position in a single click?_ For those who have used the popular Python plotting library **Matplotlib**, you would be familiar with the **Home** button.
 
 ![matplotlib_toolbar](docs/images/matplotlib_toolbar.png)
 
 ![zoom_slider_with_home_button](docs/images/zoom_slider_with_home_button.png)
 
 
-In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
+In the above example, I used a **Button** visual linked to a **Bookmark** which provide a _Home_ button like functionality.
 
-(Refer sheet **Legend with Reset-Zoom slider** in the accompanying file **single_line_for_all_years-legend.pbix**)
+
+(Refer sheet **v2.2-Legend with Reset-Zoom slider** in the accompanying file **v2-single_line_for_all_years-legend.pbix**)
 
 
 ---
 
-# Using a Slicer to select one or more year(s) of data
+# Version 2.3 - Using a Slicer to select one or more year(s) of data
 The user of the report may not want to handle all 5 years at once. A legend is good to point and select the year of interest. However, we need to use a Slicer if we want to be selective about the data
 
 ![slicer_year](docs/images/slicer_year.png)
 
+(Refer sheet **v2.3-Legend with Slicer** in the accompanying file **v2-single_line_for_all_years-legend.pbix**)
 
 ---
 
-# Keeping the X and Y axis steady while we use the slicer
+# Version 2.4 - Keeping the X and Y axis steady while we use the slicer
 
 #### Understanding the problem ?
 Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013. Pay attention to the lower and upper limits of the X axis. (lower=July 2012, upper=Oct 2013)
 ![steady1](docs/images/steady-axis-problem-1.png)
 
-**to be done Show tooltips before and after to hilight the shifting Axes**
+# to be done Show tooltips before and after to hilight the shifting Axes
 
 In the following configuration, we have selected 2012 only. Pay attention to the lower and upper limits of the X axis once again (lower=June 2012, upper=Dec 2012)
 
@@ -175,6 +178,7 @@ Now change the selection of the Years in the slicer
 
 ![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution-part2.png)
 
+(Refer sheet **v2.4-Keeping X-Y axis steady** in the accompanying file **v2-single_line_for_all_years-legend.pbix**)
 
 ---
 # Simple monthly view - All Years visible
