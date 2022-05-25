@@ -4,16 +4,16 @@
 
 # Problem statement
 ![objective](docs/images/objective.png)
-I have 5 years of daily sales data (or any time series data) lying around in a simple CSV file. How do I make the best use of Power BI to spot trends and make projections?
+I have 5 years of daily sales data (or any time series data) lying around in a simple CSV file. This CSV could be a one time dump of data produced from the ERP system of my company. How do I make the best use of Power BI to spot trends and make projections?
 Why am I writing about this? Doesn't Power BI already handle this out of box? The problem is deceptively simple. Yes - Power BI can handle this out of box but there are myriad options and switches that once could toggle. 
-I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and then adding more features along the way.
+I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and incrementally tweaking  all available options along the way.
 
 ---
 
 # About the data
 ![excel_data_view](docs/images/excel_data_view.png)
 
-This data has been synthetically generated over a 5 year period using a Python script. This has just 2 columns: Date and Sales.
+This data has been synthetically generated over a 5 year period using a Python script. This has just 2 columns: **Date** and **Sales**.
 
 ---
 
@@ -30,41 +30,46 @@ We can see that we have
 - Min sales is 19,791
 - Max sales is 23,859
 
-I have turned off the out of box date hierarchy creation form the  "Date and time intelligence" settings. In late stages we will create this hierarchy through custom calculated columns.
+I have turned off the out of box date hierarchy creation form the  "**Date and time intelligence**" settings. In later stages we will create this hierarchy through custom calculated columns.
 ![time_intelligence_options](docs/images/time_intelligence.png)
 
-Refer accompanying PBIX "data_overview.pbix"
+Refer accompanying PBIX **data_overview.pbix**
 
 ---
 
-# All years in a single line - Most basic 
+# Version 0 - All years in a single line - Most basic 
 - We have not added any legend
 - We have added a zoom slider
-- X axis displays the "Date" column in a Continuous fashion
-- Y axis displays the "Median Sales" column
+- X axis displays the **Date** column in a Continuous fashion
+- Y axis displays the **Median Sales** column
 
 ![most_basic](docs/images/single_line_most_basic.png)
 
+(Refer sheet **Most basic** in the accompanying file **single_line_for_all_years-most-basic.pbix**)
+
 ---
 
-# All years in a single line - Most basic  (Categorical X axis)
+# Version 1 - All years in a single line - Most basic  (Categorical X axis)
 - We have not added any legend
 - We have added a zoom slider
-- X axis displays the "Date" column in a Categorical fashion
-- Y axis displays the "Median Sales" column
+- X axis displays the **Date** column in a Categorical fashion
+- Y axis displays the **Median Sales** column
 
 ![most_basic_categorical](docs/images/single_line_most_basic_categorical.png)
-Changing to "Categorical" from "Continuous" has radically altered the behaviour of the X-axis.
+(Refer sheet **Most basic - Categorical** in accompanying file **single_line_for_all_years-most-basic.pbix**)
+
+Changing the X-axis to **Categorical** from **Continuous** has radically altered the behaviour of the axis.
+
 #### Advantage of Categorical
 You get to analyze the data at a very micro level
 
 #### Disadvantage of Categorical
-You lose the ability to zoom into the data gradually. You want to a higher level view of the data first.
+You lose the ability to zoom into the data gradually. You want to a higher level view of the data first. You need to scroll a much larger distance horizontally.
 
 ---
 
-# All years in a single visual (single curve) - Add a Legend on Year
-Our "out of box" approach so far is good, but suffers from a few challenges. Namely:
+# Version 2 - All years in a single visual (single curve) - Add a Legend on Year
+Our "**out of box**" approach so far is good, but suffers from a few challenges. Namely:
 - Difficult to distinguish the Years visually
 - Lack of a legend
 
@@ -90,9 +95,10 @@ DayNoOfYear = DATEDIFF ( DATE ( YEAR ( sales[date] ), 1, 1 ), sales[date], DAY )
 ##### Finally adding the legend
 
 ![single_line_legend](docs/images/single_line_legend.png)
+(Refer sheet **Legend** in the accompanying file **single_line_for_all_years-legend.pbix**)
 
 ---
-# How to reset the Zoom sliders back to their default state (a Home button)?
+# Version 3 - How to reset the Zoom sliders back to their default state (a Home button)?
 Zoom sliders are great. They let you quickly narrow down on a region of interest. They are turned off by default. 
 ![zoom_slider_before](docs/images/zoom_slider_before.png)
 
@@ -105,6 +111,9 @@ How do you go back to the default position in a single click? For those who have
 
 
 In the above example, I used a Button linked to a Bookmark which provide a "resetting" like functionality.
+
+(Refer sheet **Legend with Reset-Zoom slider** in the accompanying file **single_line_for_all_years-legend.pbix**)
+
 
 ---
 
@@ -167,6 +176,18 @@ Now change the selection of the Years in the slicer
 ![steady-axis-solution-xaxis](docs/images/steady-axis-overall-solution-part2.png)
 
 
+---
+# Simple monthly view - All Years visible
+We will use our calculated columns **MonthText** and **Year** to produce a very simple but functional clustered column chart that displays a Month wise aggregation of Sales across several years
+
+![simple-monthly-view](docs/images/simple-monthly-view.png)
+
+---
+# Simple monthly view - Slicer on years
+Like before, we introduce a Slicer visual to selectively the hide the Years we are not interested in. The **Slicer** has the **Orientation** property set to **Horizontal** for better utisation of real estate
+
+
+![simple-monthly-view-with-slicer](docs/images/simple-monthly-view-with-slicer.png)
 
 
 ---
