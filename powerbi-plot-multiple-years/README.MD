@@ -181,18 +181,21 @@ Now change the selection of the Years in the slicer
 (Refer sheet **v2.4-Keeping X-Y axis steady** in the accompanying file **v2-single_line_for_all_years-legend.pbix**)
 
 ---
-# Simple monthly view - All Years visible
+# Version 3.1 - Simple monthly view - All Years visible
 We will use our calculated columns **MonthText** and **Year** to produce a very simple but functional clustered column chart that displays a Month wise aggregation of Sales across several years
 
 ![simple-monthly-view](docs/images/simple-monthly-view.png)
 
+(Refer sheet **v1-Simple monthly break down-All Years** in the accompanying file **v3-monthly-view.pbix**)
+
 ---
-# Simple monthly view - Slicer on years
+# Version 3.2 - Simple monthly view - Slicer on years
 Like before, we introduce a Slicer visual to selectively the hide the Years we are not interested in. The **Slicer** has the **Orientation** property set to **Horizontal** for better utisation of real estate
 
 
 ![simple-monthly-view-with-slicer](docs/images/simple-monthly-view-with-slicer.png)
 
+(Refer sheet **v2-Simple monthly break down-Slicer on Years** in the accompanying file **v3-monthly-view.pbix**)
 
 ---
 
