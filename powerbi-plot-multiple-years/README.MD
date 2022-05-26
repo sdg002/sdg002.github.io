@@ -134,7 +134,6 @@ The user of the report may not want to handle all 5 years at once. A legend is g
 Consider the Slicer selection in the picture below. We have have selected the years 2012 and 2013. Pay attention to the lower and upper limits of the X axis. (lower=July 2012, upper=Oct 2013)
 ![steady1](docs/images/steady-axis-problem-1.png)
 
-# to be done Show tooltips before and after to hilight the shifting Axes
 
 In the following configuration, we have selected 2012 only. Pay attention to the lower and upper limits of the X axis once again (lower=June 2012, upper=Dec 2012)
 
@@ -186,7 +185,7 @@ We will use our calculated columns **MonthText** and **Year** to produce a very 
 
 ![simple-monthly-view](docs/images/simple-monthly-view.png)
 
-(Refer sheet **v1-Simple monthly break down-All Years** in the accompanying file **v3-monthly-view.pbix**)
+(Refer sheet **v3.1-Simple monthly break down-All Years** in the accompanying file **v3-monthly-view.pbix**)
 
 ---
 # Version 3.2 - Simple monthly view - Slicer on years
@@ -195,7 +194,7 @@ Like before, we introduce a Slicer visual to selectively the hide the Years we a
 
 ![simple-monthly-view-with-slicer](docs/images/simple-monthly-view-with-slicer.png)
 
-(Refer sheet **v2-Simple monthly break down-Slicer on Years** in the accompanying file **v3-monthly-view.pbix**)
+(Refer sheet **v3.2-Simple monthly break down-Slicer on Years** in the accompanying file **v3-monthly-view.pbix**)
 
 ---
 
