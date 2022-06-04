@@ -9,6 +9,11 @@ Why am I writing about this? Doesn't Power BI already handle this out of box? Th
 I decided to write a step-by-step article so that I could present my journey - starting from the most basic Line Chart of Power BI and incrementally tweaking  all available options along the way.
 
 ---
+# What to expect at the end of this article?
+
+![what-to-expect.png](docs/images/what-to-expect.png)
+
+---
 
 # About the data
 ![excel_data_view](docs/images/excel_data_view.png)
