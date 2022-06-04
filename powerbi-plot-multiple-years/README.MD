@@ -277,7 +277,7 @@ Note - we are using the `ALL` key word to escape the current filter context. Thi
 ```dax
 MeanSales = CALCULATE(AVERAGE(sales[sales]),ALL(sales))
 ```
---
+---
 
 # Accompanying files in Github
 
@@ -296,7 +296,7 @@ https://github.com/sdg002/sdg002.github.io/tree/master/powerbi-plot-multiple-yea
 
 The folder **generate_data** has a Python script to generate the Sales CSV which is the data source for the sample Power BI files under **powerbi** folder
 
---
+---
 # Feedback
 Did you find this article useful? Did you spot any mistakes? Are there any interesting tips that you would like to contribute? I would love to hear from you. 
 
