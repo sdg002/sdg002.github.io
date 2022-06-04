@@ -203,7 +203,7 @@ Like before, we introduce a Slicer visual to selectively the hide the Years we a
 
 ---
 
-# Verion 4.0 - Multiple years of sales stacked on the same plot
+# Verion 4.1 - Multiple years of sales stacked on the same plot
 
 ## What do we want to achieve?
 We want to analyze multiple years of data - but not as one large curve. We want the X-axis to span for just 1 year (Jan 1 to Dec 31) and stack each years Sales within the same chart.
@@ -260,6 +260,24 @@ return myExtendedCalendarWithDayOfYear
 ![v4-x-y-axis-upper-lower-limits](docs/images/v4-x-y-axis-upper-lower-limits.png)
 
 ---
+
+# Verion 4.2 - Displaying the overall Mean sales as a constant line
+
+## Objective 
+We want a straight line parallel to the X axis which gives an indication of the mean sales. This helps the data analyst by giving a perspective.
+
+## How to achieve this?
+![v4-constant-mean-line.png](docs/images/v4-constant-mean-line.png)
+
+
+## DAX measure to calculate mean sales across all years
+
+Note - we are using the `ALL` key word to escape the current filter context. This is because we want the mean sales across all the years
+
+```dax
+MeanSales = CALCULATE(AVERAGE(sales[sales]),ALL(sales))
+```
+--
 
 # TRIALS BELOW - SHOULD BE REMOVED WHEN DONE
 
