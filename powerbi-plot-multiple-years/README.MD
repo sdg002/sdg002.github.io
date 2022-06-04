@@ -279,53 +279,24 @@ MeanSales = CALCULATE(AVERAGE(sales[sales]),ALL(sales))
 ```
 --
 
-# TRIALS BELOW - SHOULD BE REMOVED WHEN DONE
-
-
-# Iteration 2.4 - All years in a single visual (single curve) - Fill missing trailing and leading dates
-- Explain the problem of the missing dates
-- Problem - The first year and the last year do not have all the days of data. Hence the limts of the X axis keep changing as we select/de-select years 
-
-
----
-
-# Iteration 3 - Multiple curves in a single visual (1 curve for every year)
-- The need to turn off/on selective years
-- A legend with years
-<< Talk about the need for additional column DayNoOfYear >>
-<< Multiple lines >>
-
-
-
----
-
-# Iteration 3.2 - Changing from continuous to categorical
-<< to be done, continuation of I3>>
-
-
-# Iteration 4 -  Using tooltips to zoomin
-- to be done
-- See my notes in the notebook
-- How do you come out of the Calendar context? Use another Date table perhaps?
-
-# Iteration X - Small multiples (WE MAY NOT NEED THIS, IF WE ARE NOT DOING MULTIPLE VISUALS)
-<< to be done >>
-
-
 # Accompanying files in Github
-Provide link to Github
-Explain the repo structure
-<< to be done >>
 
-# Misc
-- Grid lines
-- Series labels
-- Markers
-- 
-# Customize the title by using a measure
-to be done
+## Github repo
+https://github.com/sdg002/sdg002.github.io/tree/master/powerbi-plot-multiple-years
 
-# To be done
-- ~~Improve the synthetic data generation (slowly risising, with some randomness)~~
-- Can we rest the view when using Zoom sliders?
-- 
+```
+----
+    |
+    |
+    --- generate_data
+    |
+    |
+    ----powerbi
+```
+
+The folder **generate_data** has a Python script to generate the Sales CSV which is the data source for the sample Power BI files under **powerbi** folder
+
+--
+# Feedback
+Did you find this article useful? Did you spot any mistakes? Are there any interesting tips that you would like to contribute? I would love to hear from you. 
+
