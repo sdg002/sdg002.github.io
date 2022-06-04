@@ -198,13 +198,73 @@ Like before, we introduce a Slicer visual to selectively the hide the Years we a
 
 ---
 
+# Verion 4.0 - Multiple years of sales stacked on the same plot
+
+## What do we want to achieve?
+We want to analyze multiple years of data - but not as one large curve. We want the X-axis to span for just 1 year (Jan 1 to Dec 31) and stack each years Sales within the same chart.
+
+![v4-what-do-we-want-to-achieve](docs/images/v4-what-do-we-want-to-achieve.png)
+
+
+## How do we achieve this?
+1. Create a new calendar table with only days from the year 2012 . Name this table **My2012DatesTable**
+1. Why 2012?  Not neccessary. You can select any leap year. Example: 2016
+1. Add a relationship between **My2012DatesTable** and **Sales** table using the key column **DayNoOfYear**
+1. Add a **Line Chart** visual. 
+1. Use the **My2012DatesTable**->**Date** field for the X axis (This will produce dates from Jan 1 to Dec 31 2012)
+1. Use the **Sales**->**sales** field for the Y axis
+1. Use the **Sales**->**Year** as the Legend. 
+1. Follow the steps we did in earlier to keep the Y axis boundaries steady (Refer section "Keeping the X and Y axis steady while we use the slicer")
+
+## DAX expression for My2012DatesTable
+Use the following DAX to create the new Date table which has just 1 year of dates
+```dax
+My2012DatesTable = 
+VAR myExtendedCalendar = ADDCOLUMNS(
+            CALENDAR(DATE(2012,1,1),DATE(2012,12,31)), 
+            "Year", YEAR([Date]),
+            "MonthNumber", MONTH([Date]),
+            "DayNumber", DAY([Date]),
+            "Month", FORMAT([Date],"mmmm"),
+            "DayOfWeek", FORMAT([Date],"ddd"),
+            "DayOfWeekNumber", WEEKDAY([Date]),
+            "QuarterNumber", QUARTER([Date]),
+            "Quarter", FORMAT([Date],"\QQ"),
+            "WeekNumber",WEEKNUM([Date]), 
+            "MonthDayKey",FORMAT([Date],"mmm-dd")
+            )
+VAR myExtendedCalendarWithDayOfYear = ADDCOLUMNS(
+            myExtendedCalendar, 
+            "DayNoOfYear",
+            DATEDIFF ( DATE ( YEAR ( [Date] ), 1, 1 ), [Date], DAY ) + 1
+            )
+
+return myExtendedCalendarWithDayOfYear
+```
+
+## Add relationships
+
+![v4-relationships](docs/images/v4-relationships.png)
+
+## Create the Line Chart visual
+
+![v4-line-chart](docs/images/v4-line-chart.png)
+
+## Ensuring that Y axis is steady
+
+![v4-x-y-axis-upper-lower-limits](docs/images/v4-x-y-axis-upper-lower-limits.png)
+
+---
+
+# TRIALS BELOW - SHOULD BE REMOVED WHEN DONE
+
+
 # Iteration 2.4 - All years in a single visual (single curve) - Fill missing trailing and leading dates
 - Explain the problem of the missing dates
 - Problem - The first year and the last year do not have all the days of data. Hence the limts of the X axis keep changing as we select/de-select years 
 
+
 ---
-
-
 
 # Iteration 3 - Multiple curves in a single visual (1 curve for every year)
 - The need to turn off/on selective years
