@@ -55,7 +55,6 @@ def plot_circle(radius:float,center_x:float,center_y:float):
     plt.plot(x,y)
 
 def plot():
-    print("try plotting")
 
     r= 2
     num_sides=16
@@ -73,12 +72,8 @@ def plot():
             end_theta=thetas[index+1]  
         chord_x,chord_y=get_chord_start_end(start_theta=start_theta, end_theta=end_theta, radius=r,center_x=0, center_y=0)  
         plt.plot(chord_x,chord_y)
-    #this works
-    # chord_x,chord_y=get_chord_start_end(start_theta=0, end_theta=math.pi/3, radius=r,center_x=0, center_y=0)
-    # plt.plot(chord_x,chord_y)
     plt.axis('equal')
     plt.show()    
-    pass
 
 def main():
     print("do something")
@@ -86,5 +81,4 @@ def main():
     plot()
 
 if __name__ == "__main__":
-    #main()
     plot()
