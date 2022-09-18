@@ -1,5 +1,5 @@
 # Calculate Pie using Pythogoras theorem
-In this article I have presented what is possibly one of the oldest and simplest methods to calculate the value of Pie. The principle relies on inscribing a square within a cirlce of radius 1 unit and then doubling the sides in every iteration. The permiter of the polygon inscribed within the circle tends towards **2 x PIE x radius**
+In this article I have presented what is possibly one of the oldest and simplest methods to calculate the value of Pie. The principle relies on inscribing a square within a cirlce of radius 1 unit and then doubling the sides in every iteration. The perimeter of the polygon inscribed within the circle tends towards **2 x PIE x radius**
 
 ---
 
@@ -20,7 +20,7 @@ In this article I have presented what is possibly one of the oldest and simplest
 ---
 
 # Perimeter with 4 sides
-Let us try and derive a formula for the permiter of an inscribed polygon. We will use recursion.
+Let us try and derive a formula for the perimeter of an inscribed polygon. We will use recursion.
 
 ![4-sides-pythagoras.png](docs/images/4-sides-pythagoras.png)
 
@@ -37,11 +37,11 @@ Let us try and derive a formula for the permiter of an inscribed polygon. We wil
 
 ---
 
-# Where are we ?
+# Where are we?
 
-We begin with a **square** with side **s0** -->   sub-divide to get an **octagon** with side **s1** --> sub-divide to get an **16 sided regular polygon** with side **s3**
+We begin with a **square** with side **s0** -->   sub-divide to get an **octagon** with side **s1** --> sub-divide to get a **16 sided regular polygon** with side **s3**
 
-We now have a recursive formula which given the regular polygon length **s(n)** yieds **s(n+1)** 
+We now have a recursive formula which given the regular polygon length **s(n)** yields **s(n+1)** 
 
 ![summary-table.png](docs/images/summary-table.png)
 
