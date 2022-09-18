@@ -1,5 +1,5 @@
 # Calculate Pie using Pythogoras theorem
-In this article I have presented what is possibly one of the oldest and simplest methods to calculate the value of Pie. The principle relies on inscribing a square within a cirlce of radius 1 unit and then doubling the sides in every iteration. The permiter of the polygon inscribed within the circle tends towards **2*PIE*radius**
+In this article I have presented what is possibly one of the oldest and simplest methods to calculate the value of Pie. The principle relies on inscribing a square within a cirlce of radius 1 unit and then doubling the sides in every iteration. The permiter of the polygon inscribed within the circle tends towards **2 x PIE x radius**
 
 ---
 
@@ -50,3 +50,21 @@ We now have a recursive formula which given the regular polygon length **s(n)** 
 # Final results
 
 ![results-table.png](docs/images/results-table.png)
+
+# About the code
+
+
+## Link to Gitub repo
+
+The Github repo can be [found here](https://github.com/sdg002/sdg002.github.io/tree/master/pie-geometrical-method)
+
+## Running the Python file
+The file `calculate_pie.py` takes 1 argument. This is the number of iterations.
+
+Example:
+```python
+calculate_pie.py 10
+```
+
+![cmdline-output.png](docs/images/cmdline-output.png)
+
